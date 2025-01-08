@@ -1,0 +1,54 @@
+[gd_scene load_steps=6 format=3 uid="uid://ci7u5r1qc0aob"]
+
+[ext_resource type="Script" path="res://addons/ez_tiles/ez_tiles_dock.gd" id="1_xlstp"]
+[ext_resource type="Script" path="res://addons/ez_tiles/file_menu.gd" id="2_8dh4w"]
+[ext_resource type="Script" path="res://addons/ez_tiles/images_container.gd" id="3_xo2pw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_daguq"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.12549, 0.145098, 0.172549, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_wwpia"]
+font_color = Color(0.621524, 0.621524, 0.621524, 1)
+
+[node name="EZTilesDock" type="HBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xlstp")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="FileMenu" type="MenuButton" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "File"
+item_count = 1
+popup/item_0/text = "Load Image Files"
+script = ExtResource("2_8dh4w")
+
+[node name="ImagesContainer" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_daguq")
+script = ExtResource("3_xo2pw")
+
+[node name="HintLabel" type="Label" parent="VBoxContainer/ImagesContainer"]
+layout_mode = 2
+text = "Drop image files here"
+label_settings = SubResource("LabelSettings_wwpia")
+horizontal_alignment = 1
+
+[node name="ImageList" type="VBoxContainer" parent="VBoxContainer/ImagesContainer"]
+visible = false
+layout_mode = 2
+
+[connection signal="load_files" from="VBoxContainer/FileMenu" to="." method="_on_file_menu_load_files"]
+[connection signal="drop_files" from="VBoxContainer/ImagesContainer" to="." method="_on_images_container_drop_files"]
