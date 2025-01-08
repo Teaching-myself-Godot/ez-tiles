@@ -52,12 +52,19 @@ label_settings = SubResource("LabelSettings_2svd6")
 [node name="XSizeLineEdit" type="LineEdit" parent="VBoxContainer2/HBoxContainer"]
 layout_mode = 2
 placeholder_text = "x"
-editable = false
+clear_button_enabled = true
+select_all_on_focus = true
 
 [node name="YSizeLineEdit" type="LineEdit" parent="VBoxContainer2/HBoxContainer"]
 layout_mode = 2
 placeholder_text = "y"
-editable = false
+clear_button_enabled = true
+select_all_on_focus = true
+
+[node name="GenerateTemplateButton" type="Button" parent="VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Generate a .PNG template"
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer2"]
 layout_mode = 2
@@ -65,7 +72,12 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_fl86h")
 
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer2/PanelContainer"]
+layout_mode = 2
+
 [connection signal="load_files" from="VBoxContainer/HBoxContainer/LoadFilesButton" to="." method="_on_file_menu_load_files"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/LoadFilesButton" to="VBoxContainer/HBoxContainer/LoadFilesButton" method="_on_pressed"]
 [connection signal="drop_files" from="VBoxContainer/ImagesContainer" to="." method="_on_images_container_drop_files"]
 [connection signal="terrain_list_entry_removed" from="VBoxContainer/ImagesContainer" to="." method="_on_images_container_terrain_list_entry_removed"]
+[connection signal="text_changed" from="VBoxContainer2/HBoxContainer/XSizeLineEdit" to="." method="_on_xy_size_line_edit_text_changed"]
+[connection signal="text_changed" from="VBoxContainer2/HBoxContainer/YSizeLineEdit" to="." method="_on_xy_size_line_edit_text_changed"]
