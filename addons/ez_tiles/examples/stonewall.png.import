@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://7ab600twsy17"
-path="res://.godot/imported/gold_tiles.png-8ab4aff027c020b749ec0e3304d3951e.ctex"
+uid="uid://b4ibyc7vv0cqd"
+path="res://.godot/imported/stonewall.png-893e766f84e5e4d87c06e1b359ff37b6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/examples/gold_tiles.png"
-dest_files=["res://.godot/imported/gold_tiles.png-8ab4aff027c020b749ec0e3304d3951e.ctex"]
+source_file="res://addons/ez_tiles/examples/stonewall.png"
+dest_files=["res://.godot/imported/stonewall.png-893e766f84e5e4d87c06e1b359ff37b6.ctex"]
 
 [params]
 

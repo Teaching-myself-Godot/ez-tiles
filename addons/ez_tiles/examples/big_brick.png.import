@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b66j5q5i4ltpn"
-path="res://.godot/imported/spikes.png-0405eded1e0d07b61704e86442de2970.ctex"
+uid="uid://dyf2x07bqc1kw"
+path="res://.godot/imported/big_brick.png-7b5fbe89f1281fdbd32d03ce0b714a0e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/examples/spikes.png"
-dest_files=["res://.godot/imported/spikes.png-0405eded1e0d07b61704e86442de2970.ctex"]
+source_file="res://addons/ez_tiles/examples/big_brick.png"
+dest_files=["res://.godot/imported/big_brick.png-7b5fbe89f1281fdbd32d03ce0b714a0e.ctex"]
 
 [params]
 

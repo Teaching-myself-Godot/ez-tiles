@@ -2,3 +2,4 @@
 
 [resource]
 resource_local_to_scene = false
+allow_unpress = true

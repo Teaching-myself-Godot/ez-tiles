@@ -40,3 +40,7 @@ func save_new_terrain_name() -> void:
 
 func _on_remove_button_pressed() -> void:
 	queue_free()
+
+
+func _on_terrain_name_input_text_submitted(_new_text: String) -> void:
+	save_new_terrain_name()

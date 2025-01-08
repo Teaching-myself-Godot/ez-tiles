@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dyf2x07bqc1kw"
-path="res://.godot/imported/big_brick.png-1114dd16694686631c8434424069387e.ctex"
+uid="uid://f0usrkn63hv0"
+path="res://.godot/imported/tree_trunk.png-9362267bcd052604faa6b9404506892b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/examples/big_brick.png"
-dest_files=["res://.godot/imported/big_brick.png-1114dd16694686631c8434424069387e.ctex"]
+source_file="res://addons/ez_tiles/examples/tree_trunk.png"
+dest_files=["res://.godot/imported/tree_trunk.png-9362267bcd052604faa6b9404506892b.ctex"]
 
 [params]
 

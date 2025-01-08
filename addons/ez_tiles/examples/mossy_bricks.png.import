@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://f0usrkn63hv0"
-path="res://.godot/imported/tree_trunk.png-4646fe0516cce24f7b82405dcfbbbd8e.ctex"
+uid="uid://cx74c55pt4kvk"
+path="res://.godot/imported/mossy_bricks.png-286e431a890fffb9b20bd25bfeec6ec8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/examples/tree_trunk.png"
-dest_files=["res://.godot/imported/tree_trunk.png-4646fe0516cce24f7b82405dcfbbbd8e.ctex"]
+source_file="res://addons/ez_tiles/examples/mossy_bricks.png"
+dest_files=["res://.godot/imported/mossy_bricks.png-286e431a890fffb9b20bd25bfeec6ec8.ctex"]
 
 [params]
 

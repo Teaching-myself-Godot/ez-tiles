@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dudbsnchdio2u"
-path="res://.godot/imported/sand.png-c9d543edf926ea4c4469ec333cbb5287.ctex"
+uid="uid://7ab600twsy17"
+path="res://.godot/imported/gold_tiles.png-4e0635b1c26ccaf484797f8bdae3a3cc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/examples/sand.png"
-dest_files=["res://.godot/imported/sand.png-c9d543edf926ea4c4469ec333cbb5287.ctex"]
+source_file="res://addons/ez_tiles/examples/gold_tiles.png"
+dest_files=["res://.godot/imported/gold_tiles.png-4e0635b1c26ccaf484797f8bdae3a3cc.ctex"]
 
 [params]
 

@@ -43,6 +43,7 @@ layout_mode = 2
 icon = ExtResource("1_e3wgq")
 
 [connection signal="focus_exited" from="TerrainNameInput" to="." method="save_new_terrain_name"]
+[connection signal="text_submitted" from="TerrainNameInput" to="." method="_on_terrain_name_input_text_submitted"]
 [connection signal="pressed" from="EditButton" to="." method="_on_edit_button_pressed"]
 [connection signal="pressed" from="SaveButton" to="." method="save_new_terrain_name"]
 [connection signal="pressed" from="RemoveButton" to="." method="_on_remove_button_pressed"]
