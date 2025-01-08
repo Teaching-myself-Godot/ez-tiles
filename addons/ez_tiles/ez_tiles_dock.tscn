@@ -1,11 +1,20 @@
-[gd_scene load_steps=6 format=3 uid="uid://ci7u5r1qc0aob"]
+[gd_scene load_steps=12 format=3 uid="uid://ci7u5r1qc0aob"]
 
 [ext_resource type="Script" path="res://addons/ez_tiles/ez_tiles_dock.gd" id="1_xlstp"]
 [ext_resource type="Script" path="res://addons/ez_tiles/load_files_button.gd" id="2_8dh4w"]
 [ext_resource type="PackedScene" uid="uid://1u5mrsioaaon" path="res://addons/ez_tiles/images_container.tscn" id="3_vxumx"]
+[ext_resource type="Texture2D" uid="uid://njliaygubc5c" path="res://addons/ez_tiles/ZoomLess.svg" id="4_k6fm5"]
+[ext_resource type="Texture2D" uid="uid://bvwx6xu0hp7mv" path="res://addons/ez_tiles/ZoomMore.svg" id="5_0phj1"]
+[ext_resource type="Script" path="res://addons/ez_tiles/preview_panel_container.gd" id="6_3jtbs"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2svd6"]
 font_color = Color(0.619608, 0.619608, 0.619608, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wkbrg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3l5ec"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ikc07"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fl86h"]
 bg_color = Color(0.12549, 0.145098, 0.172549, 1)
@@ -42,7 +51,7 @@ size_flags_horizontal = 3
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer2/HBoxContainer"]
+[node name="TileSizeLabel" type="Label" parent="VBoxContainer2/HBoxContainer"]
 layout_mode = 2
 tooltip_text = "The tile size is determined automatically from the first image you import. As you can see in  the template below, EZ Tiles expects a 6 by 4 grid; the tiles do not have to be square."
 mouse_filter = 0
@@ -66,18 +75,57 @@ layout_mode = 2
 disabled = true
 text = "Generate a .PNG template"
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer2"]
+[node name="ZoomPreviewLabel" type="Label" parent="VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Zoom Preview: "
+label_settings = SubResource("LabelSettings_2svd6")
+horizontal_alignment = 2
+
+[node name="ZoomOutButton" type="Button" parent="VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_wkbrg")
+icon = ExtResource("4_k6fm5")
+
+[node name="ResetZoomButton" type="Button" parent="VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_3l5ec")
+text = "100%"
+
+[node name="ZoomInButton" type="Button" parent="VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ikc07")
+icon = ExtResource("5_0phj1")
+
+[node name="PreviewScrollContainer" type="ScrollContainer" parent="VBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_fl86h")
 
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer2/PanelContainer"]
+[node name="PreviewPanelContainer" type="CenterContainer" parent="VBoxContainer2/PreviewScrollContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("6_3jtbs")
+
+[node name="OverlayTextureRect" type="TextureRect" parent="VBoxContainer2/PreviewScrollContainer/PreviewPanelContainer"]
+layout_mode = 2
+expand_mode = 3
+
+[node name="PreviewTextureRect" type="TextureRect" parent="VBoxContainer2/PreviewScrollContainer/PreviewPanelContainer"]
+layout_mode = 2
+expand_mode = 3
 
 [connection signal="load_files" from="VBoxContainer/HBoxContainer/LoadFilesButton" to="." method="_on_file_menu_load_files"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/LoadFilesButton" to="VBoxContainer/HBoxContainer/LoadFilesButton" method="_on_pressed"]
 [connection signal="drop_files" from="VBoxContainer/ImagesContainer" to="." method="_on_images_container_drop_files"]
 [connection signal="terrain_list_entry_removed" from="VBoxContainer/ImagesContainer" to="." method="_on_images_container_terrain_list_entry_removed"]
+[connection signal="terrain_list_entry_selected" from="VBoxContainer/ImagesContainer" to="." method="_on_images_container_terrain_list_entry_selected"]
 [connection signal="text_changed" from="VBoxContainer2/HBoxContainer/XSizeLineEdit" to="." method="_on_xy_size_line_edit_text_changed"]
 [connection signal="text_changed" from="VBoxContainer2/HBoxContainer/YSizeLineEdit" to="." method="_on_xy_size_line_edit_text_changed"]
+[connection signal="pressed" from="VBoxContainer2/HBoxContainer/ZoomOutButton" to="." method="_on_zoom_out_button_pressed"]
+[connection signal="pressed" from="VBoxContainer2/HBoxContainer/ResetZoomButton" to="." method="_on_reset_zoom_button_pressed"]
+[connection signal="pressed" from="VBoxContainer2/HBoxContainer/ZoomInButton" to="." method="_on_zoom_in_button_pressed"]
+[connection signal="gui_input" from="VBoxContainer2/PreviewScrollContainer" to="." method="_on_preview_panel_container_gui_input"]
+[connection signal="drop_files" from="VBoxContainer2/PreviewScrollContainer/PreviewPanelContainer" to="." method="_on_preview_panel_container_drop_files"]

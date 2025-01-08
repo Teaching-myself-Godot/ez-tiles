@@ -3,6 +3,7 @@ extends HBoxContainer
 class_name TerrainListEntry
 
 signal removed()
+signal selected()
 
 var terrain_name_input : LineEdit
 var terrain_name_button : Button
@@ -23,7 +24,7 @@ func _enter_tree() -> void:
 	var img = texture_resource.get_image()
 	img.resize(90, int((float(img.get_height()) / float(img.get_width())) * 90.0))
 	terrain_name_button.icon = ImageTexture.create_from_image(img)
-	
+	terrain_name_button.button_pressed = true
 
 func _on_edit_button_pressed() -> void:
 	edit_button.hide()
@@ -50,5 +51,10 @@ func _on_remove_button_pressed() -> void:
 	queue_free()
 
 
+func _on_terrain_name_button_pressed() -> void:
+	selected.emit()
+
+
 func _on_terrain_name_input_text_submitted(_new_text: String) -> void:
 	save_new_terrain_name()
+

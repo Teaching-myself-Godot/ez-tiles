@@ -2,8 +2,9 @@
 extends ScrollContainer
 class_name  ImagesContainer
 
-signal drop_files(files : PackedByteArray)
-signal terrain_list_entry_removed(removed_index : RID)
+signal drop_files(files : PackedStringArray)
+signal terrain_list_entry_removed(resource_id : RID)
+signal terrain_list_entry_selected(resource_id : RID)
 
 var image_list : VBoxContainer
 var hint_label : Label
@@ -13,6 +14,7 @@ func _enter_tree() -> void:
 	TerrainListEntry = preload("res://addons/ez_tiles/terrain_list_entry.tscn")
 	image_list = find_child("ImageList")
 	hint_label = find_child("HintLabel")	
+
 
 func _can_drop_data(at_position : Vector2, data : Variant) -> bool:
 	if not typeof(data) == TYPE_DICTIONARY and "type" in data and data["type"] == "files":
@@ -39,3 +41,4 @@ func add_file(img_resource : CompressedTexture2D):
 	image_list.add_child(new_entry)
 	image_list.show()
 	new_entry.removed.connect(func(): terrain_list_entry_removed.emit(img_resource.get_rid()))
+	new_entry.selected.connect(func(): terrain_list_entry_selected.emit(img_resource.get_rid()))
