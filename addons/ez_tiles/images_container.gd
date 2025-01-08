@@ -1,8 +1,9 @@
 @tool
-extends PanelContainer
+extends ScrollContainer
 class_name  ImagesContainer
 
 signal drop_files(files : PackedByteArray)
+signal terrain_list_entry_removed(removed_index : RID)
 
 var image_list : VBoxContainer
 var hint_label : Label
@@ -29,9 +30,12 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 	if _can_drop_data(at_position, data):
 		drop_files.emit(data["files"])
 
-func add_file(file : String):
+
+func add_file(img_resource : CompressedTexture2D):
 	hint_label.hide()
 	var new_entry : TerrainListEntry = TerrainListEntry.instantiate()
-	new_entry.value = file
+	new_entry.terrain_name = img_resource.resource_path
+	new_entry.texture_resource = img_resource
 	image_list.add_child(new_entry)
 	image_list.show()
+	new_entry.removed.connect(func(): terrain_list_entry_removed.emit(img_resource.get_rid()))

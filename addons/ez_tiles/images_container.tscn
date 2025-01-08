@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3 uid="uid://1u5mrsioaaon"]
+
+[ext_resource type="Script" path="res://addons/ez_tiles/images_container.gd" id="1_nrl1h"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_daguq"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.12549, 0.145098, 0.172549, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_wwpia"]
+font_color = Color(0.621524, 0.621524, 0.621524, 1)
+
+[node name="ImagesContainer" type="ScrollContainer"]
+custom_minimum_size = Vector2(400, 0)
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_daguq")
+horizontal_scroll_mode = 0
+script = ExtResource("1_nrl1h")
+
+[node name="HintLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Drop image files here"
+label_settings = SubResource("LabelSettings_wwpia")
+horizontal_alignment = 1
+
+[node name="ImageList" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3

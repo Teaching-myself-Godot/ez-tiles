@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://dk3duerdgfgah"]
+[gd_scene load_steps=7 format=3 uid="uid://dk3duerdgfgah"]
 
 [ext_resource type="Script" path="res://addons/ez_tiles/terrain_list_entry.gd" id="1_237eo"]
 [ext_resource type="Texture2D" uid="uid://smg4iofcineo" path="res://addons/ez_tiles/Remove.svg" id="1_e3wgq"]
@@ -6,11 +6,15 @@
 [ext_resource type="ButtonGroup" uid="uid://b5bf2ekbf2vrc" path="res://addons/ez_tiles/select_terrain_button_group.tres" id="2_framc"]
 [ext_resource type="Texture2D" uid="uid://cxl4w251e8xgf" path="res://addons/ez_tiles/Save.svg" id="4_6vr40"]
 
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_bten3"]
+size = Vector2(90, 60)
+
 [node name="TerrainListEntry" type="HBoxContainer"]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 31.0
 grow_horizontal = 2
+size_flags_horizontal = 3
 script = ExtResource("1_237eo")
 
 [node name="TerrainNameButton" type="Button" parent="."]
@@ -19,18 +23,20 @@ size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
 toggle_mode = true
 button_group = ExtResource("2_framc")
+icon = SubResource("PlaceholderTexture2D_bten3")
 alignment = 0
 
 [node name="TerrainNameInput" type="LineEdit" parent="."]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
-text = "bla"
+text = "<null>"
 placeholder_text = "Terrain name..."
 select_all_on_focus = true
 
 [node name="EditButton" type="Button" parent="."]
 layout_mode = 2
+tooltip_text = "Change Terrain Name"
 icon = ExtResource("2_6tddt")
 
 [node name="SaveButton" type="Button" parent="."]

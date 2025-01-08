@@ -2,11 +2,15 @@
 extends HBoxContainer
 class_name TerrainListEntry
 
+signal removed()
+
 var terrain_name_input : LineEdit
 var terrain_name_button : Button
 var edit_button : Button
 var save_button : Button
-var value : String
+var terrain_name : String
+var texture_resource : CompressedTexture2D
+
 
 
 func _enter_tree() -> void:
@@ -14,9 +18,12 @@ func _enter_tree() -> void:
 	edit_button = find_child("EditButton")
 	terrain_name_input = find_child("TerrainNameInput")
 	terrain_name_button = find_child("TerrainNameButton")
-	terrain_name_input.text = value
-	terrain_name_button.text = value
-
+	terrain_name_input.text = terrain_name
+	terrain_name_button.text = terrain_name
+	var img = texture_resource.get_image()
+	img.resize(90, int((float(img.get_height()) / float(img.get_width())) * 90.0))
+	terrain_name_button.icon = ImageTexture.create_from_image(img)
+	
 
 func _on_edit_button_pressed() -> void:
 	edit_button.hide()
@@ -28,10 +35,10 @@ func _on_edit_button_pressed() -> void:
 
 func save_new_terrain_name() -> void:
 	if terrain_name_input.text.length() > 0:
-		value = terrain_name_input.text
+		terrain_name = terrain_name_input.text
 
-	terrain_name_button.text = value
-	terrain_name_input.text = value
+	terrain_name_button.text = terrain_name
+	terrain_name_input.text = terrain_name
 	terrain_name_button.show()
 	terrain_name_input.hide()
 	edit_button.show()
@@ -39,6 +46,7 @@ func save_new_terrain_name() -> void:
 
 
 func _on_remove_button_pressed() -> void:
+	removed.emit()
 	queue_free()
 
 
