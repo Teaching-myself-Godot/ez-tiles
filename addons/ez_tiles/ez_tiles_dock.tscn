@@ -126,12 +126,12 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("6_3jtbs")
 
-[node name="OverlayTextureRect" type="TextureRect" parent="VBoxContainer2/PreviewScrollContainer/PreviewPanelContainer"]
+[node name="PreviewTextureRect" type="TextureRect" parent="VBoxContainer2/PreviewScrollContainer/PreviewPanelContainer"]
 texture_filter = 1
 layout_mode = 2
 expand_mode = 3
 
-[node name="PreviewTextureRect" type="TextureRect" parent="VBoxContainer2/PreviewScrollContainer/PreviewPanelContainer"]
+[node name="OverlayTextureRect" type="TextureRect" parent="VBoxContainer2/PreviewScrollContainer/PreviewPanelContainer"]
 texture_filter = 1
 layout_mode = 2
 expand_mode = 3
