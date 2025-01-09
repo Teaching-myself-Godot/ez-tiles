@@ -3,11 +3,13 @@ class_name EZTilesDock
 
 extends HBoxContainer
 
+enum LayerType {COLLIDES, NONE, NAVIGABLE}
 var num_regex := RegEx.new()
 var images_container : ImagesContainer
 var x_size_line_edit : LineEdit
 var y_size_line_edit : LineEdit
 var generate_template_button : Button
+var generate_tileset_button : Button
 var overlay_texture_rect : TextureRect
 var preview_texture_rect : TextureRect
 var guide_texture_rect : TextureRect
@@ -15,7 +17,7 @@ var reset_zoom_button : Button
 var resource_map : Dictionary = {}
 var zoom := 1.0
 var save_template_file_dialog : EditorFileDialog
-var hint_color := Color(255, 255, 255, 179)
+var hint_color := Color(0, 0, 0, 0.702)
 
 func _enter_tree() -> void:
 	num_regex.compile("^\\d+\\.?\\d*$")
@@ -23,6 +25,7 @@ func _enter_tree() -> void:
 	x_size_line_edit = find_child("XSizeLineEdit")
 	y_size_line_edit = find_child("YSizeLineEdit")
 	generate_template_button = find_child("GenerateTemplateButton")
+	generate_tileset_button = find_child("GenerateTileSetButton")
 	overlay_texture_rect = find_child("OverlayTextureRect")
 	preview_texture_rect = find_child("PreviewTextureRect")
 	guide_texture_rect = find_child("GuideTextureRect")
@@ -34,6 +37,7 @@ func _enter_tree() -> void:
 	save_template_file_dialog.file_mode = EditorFileDialog.FILE_MODE_SAVE_FILE
 	save_template_file_dialog.file_selected.connect(_on_save_template_file_selected)
 	EditorInterface.get_base_control().add_child(save_template_file_dialog)
+
 
 func _on_file_menu_load_files(files : PackedStringArray) -> void:
 	load_files(files)
@@ -59,6 +63,7 @@ func load_files(files : PackedStringArray):
 				y_size_line_edit.text = str(tile_size.y)
 				x_size_line_edit.editable = false
 				y_size_line_edit.editable = false
+				generate_tileset_button.disabled = false
 				handle_tilesize_update()
 
 			resource_map[im.get_rid()] = im
@@ -75,6 +80,7 @@ func _on_images_container_terrain_list_entry_removed(removed_resource_id: RID) -
 		y_size_line_edit.text = ""
 		x_size_line_edit.editable = true
 		y_size_line_edit.editable = true
+		generate_tileset_button.disabled = true
 		handle_tilesize_update()
 
 
@@ -169,3 +175,33 @@ func _on_save_template_file_selected(path : String) -> void:
 func _on_color_picker_button_color_changed(color: Color) -> void:
 	hint_color = color
 	_redraw_overlay_texture()
+
+
+func _on_generate_tile_set_button_pressed() -> void:
+	var raw_intel := images_container.gather_data()
+	var tile_set := TileSet.new()
+	var physics_layer_added := false
+	var navigation_layer_added := false
+	tile_set.add_terrain_set()
+	tile_set.set_terrain_set_mode(0, TileSet.TERRAIN_MODE_MATCH_SIDES)
+	tile_set.tile_size = Vector2i(int(x_size_line_edit.text), int(y_size_line_edit.text))
+	for i in range(raw_intel.size()):
+		tile_set.add_terrain(0, i)
+		tile_set.set_terrain_name(0, i, raw_intel[i]["terrain_name"])
+		if raw_intel[i]["layer_type"] == LayerType.COLLIDES and not physics_layer_added:
+			tile_set.add_physics_layer()
+			physics_layer_added = true
+		elif raw_intel[i]["layer_type"] == LayerType.NAVIGABLE and not navigation_layer_added:
+			tile_set.add_navigation_layer()
+		var atlas_source := TileSetAtlasSource.new()
+		atlas_source.texture = raw_intel[i]["texture_resource"]
+		atlas_source.texture_region_size = tile_set.tile_size
+		atlas_source.create_tile(Vector2i(0,0))
+		var lonely_tile = atlas_source.get_tile_data(Vector2i(0,0), 0)
+		lonely_tile.terrain_set = 0
+		lonely_tile.terrain = i
+		tile_set.add_source(atlas_source)
+
+
+	ResourceSaver.save(tile_set, "res://test%d.tres" % (randi() % 10000))
+	EditorInterface.get_resource_filesystem().scan()

@@ -9,12 +9,13 @@ signal terrain_list_entry_selected(resource_id : RID)
 var image_list : VBoxContainer
 var hint_label : Label
 var TerrainListEntry
+var terrain_name_regex := RegEx.new()
 
 func _enter_tree() -> void:
 	TerrainListEntry = preload("res://addons/ez_tiles/terrain_list_entry.tscn")
 	image_list = find_child("ImageList")
 	hint_label = find_child("HintLabel")	
-
+	terrain_name_regex.compile("^.*\\/([^\\.]+)\\..*$")
 
 func _can_drop_data(at_position : Vector2, data : Variant) -> bool:
 	if not typeof(data) == TYPE_DICTIONARY and "type" in data and data["type"] == "files":
@@ -36,9 +37,20 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 func add_file(img_resource : CompressedTexture2D):
 	hint_label.hide()
 	var new_entry : TerrainListEntry = TerrainListEntry.instantiate()
-	new_entry.terrain_name = img_resource.resource_path
+	var regex_result := terrain_name_regex.search(img_resource.resource_path).strings
+	if regex_result.size() < 2:
+		new_entry.terrain_name = img_resource.resource_path
+	else:
+		new_entry.terrain_name = regex_result[1].replace("_", " ")
 	new_entry.texture_resource = img_resource
 	image_list.add_child(new_entry)
 	image_list.show()
 	new_entry.removed.connect(func(): terrain_list_entry_removed.emit(img_resource.get_rid()))
 	new_entry.selected.connect(func(): terrain_list_entry_selected.emit(img_resource.get_rid()))
+
+
+func gather_data() -> Array:
+	var data := []
+	for entry : TerrainListEntry in image_list.get_children():
+		data.append(entry.gather_data())
+	return data

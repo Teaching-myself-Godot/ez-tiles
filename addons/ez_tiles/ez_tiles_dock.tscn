@@ -43,6 +43,11 @@ size_flags_horizontal = 0
 text = "Import Images"
 script = ExtResource("2_8dh4w")
 
+[node name="GenerateTileSetButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Generate Tile Set"
+
 [node name="ImagesContainer" parent="VBoxContainer" instance=ExtResource("3_vxumx")]
 layout_mode = 2
 
@@ -84,7 +89,7 @@ label_settings = SubResource("LabelSettings_2svd6")
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 icon = ExtResource("4_x5agd")
-color = Color(1, 1, 1, 0.701961)
+color = Color(0, 0, 0, 0.701961)
 
 [node name="GenerateTemplateButton" type="Button" parent="VBoxContainer2/HBoxContainer"]
 layout_mode = 2
@@ -145,6 +150,7 @@ expand_mode = 3
 
 [connection signal="load_files" from="VBoxContainer/HBoxContainer/LoadFilesButton" to="." method="_on_file_menu_load_files"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/LoadFilesButton" to="VBoxContainer/HBoxContainer/LoadFilesButton" method="_on_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/GenerateTileSetButton" to="." method="_on_generate_tile_set_button_pressed"]
 [connection signal="drop_files" from="VBoxContainer/ImagesContainer" to="." method="_on_images_container_drop_files"]
 [connection signal="terrain_list_entry_removed" from="VBoxContainer/ImagesContainer" to="." method="_on_images_container_terrain_list_entry_removed"]
 [connection signal="terrain_list_entry_selected" from="VBoxContainer/ImagesContainer" to="." method="_on_images_container_terrain_list_entry_selected"]
