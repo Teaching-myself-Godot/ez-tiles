@@ -1,11 +1,14 @@
-[gd_scene load_steps=12 format=3 uid="uid://ci7u5r1qc0aob"]
+[gd_scene load_steps=15 format=3 uid="uid://ci7u5r1qc0aob"]
 
 [ext_resource type="Script" path="res://addons/ez_tiles/ez_tiles_dock.gd" id="1_xlstp"]
 [ext_resource type="Script" path="res://addons/ez_tiles/load_files_button.gd" id="2_8dh4w"]
 [ext_resource type="PackedScene" uid="uid://1u5mrsioaaon" path="res://addons/ez_tiles/images_container.tscn" id="3_vxumx"]
+[ext_resource type="Texture2D" uid="uid://cxl4w251e8xgf" path="res://addons/ez_tiles/Save.svg" id="4_2smhm"]
 [ext_resource type="Texture2D" uid="uid://njliaygubc5c" path="res://addons/ez_tiles/ZoomLess.svg" id="4_k6fm5"]
+[ext_resource type="Texture2D" uid="uid://caun3agmbmgps" path="res://addons/ez_tiles/ColorPick.svg" id="4_x5agd"]
 [ext_resource type="Texture2D" uid="uid://bvwx6xu0hp7mv" path="res://addons/ez_tiles/ZoomMore.svg" id="5_0phj1"]
 [ext_resource type="Script" path="res://addons/ez_tiles/preview_panel_container.gd" id="6_3jtbs"]
+[ext_resource type="Texture2D" uid="uid://d4a0dorx8awbg" path="res://addons/ez_tiles/guide.png" id="9_umpsr"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2svd6"]
 font_color = Color(0.619608, 0.619608, 0.619608, 1)
@@ -70,10 +73,24 @@ placeholder_text = "y"
 clear_button_enabled = true
 select_all_on_focus = true
 
+[node name="HintColorLabel" type="Label" parent="VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "The tile size is determined automatically from the first image you import. As you can see in  the template below, EZ Tiles expects a 6 by 4 grid; the tiles do not have to be square."
+mouse_filter = 0
+text = "Hint color: "
+label_settings = SubResource("LabelSettings_2svd6")
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="VBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+icon = ExtResource("4_x5agd")
+color = Color(1, 1, 1, 0.701961)
+
 [node name="GenerateTemplateButton" type="Button" parent="VBoxContainer2/HBoxContainer"]
 layout_mode = 2
 disabled = true
-text = "Generate a .PNG template"
+text = "Save template"
+icon = ExtResource("4_2smhm")
 
 [node name="ZoomPreviewLabel" type="Label" parent="VBoxContainer2/HBoxContainer"]
 layout_mode = 2
@@ -110,11 +127,20 @@ size_flags_vertical = 3
 script = ExtResource("6_3jtbs")
 
 [node name="OverlayTextureRect" type="TextureRect" parent="VBoxContainer2/PreviewScrollContainer/PreviewPanelContainer"]
+texture_filter = 1
 layout_mode = 2
 expand_mode = 3
 
 [node name="PreviewTextureRect" type="TextureRect" parent="VBoxContainer2/PreviewScrollContainer/PreviewPanelContainer"]
+texture_filter = 1
 layout_mode = 2
+expand_mode = 3
+
+[node name="GuideTextureRect" type="TextureRect" parent="VBoxContainer2/PreviewScrollContainer/PreviewPanelContainer"]
+modulate = Color(1, 1, 1, 0.701961)
+texture_filter = 1
+layout_mode = 2
+texture = ExtResource("9_umpsr")
 expand_mode = 3
 
 [connection signal="load_files" from="VBoxContainer/HBoxContainer/LoadFilesButton" to="." method="_on_file_menu_load_files"]
@@ -124,6 +150,8 @@ expand_mode = 3
 [connection signal="terrain_list_entry_selected" from="VBoxContainer/ImagesContainer" to="." method="_on_images_container_terrain_list_entry_selected"]
 [connection signal="text_changed" from="VBoxContainer2/HBoxContainer/XSizeLineEdit" to="." method="_on_xy_size_line_edit_text_changed"]
 [connection signal="text_changed" from="VBoxContainer2/HBoxContainer/YSizeLineEdit" to="." method="_on_xy_size_line_edit_text_changed"]
+[connection signal="color_changed" from="VBoxContainer2/HBoxContainer/ColorPickerButton" to="." method="_on_color_picker_button_color_changed"]
+[connection signal="pressed" from="VBoxContainer2/HBoxContainer/GenerateTemplateButton" to="." method="_on_generate_template_button_pressed"]
 [connection signal="pressed" from="VBoxContainer2/HBoxContainer/ZoomOutButton" to="." method="_on_zoom_out_button_pressed"]
 [connection signal="pressed" from="VBoxContainer2/HBoxContainer/ResetZoomButton" to="." method="_on_reset_zoom_button_pressed"]
 [connection signal="pressed" from="VBoxContainer2/HBoxContainer/ZoomInButton" to="." method="_on_zoom_in_button_pressed"]

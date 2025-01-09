@@ -10,9 +10,12 @@ var y_size_line_edit : LineEdit
 var generate_template_button : Button
 var overlay_texture_rect : TextureRect
 var preview_texture_rect : TextureRect
+var guide_texture_rect : TextureRect
 var reset_zoom_button : Button
 var resource_map : Dictionary = {}
 var zoom := 1.0
+var save_template_file_dialog : EditorFileDialog
+var hint_color := Color(255, 255, 255, 179)
 
 func _enter_tree() -> void:
 	num_regex.compile("^\\d+\\.?\\d*$")
@@ -22,9 +25,15 @@ func _enter_tree() -> void:
 	generate_template_button = find_child("GenerateTemplateButton")
 	overlay_texture_rect = find_child("OverlayTextureRect")
 	preview_texture_rect = find_child("PreviewTextureRect")
+	guide_texture_rect = find_child("GuideTextureRect")
 	reset_zoom_button = find_child("ResetZoomButton")
 	preview_texture_rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	overlay_texture_rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	save_template_file_dialog = EditorFileDialog.new()
+	save_template_file_dialog.add_filter("*.png")
+	save_template_file_dialog.file_mode = EditorFileDialog.FILE_MODE_SAVE_FILE
+	save_template_file_dialog.file_selected.connect(_on_save_template_file_selected)
+	EditorInterface.get_base_control().add_child(save_template_file_dialog)
 
 func _on_file_menu_load_files(files : PackedStringArray) -> void:
 	load_files(files)
@@ -73,25 +82,30 @@ func _on_xy_size_line_edit_text_changed(_new_text: String) -> void:
 	handle_tilesize_update()
 
 
+func _redraw_overlay_texture() -> void:
+	var tile_size := Vector2i(int(x_size_line_edit.text), int(y_size_line_edit.text))
+	var new_template_overlay := Image.create_empty(tile_size.x * 6, tile_size.y * 4, false, Image.FORMAT_RGBA8)
+	for y in range(new_template_overlay.get_height()):
+		for x in range(new_template_overlay.get_width()):
+			if (
+				(x >= tile_size.x * 2 and y < tile_size.y * 3 and x < tile_size.x * 3) or 
+				(x < tile_size.x and y >= tile_size.y and y < tile_size.y * 3) or
+				(x >= tile_size.x * 3 and y >= tile_size.y * 3)
+			):
+				new_template_overlay.set_pixel(x, y, hint_color)
+	overlay_texture_rect.texture = ImageTexture.create_from_image(new_template_overlay)
+	guide_texture_rect.modulate = hint_color
+
 func handle_tilesize_update() -> void:
 	if  num_regex.search(x_size_line_edit.text) and num_regex.search(y_size_line_edit.text):
 		generate_template_button.disabled = false
-		var tile_size := Vector2i(int(x_size_line_edit.text), int(y_size_line_edit.text))
-		var new_template_overlay := Image.create_empty(tile_size.x * 6, tile_size.y * 4, false, Image.FORMAT_RGBA8)
-		for y in range(new_template_overlay.get_height()):
-			for x in range(new_template_overlay.get_width()):
-				if (
-					(x >= tile_size.x * 2 and y < tile_size.y * 3 and x < tile_size.x * 3) or 
-					(x < tile_size.x and y >= tile_size.y and y < tile_size.y * 3) or
-					(x >= tile_size.x * 3 and y >= tile_size.y * 3)
-				):
-					new_template_overlay.set_pixel(x, y, Color(1.0, 0.0, 0.0, 0.7))
-		overlay_texture_rect.texture = ImageTexture.create_from_image(new_template_overlay)
+		_redraw_overlay_texture()
 		resize_texture_rects(1)
 	else:
 		generate_template_button.disabled = true
 		preview_texture_rect.custom_minimum_size = Vector2.ZERO
 		overlay_texture_rect.custom_minimum_size = Vector2.ZERO
+		guide_texture_rect.custom_minimum_size = Vector2.ZERO
 		preview_texture_rect.texture = null
 
 
@@ -103,6 +117,7 @@ func resize_texture_rects(new_zoom : float):
 	)
 	preview_texture_rect.custom_minimum_size = new_size
 	overlay_texture_rect.custom_minimum_size = new_size
+	guide_texture_rect.custom_minimum_size = new_size
 	reset_zoom_button.text = str(zoom * 100) + "%"
 
 func _on_images_container_terrain_list_entry_selected(resource_id: RID) -> void:
@@ -129,3 +144,28 @@ func _on_zoom_in_button_pressed() -> void:
 	resize_texture_rects(zoom + 0.25)
 
 
+func _on_generate_template_button_pressed() -> void:
+	save_template_file_dialog.set_current_path(
+		"res://template_%dx%d.png" % [int(x_size_line_edit.text), int(y_size_line_edit.text)])
+	save_template_file_dialog.popup_file_dialog()
+
+
+func _on_save_template_file_selected(path : String) -> void:
+	var export_image := Image.create_empty(overlay_texture_rect.texture.get_size().x, overlay_texture_rect.texture.get_size().y, false, Image.FORMAT_RGBA8)
+	var overlay_image :=  overlay_texture_rect.texture.get_image()
+	var guide_image := guide_texture_rect.texture.get_image()
+	var tile_size := Vector2(float(x_size_line_edit.text), float(y_size_line_edit.text))
+	
+	for x in range(overlay_image.get_size().x):
+		for y in range(overlay_image.get_size().y):
+			if overlay_image.get_pixel(x, y).a > 0.0:
+				export_image.set_pixel(x, y, hint_color)
+			elif guide_image.get_pixel(int((x / tile_size.x) * 256), int((y / tile_size.y) * 256)).a > 0.0:
+				export_image.set_pixel(x, y, hint_color)
+	export_image.save_png(path)
+	EditorInterface.get_resource_filesystem().scan()
+
+
+func _on_color_picker_button_color_changed(color: Color) -> void:
+	hint_color = color
+	_redraw_overlay_texture()
