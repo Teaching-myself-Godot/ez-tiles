@@ -3,7 +3,9 @@ class_name EZTilesDock
 
 extends HBoxContainer
 
-enum LayerType {COLLIDES, NONE, NAVIGABLE}
+
+enum LayerType {COLLIDES, COLLISION_SLOPES, NONE}
+
 var num_regex := RegEx.new()
 var images_container : ImagesContainer
 var x_size_line_edit : LineEdit
@@ -181,27 +183,166 @@ func _on_generate_tile_set_button_pressed() -> void:
 	var raw_intel := images_container.gather_data()
 	var tile_set := TileSet.new()
 	var physics_layer_added := false
-	var navigation_layer_added := false
 	tile_set.add_terrain_set()
 	tile_set.set_terrain_set_mode(0, TileSet.TERRAIN_MODE_MATCH_SIDES)
 	tile_set.tile_size = Vector2i(int(x_size_line_edit.text), int(y_size_line_edit.text))
-	for i in range(raw_intel.size()):
-		tile_set.add_terrain(0, i)
-		tile_set.set_terrain_name(0, i, raw_intel[i]["terrain_name"])
-		if raw_intel[i]["layer_type"] == LayerType.COLLIDES and not physics_layer_added:
+
+	for terrain_id in range(raw_intel.size()):
+		tile_set.add_terrain(0, terrain_id)
+		tile_set.set_terrain_name(0, terrain_id, raw_intel[terrain_id]["terrain_name"])
+		if (raw_intel[terrain_id]["layer_type"] == LayerType.COLLIDES or raw_intel[terrain_id]["layer_type"] == LayerType.COLLISION_SLOPES) and not physics_layer_added:
 			tile_set.add_physics_layer()
 			physics_layer_added = true
-		elif raw_intel[i]["layer_type"] == LayerType.NAVIGABLE and not navigation_layer_added:
-			tile_set.add_navigation_layer()
+
+
+	for terrain_id in range(raw_intel.size()):
 		var atlas_source := TileSetAtlasSource.new()
-		atlas_source.texture = raw_intel[i]["texture_resource"]
+		atlas_source.texture = raw_intel[terrain_id]["texture_resource"]
 		atlas_source.texture_region_size = tile_set.tile_size
-		atlas_source.create_tile(Vector2i(0,0))
-		var lonely_tile = atlas_source.get_tile_data(Vector2i(0,0), 0)
-		lonely_tile.terrain_set = 0
-		lonely_tile.terrain = i
+		var poly_points := [
+			-tile_set.tile_size * 0.5,
+			Vector2(tile_set.tile_size.x, -tile_set.tile_size.y) * 0.5,
+			tile_set.tile_size * 0.5,
+			Vector2(-tile_set.tile_size.x, tile_set.tile_size.y) * 0.5
+		] if raw_intel[terrain_id]["layer_type"] != LayerType.NONE else []
+
+		var poly_point_TL := [
+			Vector2(tile_set.tile_size.x, -tile_set.tile_size.y) * 0.5,
+			tile_set.tile_size * 0.5,
+			Vector2(-tile_set.tile_size.x, tile_set.tile_size.y) * 0.5
+		] if raw_intel[terrain_id]["layer_type"] == LayerType.COLLISION_SLOPES else poly_points
+
+		var poly_point_TR := [
+			-tile_set.tile_size * 0.5,
+			Vector2(-tile_set.tile_size.x, tile_set.tile_size.y) * 0.5,
+			tile_set.tile_size * 0.5,
+		] if raw_intel[terrain_id]["layer_type"] == LayerType.COLLISION_SLOPES else poly_points
+
 		tile_set.add_source(atlas_source)
 
+		# row
+		create_tile(atlas_source, terrain_id, Vector2i(0,0), poly_points)
+		create_single_neighbour_tile(atlas_source, terrain_id, Vector2i(1,0), raw_intel.size(), TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, poly_points)
+		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(3,0), raw_intel.size(), [TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE], poly_point_TL)
+		create_triple_neighbour_tile(atlas_source, terrain_id, Vector2i(4,0), raw_intel.size(), [TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE, TileSet.CELL_NEIGHBOR_LEFT_SIDE], poly_points)
+		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(5,0), raw_intel.size(), [TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_LEFT_SIDE], poly_point_TR)
 
-	ResourceSaver.save(tile_set, "res://test%d.tres" % (randi() % 10000))
+		# row
+		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(1,1), raw_intel.size(), [TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_TOP_SIDE], poly_points)
+		create_triple_neighbour_tile(atlas_source, terrain_id, Vector2i(3,1), raw_intel.size(), [TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE, TileSet.CELL_NEIGHBOR_TOP_SIDE], poly_points)
+		create_all_sides_neighbour_tile(atlas_source, terrain_id, Vector2i(4,1), raw_intel.size(), poly_points)
+		create_triple_neighbour_tile(atlas_source, terrain_id, Vector2i(5,1), raw_intel.size(), [TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_LEFT_SIDE, TileSet.CELL_NEIGHBOR_TOP_SIDE], poly_points)
+
+		# row
+		create_single_neighbour_tile(atlas_source, terrain_id, Vector2i(1,2), raw_intel.size(), TileSet.CELL_NEIGHBOR_TOP_SIDE, poly_points)
+		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(3,2), raw_intel.size(), [TileSet.CELL_NEIGHBOR_TOP_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE], poly_points)
+		create_triple_neighbour_tile(atlas_source, terrain_id, Vector2i(4,2), raw_intel.size(), [TileSet.CELL_NEIGHBOR_TOP_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE, TileSet.CELL_NEIGHBOR_LEFT_SIDE], poly_points)
+		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(5,2), raw_intel.size(), [TileSet.CELL_NEIGHBOR_TOP_SIDE, TileSet.CELL_NEIGHBOR_LEFT_SIDE], poly_points)
+
+		# row
+		create_single_neighbour_tile(atlas_source, terrain_id, Vector2i(0,3), raw_intel.size(), TileSet.CELL_NEIGHBOR_RIGHT_SIDE, poly_points)
+		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(1,3), raw_intel.size(), [TileSet.CELL_NEIGHBOR_LEFT_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE], poly_points)
+		create_single_neighbour_tile(atlas_source, terrain_id, Vector2i(2,3), raw_intel.size(), TileSet.CELL_NEIGHBOR_LEFT_SIDE, poly_points)
+
+
+
+	ResourceSaver.save(tile_set, "res://sample_%d.tres" % (randi() % 10000))
 	EditorInterface.get_resource_filesystem().scan()
+
+
+func create_tile(atlas_source : TileSetAtlasSource, terrain_id : int, at_pos : Vector2i, collision_polygon_points : Array) -> TileData:
+	atlas_source.create_tile(at_pos)
+	var new_tile := atlas_source.get_tile_data(at_pos, 0)
+	new_tile.terrain_set = 0
+	new_tile.terrain = terrain_id
+	if not collision_polygon_points.is_empty():
+		new_tile.add_collision_polygon(0)
+		new_tile.set_collision_polygon_points(0, 0, PackedVector2Array(collision_polygon_points))
+	return new_tile
+
+
+func create_single_neighbour_tile(atlas_source : TileSetAtlasSource, terrain_id : int, at_pos : Vector2i, num_terrains : int, neighbour : int, collision_polygon_points : Array) -> void:
+	var new_tile := create_tile(atlas_source, terrain_id, at_pos, collision_polygon_points)
+	new_tile.set_terrain_peering_bit(neighbour, terrain_id)
+
+
+func create_dual_neighbour_tile(atlas_source : TileSetAtlasSource, terrain_id : int, at_pos : Vector2i, num_terrains : int, neighbours : Array[int], collision_polygon_points : Array) -> void:
+	var new_tile := create_tile(atlas_source, terrain_id, at_pos, collision_polygon_points)
+	new_tile.set_terrain_peering_bit(neighbours[0], terrain_id)
+	new_tile.set_terrain_peering_bit(neighbours[1], terrain_id)
+
+
+func create_triple_neighbour_tile(atlas_source : TileSetAtlasSource, terrain_id : int, at_pos : Vector2i, num_terrains : int, neighbours : Array[int], collision_polygon_points : Array) -> void:
+	var new_tile := create_tile(atlas_source, terrain_id, at_pos, collision_polygon_points)
+	new_tile.set_terrain_peering_bit(neighbours[0], terrain_id)
+	new_tile.set_terrain_peering_bit(neighbours[1], terrain_id)
+	new_tile.set_terrain_peering_bit(neighbours[2], terrain_id)
+
+
+func create_all_sides_neighbour_tile(atlas_source : TileSetAtlasSource, terrain_id : int, at_pos : Vector2i, num_terrains : int, collision_polygon_points : Array):
+	var new_tile := create_tile(atlas_source, terrain_id, at_pos, collision_polygon_points)
+	new_tile.set_terrain_peering_bit(TileSet.CELL_NEIGHBOR_RIGHT_SIDE, terrain_id)
+	new_tile.set_terrain_peering_bit(TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, terrain_id)
+	new_tile.set_terrain_peering_bit(TileSet.CELL_NEIGHBOR_LEFT_SIDE, terrain_id)
+	new_tile.set_terrain_peering_bit(TileSet.CELL_NEIGHBOR_TOP_SIDE, terrain_id)
+
+#func create_alternative_tiles(atlas_source : TileSetAtlasSource, terrain_id : int, at_pos : Vector2i, num_terrains : int, neighbours : Array[int]) -> void:
+	#print("creating alternative tiles for terrain %d" % terrain_id)
+	#
+	#for alternative_tile_id in range(num_terrains * num_terrains * neighbours.size()):
+		#for n in neighbours:
+			#
+			#print(str(at_pos.x) + ":" + str(at_pos.y) + "/" + str(alternative_tile_id) + "/terrains_peering_bit/" + _format_side(n) + " = " + str(alternative_tile_id % (n+1)))
+			#print(alternative_tile_id / neighbours.size())
+			#print((alternative_tile_id / neighbours.size()) % num_terrains)
+		#print("--")
+
+#func _format_side(side : int) -> String:
+	#match(side):
+		#TileSet.CELL_NEIGHBOR_RIGHT_SIDE:
+			#return "right_side"
+		#TileSet.CELL_NEIGHBOR_BOTTOM_SIDE:
+			#return "bottom_side"
+		#TileSet.CELL_NEIGHBOR_LEFT_SIDE:
+			#return "left_side"
+		#TileSet.CELL_NEIGHBOR_TOP_SIDE:
+			#return "top_side"
+	#return "?"
+		#var permutations_per_side = []
+		#for m in range(num_terrains):
+			#if n == 0 and m == 0:
+				#continue
+			#permutations_per_side.append([n,m])
+	#print(permutations_per_tile)
+	#print(permutations_per_tile)
+		#permutations[neighbour_peering_bit] = range(num_terrains)
+		#for n in range(num_terrains):
+			#for m in range(num_terrains):
+				#permutations[neighbour_peering_bit].append([n, m])
+	#print(permutations)
+	
+	#for peering_bit in permutations.keys():
+		#print("I want an alternative tile with peering bit %d to have: " % peering_bit)
+		#
+		#for other_terrain_ids in permutations[peering_bit]:
+			#print("--- pointing to these terrains: " + str(other_terrain_ids))
+		#var other_terrain_id : int = permutation[1]
+		#var alt_id := atlas_source.create_alternative_tile(at_pos)
+		#var alternative_tile := atlas_source.get_tile_data(at_pos, alt_id)
+		#alternative_tile.terrain_set = 0
+		#alternative_tile.terrain = terrain_id
+
+			#pass
+	
+			#c
+			#var alternative_tile := atlas_source.get_tile_data(at_pos, alt_id)
+			#alternative_tile.terrain_set = 0
+			#alternative_tile.terrain = terrain_id
+		#for other_terrain_id in range(num_terrains):
+			#if other_terrain_id == terrain_id:
+				#pass
+			#var alt_id := atlas_source.create_alternative_tile(at_pos)
+			#var alternative_tile := atlas_source.get_tile_data(at_pos, alt_id)
+			#alternative_tile.terrain_set = 0
+			#alternative_tile.terrain = terrain_id
+			#alternative_tile.set_terrain_peering_bit(neighbour, other_terrain_id)

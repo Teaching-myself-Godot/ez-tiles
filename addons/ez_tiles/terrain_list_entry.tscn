@@ -49,9 +49,9 @@ selected = 0
 allow_reselect = true
 item_count = 3
 popup/item_0/text = "Collides"
-popup/item_1/text = "No Collision"
+popup/item_1/text = "Collision Slopes"
 popup/item_1/id = 1
-popup/item_2/text = "Nagivable"
+popup/item_2/text = "No Collision"
 popup/item_2/id = 2
 
 [node name="RemoveButton" type="Button" parent="."]
