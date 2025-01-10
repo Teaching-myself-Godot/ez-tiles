@@ -25,6 +25,7 @@ var reset_zoom_button : Button
 var resource_map : Dictionary = {}
 var zoom := 1.0
 var save_template_file_dialog : EditorFileDialog
+var save_tile_set_file_dialog : EditorFileDialog
 var hint_color := Color(0, 0, 0, 0.702)
 
 func _enter_tree() -> void:
@@ -41,11 +42,15 @@ func _enter_tree() -> void:
 	preview_texture_rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	overlay_texture_rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	save_template_file_dialog = EditorFileDialog.new()
-	save_template_file_dialog.add_filter("*.png")
+	save_template_file_dialog.add_filter("*.png", "PNG image")
 	save_template_file_dialog.file_mode = EditorFileDialog.FILE_MODE_SAVE_FILE
 	save_template_file_dialog.file_selected.connect(_on_save_template_file_selected)
 	EditorInterface.get_base_control().add_child(save_template_file_dialog)
-
+	save_tile_set_file_dialog = EditorFileDialog.new()
+	save_tile_set_file_dialog.add_filter("*.tres,*.res", "Resource file")
+	save_tile_set_file_dialog.file_mode = EditorFileDialog.FILE_MODE_SAVE_FILE
+	save_tile_set_file_dialog.file_selected.connect(_on_save_tile_set_file_selected)
+	EditorInterface.get_base_control().add_child(save_tile_set_file_dialog)
 
 func _on_file_menu_load_files(files : PackedStringArray) -> void:
 	load_files(files)
@@ -186,6 +191,17 @@ func _on_color_picker_button_color_changed(color: Color) -> void:
 
 
 func _on_generate_tile_set_button_pressed() -> void:
+	save_tile_set_file_dialog.set_current_path("res://tile_set.tres")
+	save_tile_set_file_dialog.popup_file_dialog()
+
+
+func _on_save_tile_set_file_selected(path : String) -> void:
+	var tile_set := generate_tileset()
+	ResourceSaver.save(tile_set, path)
+	EditorInterface.get_resource_filesystem().scan()
+
+
+func generate_tileset() -> TileSet:
 	var raw_intel := images_container.gather_data()
 	var tile_set := TileSet.new()
 	var physics_layer_added := false
@@ -261,11 +277,7 @@ func _on_generate_tile_set_button_pressed() -> void:
 		create_single_neighbour_tile(atlas_source, terrain_id, Vector2i(0,3), raw_intel.size(), TileSet.CELL_NEIGHBOR_RIGHT_SIDE, poly_points)
 		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(1,3), raw_intel.size(), [TileSet.CELL_NEIGHBOR_LEFT_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE], poly_points)
 		create_single_neighbour_tile(atlas_source, terrain_id, Vector2i(2,3), raw_intel.size(), TileSet.CELL_NEIGHBOR_LEFT_SIDE, poly_points)
-
-
-
-	ResourceSaver.save(tile_set, "res://sample_%d.tres" % (randi() % 10000))
-	EditorInterface.get_resource_filesystem().scan()
+	return tile_set
 
 
 func create_tile(atlas_source : TileSetAtlasSource, terrain_id : int, at_pos : Vector2i, collision_polygon_points : Array) -> TileData:
