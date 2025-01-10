@@ -4,7 +4,13 @@ class_name EZTilesDock
 extends HBoxContainer
 
 
-enum LayerType {COLLIDES, COLLISION_SLOPES, NONE}
+enum CollisionType {
+	RECT,
+	TOP_SLOPES,
+	NONE,
+	ALL_SLOPES,
+	BOTTOM_SLOPES
+}
 
 var num_regex := RegEx.new()
 var images_container : ImagesContainer
@@ -190,7 +196,7 @@ func _on_generate_tile_set_button_pressed() -> void:
 	for terrain_id in range(raw_intel.size()):
 		tile_set.add_terrain(0, terrain_id)
 		tile_set.set_terrain_name(0, terrain_id, raw_intel[terrain_id]["terrain_name"])
-		if (raw_intel[terrain_id]["layer_type"] == LayerType.COLLIDES or raw_intel[terrain_id]["layer_type"] == LayerType.COLLISION_SLOPES) and not physics_layer_added:
+		if raw_intel[terrain_id]["layer_type"] != CollisionType.NONE and not physics_layer_added:
 			tile_set.add_physics_layer()
 			physics_layer_added = true
 
@@ -204,19 +210,31 @@ func _on_generate_tile_set_button_pressed() -> void:
 			Vector2(tile_set.tile_size.x, -tile_set.tile_size.y) * 0.5,
 			tile_set.tile_size * 0.5,
 			Vector2(-tile_set.tile_size.x, tile_set.tile_size.y) * 0.5
-		] if raw_intel[terrain_id]["layer_type"] != LayerType.NONE else []
+		] if raw_intel[terrain_id]["layer_type"] != CollisionType.NONE else []
 
 		var poly_point_TL := [
 			Vector2(tile_set.tile_size.x, -tile_set.tile_size.y) * 0.5,
 			tile_set.tile_size * 0.5,
 			Vector2(-tile_set.tile_size.x, tile_set.tile_size.y) * 0.5
-		] if raw_intel[terrain_id]["layer_type"] == LayerType.COLLISION_SLOPES else poly_points
+		] if raw_intel[terrain_id]["layer_type"] in [CollisionType.TOP_SLOPES, CollisionType.ALL_SLOPES] else poly_points
 
 		var poly_point_TR := [
 			-tile_set.tile_size * 0.5,
 			Vector2(-tile_set.tile_size.x, tile_set.tile_size.y) * 0.5,
 			tile_set.tile_size * 0.5,
-		] if raw_intel[terrain_id]["layer_type"] == LayerType.COLLISION_SLOPES else poly_points
+		] if raw_intel[terrain_id]["layer_type"] in [CollisionType.TOP_SLOPES, CollisionType.ALL_SLOPES] else poly_points
+
+		var poly_point_BL := [
+			-tile_set.tile_size * 0.5,
+			Vector2(tile_set.tile_size.x, -tile_set.tile_size.y) * 0.5,
+			tile_set.tile_size * 0.5
+		] if raw_intel[terrain_id]["layer_type"] in [CollisionType.BOTTOM_SLOPES, CollisionType.ALL_SLOPES] else poly_points
+
+		var poly_point_BR := [
+			-tile_set.tile_size * 0.5,
+			Vector2(tile_set.tile_size.x, -tile_set.tile_size.y) * 0.5,
+			Vector2(-tile_set.tile_size.x, tile_set.tile_size.y) * 0.5
+		] if raw_intel[terrain_id]["layer_type"] in [CollisionType.BOTTOM_SLOPES, CollisionType.ALL_SLOPES] else poly_points
 
 		tile_set.add_source(atlas_source)
 
@@ -235,9 +253,9 @@ func _on_generate_tile_set_button_pressed() -> void:
 
 		# row
 		create_single_neighbour_tile(atlas_source, terrain_id, Vector2i(1,2), raw_intel.size(), TileSet.CELL_NEIGHBOR_TOP_SIDE, poly_points)
-		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(3,2), raw_intel.size(), [TileSet.CELL_NEIGHBOR_TOP_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE], poly_points)
+		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(3,2), raw_intel.size(), [TileSet.CELL_NEIGHBOR_TOP_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE], poly_point_BL)
 		create_triple_neighbour_tile(atlas_source, terrain_id, Vector2i(4,2), raw_intel.size(), [TileSet.CELL_NEIGHBOR_TOP_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE, TileSet.CELL_NEIGHBOR_LEFT_SIDE], poly_points)
-		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(5,2), raw_intel.size(), [TileSet.CELL_NEIGHBOR_TOP_SIDE, TileSet.CELL_NEIGHBOR_LEFT_SIDE], poly_points)
+		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(5,2), raw_intel.size(), [TileSet.CELL_NEIGHBOR_TOP_SIDE, TileSet.CELL_NEIGHBOR_LEFT_SIDE], poly_point_BR)
 
 		# row
 		create_single_neighbour_tile(atlas_source, terrain_id, Vector2i(0,3), raw_intel.size(), TileSet.CELL_NEIGHBOR_RIGHT_SIDE, poly_points)

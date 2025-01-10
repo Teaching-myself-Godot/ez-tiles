@@ -43,16 +43,21 @@ visible = false
 layout_mode = 2
 icon = ExtResource("4_6vr40")
 
-[node name="LayerButton" type="OptionButton" parent="."]
+[node name="CollisionTypeButton" type="OptionButton" parent="."]
 layout_mode = 2
+tooltip_text = "Collision mode"
 selected = 0
 allow_reselect = true
-item_count = 3
-popup/item_0/text = "Collides"
-popup/item_1/text = "Collision Slopes"
-popup/item_1/id = 1
-popup/item_2/text = "No Collision"
-popup/item_2/id = 2
+item_count = 5
+popup/item_0/text = "Rectangles"
+popup/item_1/text = "Sloped All Corners"
+popup/item_1/id = 3
+popup/item_2/text = "Sloped Top Corners"
+popup/item_2/id = 1
+popup/item_3/text = "Sloped Bottom Corners"
+popup/item_3/id = 4
+popup/item_4/text = "No Collision"
+popup/item_4/id = 2
 
 [node name="RemoveButton" type="Button" parent="."]
 layout_mode = 2

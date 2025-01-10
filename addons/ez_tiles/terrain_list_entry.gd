@@ -11,20 +11,21 @@ var edit_button : Button
 var save_button : Button
 var terrain_name : String
 var texture_resource : CompressedTexture2D
-var layer_button : OptionButton
+var collision_type_button : OptionButton
 
 func _enter_tree() -> void:
 	save_button = find_child("SaveButton")
 	edit_button = find_child("EditButton")
-	layer_button = find_child("LayerButton")
+	collision_type_button = find_child("CollisionTypeButton")
 	terrain_name_input = find_child("TerrainNameInput")
 	terrain_name_button = find_child("TerrainNameButton")
 	terrain_name_input.text = terrain_name
 	terrain_name_button.text = terrain_name
-	var img = texture_resource.get_image()
-	img.resize(90, int((float(img.get_height()) / float(img.get_width())) * 90.0))
-	terrain_name_button.icon = ImageTexture.create_from_image(img)
-	terrain_name_button.button_pressed = true
+	if is_instance_valid(texture_resource):
+		var img = texture_resource.get_image()
+		img.resize(90, int((float(img.get_height()) / float(img.get_width())) * 90.0))
+		terrain_name_button.icon = ImageTexture.create_from_image(img)
+		terrain_name_button.button_pressed = true
 
 
 func _on_edit_button_pressed() -> void:
@@ -64,5 +65,5 @@ func gather_data() -> Dictionary:
 	return {
 		"texture_resource": texture_resource,
 		"terrain_name": terrain_name,
-		"layer_type": layer_button.selected
+		"layer_type": collision_type_button.get_selected_id()
 	}
