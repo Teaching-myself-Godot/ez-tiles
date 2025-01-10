@@ -216,11 +216,10 @@ func generate_tileset() -> TileSet:
 			tile_set.add_physics_layer()
 			physics_layer_added = true
 
-
 	for terrain_id in range(raw_intel.size()):
 		var atlas_source := TileSetAtlasSource.new()
-		atlas_source.texture = raw_intel[terrain_id]["texture_resource"]
 		atlas_source.texture_region_size = tile_set.tile_size
+		atlas_source.texture = raw_intel[terrain_id]["texture_resource"]
 		var poly_points := [
 			-tile_set.tile_size * 0.5,
 			Vector2(tile_set.tile_size.x, -tile_set.tile_size.y) * 0.5,

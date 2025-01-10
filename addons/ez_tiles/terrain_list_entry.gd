@@ -22,9 +22,9 @@ func _enter_tree() -> void:
 	terrain_name_input.text = terrain_name
 	terrain_name_button.text = terrain_name
 	if is_instance_valid(texture_resource):
-		var img = texture_resource.get_image()
+		var img = Image.create_from_data(texture_resource.get_width(), texture_resource.get_height(), true, texture_resource.get_image().get_format(), texture_resource.get_image().get_data())
 		img.resize(90, int((float(img.get_height()) / float(img.get_width())) * 90.0))
-		terrain_name_button.icon = ImageTexture.create_from_image(img)
+		terrain_name_button.icon = texture_resource
 		terrain_name_button.button_pressed = true
 
 
