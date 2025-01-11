@@ -156,6 +156,7 @@ expand_mode = 3
 [connection signal="load_files" from="VBoxContainer/HBoxContainer/LoadFilesButton" to="." method="_on_file_menu_load_files"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/LoadFilesButton" to="VBoxContainer/HBoxContainer/LoadFilesButton" method="_on_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/GenerateTileSetButton" to="." method="_on_generate_tile_set_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/GenerateTileMapLayerButton" to="." method="_on_generate_tile_map_layer_button_pressed"]
 [connection signal="drop_files" from="VBoxContainer/ImagesContainer" to="." method="_on_images_container_drop_files"]
 [connection signal="terrain_list_entry_removed" from="VBoxContainer/ImagesContainer" to="." method="_on_images_container_terrain_list_entry_removed"]
 [connection signal="terrain_list_entry_selected" from="VBoxContainer/ImagesContainer" to="." method="_on_images_container_terrain_list_entry_selected"]

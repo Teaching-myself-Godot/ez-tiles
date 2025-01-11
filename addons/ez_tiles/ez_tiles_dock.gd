@@ -3,6 +3,7 @@ class_name EZTilesDock
 
 extends HBoxContainer
 
+signal request_tile_map_layer(tile_set : TileSet)
 
 enum CollisionType {
 	RECT,
@@ -140,6 +141,7 @@ func _redraw_overlay_texture() -> void:
 	overlay_texture_rect.texture = ImageTexture.create_from_image(new_template_overlay)
 	guide_texture_rect.modulate = hint_color
 
+
 func handle_tilesize_update() -> void:
 	if  num_regex.search(x_size_line_edit.text) and num_regex.search(y_size_line_edit.text):
 		generate_template_button.disabled = false
@@ -225,6 +227,11 @@ func _on_save_tile_set_file_selected(path : String) -> void:
 	var tile_set := generate_tileset()
 	ResourceSaver.save(tile_set, path)
 	EditorInterface.get_resource_filesystem().scan()
+
+
+func _on_generate_tile_map_layer_button_pressed() -> void:
+	var tile_set := generate_tileset()
+	request_tile_map_layer.emit(tile_set)
 
 
 func generate_tileset() -> TileSet:
