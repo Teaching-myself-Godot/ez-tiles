@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://dk3duerdgfgah"]
+[gd_scene load_steps=8 format=3 uid="uid://dk3duerdgfgah"]
 
 [ext_resource type="Script" path="res://addons/ez_tiles/terrain_list_entry.gd" id="1_237eo"]
 [ext_resource type="Texture2D" uid="uid://smg4iofcineo" path="res://addons/ez_tiles/Remove.svg" id="1_e3wgq"]
 [ext_resource type="Texture2D" uid="uid://dwo07c1odx7ob" path="res://addons/ez_tiles/Edit.svg" id="2_6tddt"]
 [ext_resource type="ButtonGroup" uid="uid://b5bf2ekbf2vrc" path="res://addons/ez_tiles/select_terrain_button_group.tres" id="2_framc"]
 [ext_resource type="Texture2D" uid="uid://cxl4w251e8xgf" path="res://addons/ez_tiles/Save.svg" id="4_6vr40"]
+[ext_resource type="Texture2D" uid="uid://cfrwoh80yb3se" path="res://addons/ez_tiles/exclamation-warning-triangle-icon.svg" id="6_yi7ck"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_n7skr"]
 size = Vector2(384, 256)
@@ -16,6 +17,15 @@ offset_bottom = 31.0
 grow_horizontal = 2
 size_flags_horizontal = 3
 script = ExtResource("1_237eo")
+
+[node name="WarningIcon" type="TextureRect" parent="."]
+visible = false
+custom_minimum_size = Vector2(32, 16)
+layout_mode = 2
+tooltip_text = "Unexpected image size: 
+Expected it to be: "
+texture = ExtResource("6_yi7ck")
+stretch_mode = 3
 
 [node name="IconTextureRect" type="TextureRect" parent="."]
 layout_mode = 2

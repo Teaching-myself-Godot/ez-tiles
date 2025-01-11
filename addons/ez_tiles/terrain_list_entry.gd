@@ -13,6 +13,8 @@ var terrain_name : String
 var texture_resource : CompressedTexture2D
 var collision_type_button : OptionButton
 var icon : TextureRect
+var warning_icon : TextureRect
+var warning_message : String = ""
 
 func _enter_tree() -> void:
 	save_button = find_child("SaveButton")
@@ -21,12 +23,15 @@ func _enter_tree() -> void:
 	terrain_name_input = find_child("TerrainNameInput")
 	terrain_name_button = find_child("TerrainNameButton")
 	icon = find_child("IconTextureRect")
+	warning_icon = find_child("WarningIcon")
 	terrain_name_input.text = terrain_name
 	terrain_name_button.text = terrain_name
 	if is_instance_valid(texture_resource):
 		icon.texture = texture_resource
 		terrain_name_button.button_pressed = true
-
+	if warning_message.length() > 0:
+		warning_icon.tooltip_text = warning_message
+		warning_icon.show()
 
 func _on_edit_button_pressed() -> void:
 	edit_button.hide()
@@ -76,3 +81,5 @@ func _on_icon_texture_rect_gui_input(event: InputEvent) -> void:
 			terrain_name_button.button_pressed = true
 	if event is InputEventMouseMotion:
 		terrain_name_button.grab_focus()
+
+

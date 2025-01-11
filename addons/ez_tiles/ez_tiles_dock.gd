@@ -64,14 +64,35 @@ func _on_images_container_drop_files(files: PackedStringArray) -> void:
 
 func _on_preview_panel_container_drop_files(files: PackedStringArray) -> void:
 	load_files(files)
-	
+
+
+func validate_size(actual : Vector2) -> String:
+	var tile_size = Vector2i(
+		int(x_size_line_edit.text),
+		int(y_size_line_edit.text)
+	)
+	if not tile_size:
+		return ""
+
+	var expected = Vector2i(
+		int(x_size_line_edit.text) * 6, 
+		int(y_size_line_edit.text) * 4
+	)
+	if expected.x != actual.x or expected.y != actual.y:
+		return """
+			Invalid size detected for %dx%d tiles!
+			Expected size = %dx%d pixels
+			Actual size = %dx%d pixels
+		""" % [tile_size.x, tile_size.y, expected.x, expected.y, actual.x, actual.y]
+	return ""
+
 
 func load_files(files : PackedStringArray):
 	for file in files:
 		var im := ResourceLoader.load(file, "Image")
 		if im is CompressedTexture2D and not resource_map.has(im.get_rid()):
-			images_container.add_file(im)
 			var detected_size = im.get_size()
+			images_container.add_file(im, validate_size(detected_size))
 			if resource_map.is_empty():
 				var tile_size := Vector2(float(detected_size.x) / 6.0, float(detected_size.y) / 4.0)
 				x_size_line_edit.text = str(tile_size.x)
@@ -142,6 +163,7 @@ func resize_texture_rects(new_zoom : float):
 	overlay_texture_rect.custom_minimum_size = new_size
 	guide_texture_rect.custom_minimum_size = new_size
 	reset_zoom_button.text = str(zoom * 100) + "%"
+
 
 func _on_images_container_terrain_list_entry_selected(resource_id: RID) -> void:
 	preview_texture_rect.texture = resource_map[resource_id]
