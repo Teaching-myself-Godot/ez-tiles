@@ -18,6 +18,7 @@ var x_size_line_edit : LineEdit
 var y_size_line_edit : LineEdit
 var generate_template_button : Button
 var generate_tileset_button : Button
+var generate_tilemaplayer_button : Button
 var overlay_texture_rect : TextureRect
 var preview_texture_rect : TextureRect
 var guide_texture_rect : TextureRect
@@ -35,6 +36,7 @@ func _enter_tree() -> void:
 	y_size_line_edit = find_child("YSizeLineEdit")
 	generate_template_button = find_child("GenerateTemplateButton")
 	generate_tileset_button = find_child("GenerateTileSetButton")
+	generate_tilemaplayer_button = find_child("GenerateTileMapLayerButton")
 	overlay_texture_rect = find_child("OverlayTextureRect")
 	preview_texture_rect = find_child("PreviewTextureRect")
 	guide_texture_rect = find_child("GuideTextureRect")
@@ -77,6 +79,7 @@ func load_files(files : PackedStringArray):
 				x_size_line_edit.editable = false
 				y_size_line_edit.editable = false
 				generate_tileset_button.disabled = false
+				generate_tilemaplayer_button.disabled = false
 				handle_tilesize_update()
 
 			resource_map[im.get_rid()] = im
@@ -94,6 +97,7 @@ func _on_images_container_terrain_list_entry_removed(removed_resource_id: RID) -
 		x_size_line_edit.editable = true
 		y_size_line_edit.editable = true
 		generate_tileset_button.disabled = true
+		generate_tilemaplayer_button.disabled = true
 		handle_tilesize_update()
 
 
@@ -314,64 +318,3 @@ func create_all_sides_neighbour_tile(atlas_source : TileSetAtlasSource, terrain_
 	new_tile.set_terrain_peering_bit(TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, terrain_id)
 	new_tile.set_terrain_peering_bit(TileSet.CELL_NEIGHBOR_LEFT_SIDE, terrain_id)
 	new_tile.set_terrain_peering_bit(TileSet.CELL_NEIGHBOR_TOP_SIDE, terrain_id)
-
-#func create_alternative_tiles(atlas_source : TileSetAtlasSource, terrain_id : int, at_pos : Vector2i, num_terrains : int, neighbours : Array[int]) -> void:
-	#print("creating alternative tiles for terrain %d" % terrain_id)
-	#
-	#for alternative_tile_id in range(num_terrains * num_terrains * neighbours.size()):
-		#for n in neighbours:
-			#
-			#print(str(at_pos.x) + ":" + str(at_pos.y) + "/" + str(alternative_tile_id) + "/terrains_peering_bit/" + _format_side(n) + " = " + str(alternative_tile_id % (n+1)))
-			#print(alternative_tile_id / neighbours.size())
-			#print((alternative_tile_id / neighbours.size()) % num_terrains)
-		#print("--")
-
-#func _format_side(side : int) -> String:
-	#match(side):
-		#TileSet.CELL_NEIGHBOR_RIGHT_SIDE:
-			#return "right_side"
-		#TileSet.CELL_NEIGHBOR_BOTTOM_SIDE:
-			#return "bottom_side"
-		#TileSet.CELL_NEIGHBOR_LEFT_SIDE:
-			#return "left_side"
-		#TileSet.CELL_NEIGHBOR_TOP_SIDE:
-			#return "top_side"
-	#return "?"
-		#var permutations_per_side = []
-		#for m in range(num_terrains):
-			#if n == 0 and m == 0:
-				#continue
-			#permutations_per_side.append([n,m])
-	#print(permutations_per_tile)
-	#print(permutations_per_tile)
-		#permutations[neighbour_peering_bit] = range(num_terrains)
-		#for n in range(num_terrains):
-			#for m in range(num_terrains):
-				#permutations[neighbour_peering_bit].append([n, m])
-	#print(permutations)
-	
-	#for peering_bit in permutations.keys():
-		#print("I want an alternative tile with peering bit %d to have: " % peering_bit)
-		#
-		#for other_terrain_ids in permutations[peering_bit]:
-			#print("--- pointing to these terrains: " + str(other_terrain_ids))
-		#var other_terrain_id : int = permutation[1]
-		#var alt_id := atlas_source.create_alternative_tile(at_pos)
-		#var alternative_tile := atlas_source.get_tile_data(at_pos, alt_id)
-		#alternative_tile.terrain_set = 0
-		#alternative_tile.terrain = terrain_id
-
-			#pass
-	
-			#c
-			#var alternative_tile := atlas_source.get_tile_data(at_pos, alt_id)
-			#alternative_tile.terrain_set = 0
-			#alternative_tile.terrain = terrain_id
-		#for other_terrain_id in range(num_terrains):
-			#if other_terrain_id == terrain_id:
-				#pass
-			#var alt_id := atlas_source.create_alternative_tile(at_pos)
-			#var alternative_tile := atlas_source.get_tile_data(at_pos, alt_id)
-			#alternative_tile.terrain_set = 0
-			#alternative_tile.terrain = terrain_id
-			#alternative_tile.set_terrain_peering_bit(neighbour, other_terrain_id)

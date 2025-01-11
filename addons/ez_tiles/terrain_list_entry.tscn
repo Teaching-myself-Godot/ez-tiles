@@ -6,8 +6,8 @@
 [ext_resource type="ButtonGroup" uid="uid://b5bf2ekbf2vrc" path="res://addons/ez_tiles/select_terrain_button_group.tres" id="2_framc"]
 [ext_resource type="Texture2D" uid="uid://cxl4w251e8xgf" path="res://addons/ez_tiles/Save.svg" id="4_6vr40"]
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_bten3"]
-size = Vector2(90, 60)
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_n7skr"]
+size = Vector2(384, 256)
 
 [node name="TerrainListEntry" type="HBoxContainer"]
 anchors_preset = 10
@@ -17,13 +17,21 @@ grow_horizontal = 2
 size_flags_horizontal = 3
 script = ExtResource("1_237eo")
 
+[node name="IconTextureRect" type="TextureRect" parent="."]
+layout_mode = 2
+size_flags_horizontal = 0
+mouse_filter = 0
+mouse_default_cursor_shape = 2
+texture = SubResource("PlaceholderTexture2D_n7skr")
+expand_mode = 3
+stretch_mode = 5
+
 [node name="TerrainNameButton" type="Button" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
 toggle_mode = true
 button_group = ExtResource("2_framc")
-icon = SubResource("PlaceholderTexture2D_bten3")
 alignment = 0
 
 [node name="TerrainNameInput" type="LineEdit" parent="."]
@@ -45,8 +53,10 @@ icon = ExtResource("4_6vr40")
 
 [node name="CollisionTypeButton" type="OptionButton" parent="."]
 layout_mode = 2
+size_flags_horizontal = 0
 tooltip_text = "Collision mode"
 selected = 0
+fit_to_longest_item = false
 allow_reselect = true
 item_count = 5
 popup/item_0/text = "Rectangles"
@@ -63,6 +73,7 @@ popup/item_4/id = 2
 layout_mode = 2
 icon = ExtResource("1_e3wgq")
 
+[connection signal="gui_input" from="IconTextureRect" to="." method="_on_icon_texture_rect_gui_input"]
 [connection signal="pressed" from="TerrainNameButton" to="." method="_on_terrain_name_button_pressed"]
 [connection signal="focus_exited" from="TerrainNameInput" to="." method="save_new_terrain_name"]
 [connection signal="text_submitted" from="TerrainNameInput" to="." method="_on_terrain_name_input_text_submitted"]

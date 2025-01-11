@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b66j5q5i4ltpn"
-path="res://.godot/imported/spikes.png-12a1a3e04133224a9afa8b62b6623962.ctex"
+uid="uid://82nd1ajjv633"
+path="res://.godot/imported/plains_1.svg-5e57b110d812f8b73a3f571ca1f55b4c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/ez_tiles/examples/spikes.png"
-dest_files=["res://.godot/imported/spikes.png-12a1a3e04133224a9afa8b62b6623962.ctex"]
+source_file="res://addons/ez_tiles/examples/64x64/plains_1.svg"
+dest_files=["res://.godot/imported/plains_1.svg-5e57b110d812f8b73a3f571ca1f55b4c.ctex"]
 
 [params]
 
@@ -32,3 +32,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false

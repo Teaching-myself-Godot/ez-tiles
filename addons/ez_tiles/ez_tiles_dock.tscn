@@ -46,7 +46,12 @@ script = ExtResource("2_8dh4w")
 [node name="GenerateTileSetButton" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
 disabled = true
-text = "Generate Tile Set"
+text = "Save TileSet"
+
+[node name="GenerateTileMapLayerButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Create TileMapLayer"
 
 [node name="ImagesContainer" parent="VBoxContainer" instance=ExtResource("3_vxumx")]
 layout_mode = 2

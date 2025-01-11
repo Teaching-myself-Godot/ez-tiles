@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dudbsnchdio2u"
-path="res://.godot/imported/sand.png-f652dc6bc6e94eaf71d07c696bfcef31.ctex"
+uid="uid://qylofri7a3j"
+path="res://.godot/imported/cactus.png-fb8308c83545f74973ca4d97df5fc871.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/ez_tiles/examples/sand.png"
-dest_files=["res://.godot/imported/sand.png-f652dc6bc6e94eaf71d07c696bfcef31.ctex"]
+source_file="res://addons/ez_tiles/examples/15x15/cactus.png"
+dest_files=["res://.godot/imported/cactus.png-fb8308c83545f74973ca4d97df5fc871.ctex"]
 
 [params]
 

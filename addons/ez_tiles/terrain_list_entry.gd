@@ -12,6 +12,7 @@ var save_button : Button
 var terrain_name : String
 var texture_resource : CompressedTexture2D
 var collision_type_button : OptionButton
+var icon : TextureRect
 
 func _enter_tree() -> void:
 	save_button = find_child("SaveButton")
@@ -19,12 +20,11 @@ func _enter_tree() -> void:
 	collision_type_button = find_child("CollisionTypeButton")
 	terrain_name_input = find_child("TerrainNameInput")
 	terrain_name_button = find_child("TerrainNameButton")
+	icon = find_child("IconTextureRect")
 	terrain_name_input.text = terrain_name
 	terrain_name_button.text = terrain_name
 	if is_instance_valid(texture_resource):
-		var img = Image.create_from_data(texture_resource.get_width(), texture_resource.get_height(), true, texture_resource.get_image().get_format(), texture_resource.get_image().get_data())
-		img.resize(90, int((float(img.get_height()) / float(img.get_width())) * 90.0))
-		terrain_name_button.icon = texture_resource
+		icon.texture = texture_resource
 		terrain_name_button.button_pressed = true
 
 
@@ -67,3 +67,12 @@ func gather_data() -> Dictionary:
 		"terrain_name": terrain_name,
 		"layer_type": collision_type_button.get_selected_id()
 	}
+
+
+func _on_icon_texture_rect_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			selected.emit()
+			terrain_name_button.button_pressed = true
+	if event is InputEventMouseMotion:
+		terrain_name_button.grab_focus()
