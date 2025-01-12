@@ -1,0 +1,54 @@
+@tool
+extends EditorPlugin
+var selection : EditorSelection
+var dock : EZTilesDrawDock
+var select_2D_viewport_button : Button
+
+func _enter_tree() -> void:
+	dock = preload("res://addons/ez_tiles_draw/ez_tiles_draw_dock.tscn").instantiate()
+	selection = EditorInterface.get_selection()
+	selection.selection_changed.connect(handle_selected_node)
+	add_control_to_bottom_panel(dock as Control, "EZ Tiles Draw")
+	handle_selected_node()
+	select_2D_viewport_button = EditorInterface.get_base_control().find_child("2D", true, false)
+	_dump_interface(EditorInterface.get_base_control(), 4)
+	
+func _dump_interface(n : Node, max_d : int = 2, d : int = 0) -> void:
+	if n.name.contains("Dialog") or n.name.contains("Popup"):
+		return
+	print(n.name.lpad(d + n.name.length(), "-") + " (%d)" % [n.get_child_count()])
+	for c in n.get_children():
+		if d < max_d:
+			_dump_interface(c, max_d, d + 1)
+
+
+func _process(delta: float) -> void:
+	if is_instance_valid(dock.under_edit) and dock.visible and select_2D_viewport_button.button_pressed:
+		var viewport_2d := EditorInterface.get_editor_viewport_2d()
+		var g_mouse_pos = (
+			EditorInterface.get_base_control().get_global_mouse_position()
+			- viewport_2d.get_parent().global_position
+		)
+		if viewport_2d.get_visible_rect().has_point(g_mouse_pos):
+			var mouse_pos := viewport_2d.get_mouse_position()
+			var cursor_pos_on_tilemaplayer := mouse_pos - dock.under_edit.global_position
+			#print(cursor_pos_on_tilemaplayer)
+			print(Vector2i(
+				cursor_pos_on_tilemaplayer / Vector2(dock.under_edit.tile_set.tile_size)
+			))
+		
+		#print("---")
+
+func handle_selected_node():
+	var selected_node : Node = selection.get_selected_nodes().pop_back()
+	if is_instance_valid(selected_node) and selected_node is TileMapLayer:
+		dock.activate(selected_node)
+		if selected_node.has_meta("_is_ez_tiles_generated"):
+			await get_tree().create_timer(0.5).timeout
+			make_bottom_panel_item_visible(dock)
+	else:
+		dock.deactivate()
+
+func _exit_tree() -> void:
+	remove_control_from_bottom_panel(dock)
+	dock.free()
