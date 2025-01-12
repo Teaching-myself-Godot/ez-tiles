@@ -38,8 +38,9 @@ func _get_select_mode_button() -> Button:
 
 func _tile_pos_from_mouse_pos() -> Vector2i:
 	var mouse_pos := EditorInterface.get_editor_viewport_2d().get_mouse_position()
-	var cursor_pos_on_tilemaplayer := mouse_pos - dock.under_edit.global_position
-	var tile_pos := Vector2i(cursor_pos_on_tilemaplayer / Vector2(dock.under_edit.tile_set.tile_size))
+	var cursor_pos_on_tilemaplayer := (mouse_pos - dock.under_edit.global_position).rotated(-dock.under_edit.global_rotation)
+
+	var tile_pos := Vector2i(cursor_pos_on_tilemaplayer / (Vector2(dock.under_edit.tile_set.tile_size) * dock.under_edit.global_scale))
 	if cursor_pos_on_tilemaplayer.x < 0:
 		tile_pos.x -= 1
 	if cursor_pos_on_tilemaplayer.y < 0:
@@ -64,12 +65,11 @@ func _input(_event) -> void:
 
 			if not dock.viewport_has_mouse:
 				dock.handle_mouse_entered()
-			if prev_tile_pos != tile_pos:
-				dock.handle_tile_pos_changed(tile_pos,
-						Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT),
-						Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT)
-				)
-				prev_tile_pos = tile_pos
+
+			dock.handle_drawing_input(tile_pos,
+					Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT),
+					Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT)
+			)
 		else:
 			if dock.viewport_has_mouse:
 				dock.handle_mouse_out()

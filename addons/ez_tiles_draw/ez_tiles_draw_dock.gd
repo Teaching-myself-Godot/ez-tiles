@@ -103,7 +103,7 @@ func _get_ez_atlas_coord(tile_pos : Vector2i) -> Vector2i:
 	return EZ_NEIGHBOUR_MAP[fmt]  if fmt in EZ_NEIGHBOUR_MAP else Vector2i.ZERO
 
 
-func handle_tile_pos_changed(tile_pos : Vector2i, lmb_pressed : bool, rmb_pressed) -> void:
+func handle_drawing_input(tile_pos : Vector2i, lmb_pressed : bool, rmb_pressed) -> void:
 	if is_instance_valid(under_edit):
 		_place_back_remembered_cells()
 		_place_cells_preview([tile_pos], 0)
