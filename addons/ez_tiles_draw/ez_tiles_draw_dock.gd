@@ -20,7 +20,6 @@ var current_terrain_id := 0
 var neighbour_mode := NeighbourMode.INCLUSIVE
 
 var rect_preview_container : GridContainer
-var rect_1x1_preview_container : GridContainer
 
 const VEC_TO_CELL_NEIGHBOUR:= {
 	Vector2i.LEFT: TileSet.CELL_NEIGHBOR_LEFT_SIDE,
@@ -56,7 +55,7 @@ func _enter_tree() -> void:
 	default_editor_check_button = find_child("DefaultEditorCheckButton")
 	terrain_list_container = find_child("TerrainListVboxContainer")
 	rect_preview_container = find_child("RectanglePreviewGridContainer")
-	rect_1x1_preview_container = find_child("Rectangle1x1PreviewGridContainer")
+
 
 func activate(node : TileMapLayer):
 	current_terrain_id = 0
