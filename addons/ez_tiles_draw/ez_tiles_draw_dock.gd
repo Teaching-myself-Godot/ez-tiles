@@ -2,6 +2,7 @@
 extends Control
 class_name EZTilesDrawDock
 
+enum NeighbourMode {INCLUSIVE, EXCLUSIVE, PEERING_BIT}
 const EZ_TILE_CUSTOM_META := "_is_ez_tiles_generated"
 
 var TerrainPickerEntry
@@ -14,6 +15,7 @@ var prev_pos := Vector2i.ZERO
 var remembered_cells := {}
 var viewport_has_mouse := false
 var current_terrain_source_id := 0
+var neighbour_mode := NeighbourMode.INCLUSIVE
 
 const EZ_NEIGHBOUR_MAP := {
 	"....O...." : Vector2i.ZERO,
@@ -96,7 +98,7 @@ func _remember_cell(tile_pos : Vector2i) -> void:
 func _place_cells_preview(cells_in_current_draw_area : Array[Vector2i], source_id : int) -> void:
 	for tile_pos in cells_in_current_draw_area:
 		_remember_cell(tile_pos)
-		under_edit.set_cell(tile_pos, source_id, _get_ez_atlas_coord(tile_pos))
+		under_edit.set_cell(tile_pos, source_id, _get_ez_atlas_coord(tile_pos, source_id))
 		_update_atlas_coords(_get_neighbors(tile_pos))
 
 
@@ -111,7 +113,8 @@ func _commit_cell_placement(cells_in_current_draw_area : Array[Vector2i]) -> voi
 func _update_atlas_coords(cells : Array[Vector2i]) -> void:
 	for tile_pos in cells:
 		_remember_cell(tile_pos)
-		under_edit.set_cell(tile_pos, under_edit.get_cell_source_id(tile_pos), _get_ez_atlas_coord(tile_pos))
+		under_edit.set_cell(tile_pos, under_edit.get_cell_source_id(tile_pos), 
+				_get_ez_atlas_coord(tile_pos, under_edit.get_cell_source_id(tile_pos)))
 
 
 func _erase_cells(cells : Array[Vector2i]):
@@ -124,11 +127,25 @@ func _get_neighbors(tile_pos : Vector2i) -> Array[Vector2i]:
 	return [tile_pos + Vector2i.LEFT, tile_pos + Vector2i.UP, tile_pos + Vector2i.DOWN, tile_pos + Vector2i.RIGHT]
 
 
-func _get_ez_atlas_coord(tile_pos : Vector2i) -> Vector2i:
-	var l = "X" if under_edit.get_cell_source_id(tile_pos + Vector2i.LEFT) > -1 else "."
-	var r = "X" if under_edit.get_cell_source_id(tile_pos + Vector2i.RIGHT) > -1 else ".";
-	var t = "X" if under_edit.get_cell_source_id(tile_pos + Vector2i.UP) > -1 else "."
-	var b = "X" if under_edit.get_cell_source_id(tile_pos + Vector2i.DOWN) > -1 else ".";
+func _consider_a_neighbour(cell : Vector2i, for_source_id : int) -> bool:
+	var neighbour_source_id := under_edit.get_cell_source_id(cell)
+	match(neighbour_mode):
+		NeighbourMode.INCLUSIVE:
+			return neighbour_source_id > -1
+		NeighbourMode.EXCLUSIVE:
+			return neighbour_source_id > -1 and neighbour_source_id == for_source_id
+		NeighbourMode.PEERING_BIT:
+			printerr("TODO: match peering bit logic")
+			return false
+	return false
+
+
+func _get_ez_atlas_coord(tile_pos : Vector2i, for_source_id : int) -> Vector2i:
+	var l = "X" if _consider_a_neighbour(tile_pos + Vector2i.LEFT, for_source_id) else "."
+	var r = "X" if _consider_a_neighbour(tile_pos + Vector2i.RIGHT, for_source_id) else ".";
+	var t = "X" if _consider_a_neighbour(tile_pos + Vector2i.UP, for_source_id) else "."
+	var b = "X" if _consider_a_neighbour(tile_pos + Vector2i.DOWN, for_source_id) else ".";
+
 	var fmt = ".%s.%sO%s.%s." % [t, l, r, b]
 	return EZ_NEIGHBOUR_MAP[fmt]  if fmt in EZ_NEIGHBOUR_MAP else Vector2i.ZERO
 
@@ -159,3 +176,7 @@ func _on_default_editor_check_button_toggled(toggled_on: bool) -> void:
 		under_edit.set_meta(EZ_TILE_CUSTOM_META, true)
 	else:
 		under_edit.remove_meta(EZ_TILE_CUSTOM_META)
+
+
+func _on_neighbour_mode_option_button_item_selected(index: NeighbourMode) -> void:
+	neighbour_mode = index
