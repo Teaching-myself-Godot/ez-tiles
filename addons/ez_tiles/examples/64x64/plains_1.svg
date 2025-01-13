@@ -22,9 +22,9 @@
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
-     inkscape:zoom="1.7280386"
-     inkscape:cx="208.90737"
-     inkscape:cy="143.80466"
+     inkscape:zoom="1.2219078"
+     inkscape:cx="-4.9103541"
+     inkscape:cy="5.3195502"
      inkscape:window-width="1920"
      inkscape:window-height="1094"
      inkscape:window-x="-11"
@@ -49,6 +49,13 @@
        gridanglez="30"
        visible="true" />
   </sodipodi:namedview>
+  <rect
+     style="fill:#642700;fill-opacity:1;stroke-width:5.74983;stroke-linecap:square;stroke-miterlimit:80;stroke-dashoffset:127.298;paint-order:markers fill stroke"
+     id="rect1"
+     width="57.528324"
+     height="60.617859"
+     x="2.9739425"
+     y="3.4721446" />
   <path
      id="path1"
      style="mix-blend-mode:normal;fill:#642700;fill-opacity:1;fill-rule:nonzero;stroke-width:4.00033;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0"
@@ -88,4 +95,20 @@
      stroke-linecap="round"
      id="path18"
      style="mix-blend-mode:normal;fill-rule:nonzero;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0" />
+  <path
+     d="M 5.1299622,5.001772 H 58.931855"
+     fill="none"
+     stroke="#006903"
+     stroke-width="6.04268"
+     stroke-linecap="round"
+     id="path18-8"
+     style="mix-blend-mode:normal;fill-rule:nonzero;stroke-width:10.2029;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0" />
+  <path
+     d="M 5.1299622,5.001772 H 58.931855"
+     fill="none"
+     stroke="#006903"
+     stroke-width="6.04268"
+     stroke-linecap="round"
+     id="path3"
+     style="mix-blend-mode:normal;fill-rule:nonzero;stroke-width:10.2029;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0" />
 </svg>

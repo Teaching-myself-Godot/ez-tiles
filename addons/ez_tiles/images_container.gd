@@ -18,6 +18,7 @@ func _enter_tree() -> void:
 	hint_label = find_child("HintLabel")
 	terrain_name_regex.compile("^.*\\/([^\\.]+)\\..*$")
 
+
 func _can_drop_data(at_position : Vector2, data : Variant) -> bool:
 	if not typeof(data) == TYPE_DICTIONARY and "type" in data and data["type"] == "files":
 		return false

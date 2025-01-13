@@ -11,10 +11,14 @@ config_version=5
 [application]
 
 config/name="EZ Platformer Tiles"
-run/main_scene="res://test_scene.tscn"
+run/main_scene="res://node_2d.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/ez_tiles/plugin.cfg", "res://addons/ez_tiles_draw/plugin.cfg", "res://addons/godot-plugin-refresher/plugin.cfg")
+
+[rendering]
+
+environment/defaults/default_clear_color=Color(0.285507, 0.455724, 0.779644, 1)

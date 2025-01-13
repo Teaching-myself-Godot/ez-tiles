@@ -3,6 +3,7 @@ extends Control
 class_name EZTilesDrawDock
 
 enum NeighbourMode {INCLUSIVE, EXCLUSIVE, PEERING_BIT}
+
 const EZ_TILE_CUSTOM_META := "_is_ez_tiles_generated"
 
 var TerrainPickerEntry
@@ -12,10 +13,14 @@ var main_container : Control
 var default_editor_check_button : Button
 var terrain_list_container : VBoxContainer
 var prev_pos := Vector2i.ZERO
+
 var remembered_cells := {}
 var viewport_has_mouse := false
-var current_terrain_source_id := 0
+var current_terrain_id := 0
 var neighbour_mode := NeighbourMode.INCLUSIVE
+
+var rect_preview_container : GridContainer
+var rect_1x1_preview_container : GridContainer
 
 const VEC_TO_CELL_NEIGHBOUR:= {
 	Vector2i.LEFT: TileSet.CELL_NEIGHBOR_LEFT_SIDE,
@@ -50,9 +55,11 @@ func _enter_tree() -> void:
 	main_container = find_child("MainVBoxContainer")
 	default_editor_check_button = find_child("DefaultEditorCheckButton")
 	terrain_list_container = find_child("TerrainListVboxContainer")
-
+	rect_preview_container = find_child("RectanglePreviewGridContainer")
+	rect_1x1_preview_container = find_child("Rectangle1x1PreviewGridContainer")
 
 func activate(node : TileMapLayer):
+	current_terrain_id = 0
 	remembered_cells = {}
 	under_edit = node
 	hint_label.hide()
@@ -61,20 +68,74 @@ func activate(node : TileMapLayer):
 	for child in terrain_list_container.get_children():
 		if is_instance_valid(child):
 			child.queue_free()
+
 	if under_edit.tile_set.get_terrain_sets_count() > 0:
-		for source_id in range(under_edit.tile_set.get_terrains_count(0)):
+		for terrain_id in range(under_edit.tile_set.get_terrains_count(0)):
 			var entry : TerrainPickerEntry = TerrainPickerEntry.instantiate()
-			entry.terrain_name = under_edit.tile_set.get_terrain_name(0, source_id)
-			var source : TileSetAtlasSource = under_edit.tile_set.get_source(source_id)
-			entry.texture_resource = source.texture
-			entry.source_id = source_id
+			entry.terrain_name = under_edit.tile_set.get_terrain_name(0, terrain_id)
+			entry.texture_resource = _get_first_texture_for_terrain(terrain_id)
+			entry.terrain_id = terrain_id
 			entry.selected.connect(_on_terrain_selected)
 			terrain_list_container.add_child(entry)
+		_update_rectangle_grid_preview()
 
 	if under_edit.has_meta(EZ_TILE_CUSTOM_META):
 		default_editor_check_button.button_pressed = true
 	else:
 		default_editor_check_button.button_pressed = false
+
+
+func _update_rectangle_grid_preview():
+	for i in range(rect_preview_container.get_child_count()):
+		var y := i / rect_preview_container.columns
+		var x := i % rect_preview_container.columns
+		var tex_rect : TextureRect = rect_preview_container.get_child(i)
+		var atlas_texture : AtlasTexture = tex_rect.texture if tex_rect.texture is AtlasTexture else  AtlasTexture.new()
+		atlas_texture.atlas = _get_first_texture_for_terrain(current_terrain_id)
+		if x == 0 and y == 0:
+			atlas_texture.region = Rect2i(Vector2i(3, 0) * under_edit.tile_set.tile_size, under_edit.tile_set.tile_size)
+		elif x == 3 and y == 0:
+			atlas_texture.region = Rect2i(Vector2i(5, 0) * under_edit.tile_set.tile_size, under_edit.tile_set.tile_size)
+		elif y == 0:
+			atlas_texture.region = Rect2i(Vector2i(4, 0) * under_edit.tile_set.tile_size, under_edit.tile_set.tile_size)
+		elif y == 3 and x == 0:
+			atlas_texture.region = Rect2i(Vector2i(3, 2) * under_edit.tile_set.tile_size, under_edit.tile_set.tile_size)
+		elif y == 3 and x == 3:
+			atlas_texture.region = Rect2i(Vector2i(5, 2) * under_edit.tile_set.tile_size, under_edit.tile_set.tile_size)
+		elif y == 3:
+			atlas_texture.region = Rect2i(Vector2i(4, 2) * under_edit.tile_set.tile_size, under_edit.tile_set.tile_size)
+		elif x == 0:
+			atlas_texture.region = Rect2i(Vector2i(3, 1) * under_edit.tile_set.tile_size, under_edit.tile_set.tile_size)
+		elif x == 3:
+			atlas_texture.region = Rect2i(Vector2i(5, 1) * under_edit.tile_set.tile_size, under_edit.tile_set.tile_size)
+		else:
+			atlas_texture.region = Rect2i(Vector2i(4, 1) * under_edit.tile_set.tile_size, under_edit.tile_set.tile_size)
+		tex_rect.texture = atlas_texture
+
+
+func _get_first_source_id_for_terrain(terrain_id : int) -> int:
+	for i in range(under_edit.tile_set.get_source_count()):
+		var source_id := under_edit.tile_set.get_source_id(i)
+		var source : TileSetAtlasSource  = under_edit.tile_set.get_source(source_id)
+		if source.get_tiles_count() > 0:
+			var tile_data = source.get_tile_data(source.get_tile_id(0), 0)
+			if tile_data.terrain == terrain_id:
+				return source_id
+	printerr("Terrain %d not found in tile set sources: " % terrain_id)
+	return terrain_id # assume equal in case of inconsistent data
+
+
+func _get_first_texture_for_terrain(terrain_id : int) -> Texture2D:
+	for i in range(under_edit.tile_set.get_source_count()):
+		var source_id := under_edit.tile_set.get_source_id(i)
+		var source : TileSetAtlasSource  = under_edit.tile_set.get_source(source_id)
+		if source.get_tiles_count() > 0:
+			var tile_data = source.get_tile_data(source.get_tile_id(0), 0)
+			if tile_data.terrain == terrain_id:
+				return source.texture
+	return null
+
+
 
 func deactivate():
 	under_edit = null
@@ -83,8 +144,8 @@ func deactivate():
 
 
 func _on_terrain_selected(id : int) -> void:
-	current_terrain_source_id = id
-
+	current_terrain_id = id
+	_update_rectangle_grid_preview()
 
 func _place_back_remembered_cells() -> void:
 	for prev_pos in remembered_cells.keys():
@@ -102,10 +163,10 @@ func _remember_cell(tile_pos : Vector2i) -> void:
 		remembered_cells[tile_pos] = [-1, Vector2i.ZERO]
 
 
-func _place_cells_preview(cells_in_current_draw_area : Array[Vector2i], source_id : int) -> void:
+func _place_cells_preview(cells_in_current_draw_area : Array[Vector2i], terrain_id : int) -> void:
 	for tile_pos in cells_in_current_draw_area:
 		_remember_cell(tile_pos)
-		under_edit.set_cell(tile_pos, source_id, _get_ez_atlas_coord(tile_pos, source_id))
+		under_edit.set_cell(tile_pos, _get_first_source_id_for_terrain(terrain_id), _get_ez_atlas_coord(tile_pos, terrain_id))
 		_update_atlas_coords(_get_neighbors(tile_pos))
 
 
@@ -152,21 +213,39 @@ func _consider_a_neighbour(cell : Vector2i, for_source_id : int) -> bool:
 	return false
 
 
-func _get_ez_atlas_coord(tile_pos : Vector2i, for_source_id : int) -> Vector2i:
+func _get_ez_atlas_coord(tile_pos : Vector2i, for_terrain_id : int) -> Vector2i:
 	if neighbour_mode == NeighbourMode.PEERING_BIT:
-		return _get_godot_atlas_coords(tile_pos, for_source_id)
-	var l = "X" if _consider_a_neighbour(tile_pos + Vector2i.LEFT, for_source_id) else "."
-	var r = "X" if _consider_a_neighbour(tile_pos + Vector2i.RIGHT, for_source_id) else ".";
-	var t = "X" if _consider_a_neighbour(tile_pos + Vector2i.UP, for_source_id) else "."
-	var b = "X" if _consider_a_neighbour(tile_pos + Vector2i.DOWN, for_source_id) else ".";
+		return _get_godot_atlas_coords(tile_pos, for_terrain_id)
+
+	# EZ Tiles considers the source_id to be equal to the terrain_id
+	# Therefore, in these modes the complexity of searching the correct texture is lost 
+	#   (thus, making things EZ. is a lot less flexible)
+	# - In inclusive mode all terrains in neighboring tiles are considered to be  the same terrain
+	# - in exclusive mode the terrains from the exact same TileSetSource are considered the same terrain
+	var l = "X" if _consider_a_neighbour(tile_pos + Vector2i.LEFT, for_terrain_id) else "."
+	var r = "X" if _consider_a_neighbour(tile_pos + Vector2i.RIGHT, for_terrain_id) else ".";
+	var t = "X" if _consider_a_neighbour(tile_pos + Vector2i.UP, for_terrain_id) else "."
+	var b = "X" if _consider_a_neighbour(tile_pos + Vector2i.DOWN, for_terrain_id) else ".";
 
 	var fmt = ".%s.%sO%s.%s." % [t, l, r, b]
 	return EZ_NEIGHBOUR_MAP[fmt]  if fmt in EZ_NEIGHBOUR_MAP else Vector2i.ZERO
 
+
+func _on_default_editor_check_button_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		under_edit.set_meta(EZ_TILE_CUSTOM_META, true)
+	else:
+		under_edit.remove_meta(EZ_TILE_CUSTOM_META)
+
+
+func _on_neighbour_mode_option_button_item_selected(index: NeighbourMode) -> void:
+	neighbour_mode = index
+
+
 func handle_drawing_input(tile_pos : Vector2i, lmb_pressed : bool, rmb_pressed) -> void:
 	if is_instance_valid(under_edit):
 		_place_back_remembered_cells()
-		_place_cells_preview([tile_pos], current_terrain_source_id)
+		_place_cells_preview([tile_pos], current_terrain_id)
 		if lmb_pressed:
 			_commit_cell_placement([tile_pos])
 		elif rmb_pressed:
@@ -183,13 +262,3 @@ func handle_mouse_out():
 	viewport_has_mouse = false
 	_place_back_remembered_cells()
 
-
-func _on_default_editor_check_button_toggled(toggled_on: bool) -> void:
-	if toggled_on:
-		under_edit.set_meta(EZ_TILE_CUSTOM_META, true)
-	else:
-		under_edit.remove_meta(EZ_TILE_CUSTOM_META)
-
-
-func _on_neighbour_mode_option_button_item_selected(index: NeighbourMode) -> void:
-	neighbour_mode = index

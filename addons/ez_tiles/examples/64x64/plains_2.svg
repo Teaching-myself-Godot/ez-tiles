@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
      showgrid="true"
-     inkscape:zoom="1.2257746"
-     inkscape:cx="250.04597"
-     inkscape:cy="3.671148"
+     inkscape:zoom="1.7335071"
+     inkscape:cx="112.48873"
+     inkscape:cy="36.054079"
      inkscape:window-width="1920"
      inkscape:window-height="1094"
      inkscape:window-x="-11"
@@ -60,6 +60,11 @@
      d="m 68.460763,0.96043996 0.179605,64.08253604 0.179604,61.411784 v 59.97488 l 54.500788,-0.40774 -0.40773,-57.96652 0.22812,-66.090898 -0.17962,-61.41177662 z"
      sodipodi:nodetypes="ccccccccc" />
   <path
+     id="path2-4"
+     style="mix-blend-mode:normal;fill:#cc9978;fill-opacity:1;fill-rule:nonzero;stroke-width:2.16565;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0"
+     d="m 4.2877142,7.6737973 0.179605,18.8001337 0.179604,18.016606 V 62.085588 L 59.147714,61.965971 58.739984,44.960116 58.968104,25.570782 58.788484,7.5541786 Z"
+     sodipodi:nodetypes="ccccccccc" />
+  <path
      d="m 256.49689,5.0876426 h 62.24832"
      data-paper-data="{&quot;index&quot;:null}"
      fill="none"
@@ -91,18 +96,18 @@
      id="path15"
      style="mix-blend-mode:normal;fill-rule:nonzero;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0" />
   <path
-     d="m 196.92173,4.8837752 c 23.85796,0 39.75962,0 59.43777,0"
+     d="m 196.69605,5.1897043 c 25.10338,0 41.83513,0 62.54051,0"
      data-paper-data="{&quot;index&quot;:null}"
      fill="none"
      stroke="#006903"
-     stroke-width="9.76755"
+     stroke-width="10.0192"
      stroke-linecap="round"
      id="path17"
      sodipodi:nodetypes="cc"
      style="mix-blend-mode:normal;fill-rule:nonzero;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0" />
   <g
      id="g19"
-     transform="matrix(3.9983253,0,0,3.9983253,-768.0138,-591.38618)"
+     transform="matrix(3.9414296,0,0,3.9983253,-755.26761,-591.38618)"
      style="mix-blend-mode:normal;fill-rule:nonzero;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0">
     <path
        d="m 209.1463,149.32931 h 13.63105"
@@ -112,6 +117,20 @@
        stroke-width="2.5"
        stroke-linecap="round"
        id="path19"
+       sodipodi:nodetypes="cc" />
+  </g>
+  <g
+     id="g3"
+     transform="matrix(3.9983253,0,0,3.9983253,-831.03517,-591.28421)"
+     style="mix-blend-mode:normal;fill-rule:nonzero;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0">
+    <path
+       d="M 209.11468,149.32931 H 222.4009"
+       data-paper-data="{&quot;index&quot;:null}"
+       fill="none"
+       stroke="#006903"
+       stroke-width="2.46818"
+       stroke-linecap="round"
+       id="path3"
        sodipodi:nodetypes="cc" />
   </g>
 </svg>
