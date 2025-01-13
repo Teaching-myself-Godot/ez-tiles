@@ -1,0 +1,36 @@
+[gd_scene load_steps=4 format=3 uid="uid://cfs45hiixp0h2"]
+
+[ext_resource type="ButtonGroup" uid="uid://j3ffo1rd1gce" path="res://addons/ez_tiles_draw/terrain_picker_button_group.tres" id="1_1wme2"]
+[ext_resource type="Script" path="res://addons/ez_tiles_draw/terrain_picker_entry.gd" id="1_i3rdw"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_geq4r"]
+size = Vector2(384, 256)
+
+[node name="TerrainPickerEntry" type="HBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 31.0
+grow_horizontal = 2
+script = ExtResource("1_i3rdw")
+
+[node name="IconTextureRect" type="TextureRect" parent="."]
+layout_mode = 2
+size_flags_horizontal = 0
+mouse_filter = 0
+mouse_default_cursor_shape = 2
+texture = SubResource("PlaceholderTexture2D_geq4r")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="TerrainNameButton" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+toggle_mode = true
+button_group = ExtResource("1_1wme2")
+text = "Terrain name here"
+alignment = 0
+
+[connection signal="gui_input" from="IconTextureRect" to="." method="_on_icon_texture_rect_gui_input"]
+[connection signal="pressed" from="TerrainNameButton" to="." method="_on_terrain_name_button_pressed"]

@@ -2,12 +2,18 @@
 extends Control
 class_name EZTilesDrawDock
 
+const EZ_TILE_CUSTOM_META := "_is_ez_tiles_generated"
+
+var TerrainPickerEntry
 var under_edit : TileMapLayer = null
 var hint_label : Label
-
+var main_container : Control
+var default_editor_check_button : Button
+var terrain_list_container : VBoxContainer
 var prev_pos := Vector2i.ZERO
 var remembered_cells := {}
 var viewport_has_mouse := false
+var current_terrain_source_id := 0
 
 const EZ_NEIGHBOUR_MAP := {
 	"....O...." : Vector2i.ZERO,
@@ -28,23 +34,47 @@ const EZ_NEIGHBOUR_MAP := {
 	".X.XO...." : Vector2i(5,2)
 }
 
+
 func _enter_tree() -> void:
+	TerrainPickerEntry = preload("res://addons/ez_tiles_draw/terrain_picker_entry.tscn")
 	hint_label = find_child("HintLabel")
+	main_container = find_child("MainVBoxContainer")
+	default_editor_check_button = find_child("DefaultEditorCheckButton")
+	terrain_list_container = find_child("TerrainListVboxContainer")
 
 
 func activate(node : TileMapLayer):
 	remembered_cells = {}
 	under_edit = node
 	hint_label.hide()
-	if under_edit.has_meta("_is_ez_tiles_generated"):
-		print("check da box")
-	else:
-		print("uncheck da box")
+	main_container.show()
 
+	for child in terrain_list_container.get_children():
+		if is_instance_valid(child):
+			child.queue_free()
+	if under_edit.tile_set.get_terrain_sets_count() > 0:
+		for source_id in range(under_edit.tile_set.get_terrains_count(0)):
+			var entry : TerrainPickerEntry = TerrainPickerEntry.instantiate()
+			entry.terrain_name = under_edit.tile_set.get_terrain_name(0, source_id)
+			var source : TileSetAtlasSource = under_edit.tile_set.get_source(source_id)
+			entry.texture_resource = source.texture
+			entry.source_id = source_id
+			entry.selected.connect(_on_terrain_selected)
+			terrain_list_container.add_child(entry)
+
+	if under_edit.has_meta(EZ_TILE_CUSTOM_META):
+		default_editor_check_button.button_pressed = true
+	else:
+		default_editor_check_button.button_pressed = false
 
 func deactivate():
 	under_edit = null
 	hint_label.show()
+	main_container.hide()
+
+
+func _on_terrain_selected(id : int) -> void:
+	current_terrain_source_id = id
 
 
 func _place_back_remembered_cells() -> void:
@@ -106,7 +136,7 @@ func _get_ez_atlas_coord(tile_pos : Vector2i) -> Vector2i:
 func handle_drawing_input(tile_pos : Vector2i, lmb_pressed : bool, rmb_pressed) -> void:
 	if is_instance_valid(under_edit):
 		_place_back_remembered_cells()
-		_place_cells_preview([tile_pos], 0)
+		_place_cells_preview([tile_pos], current_terrain_source_id)
 		if lmb_pressed:
 			_commit_cell_placement([tile_pos])
 		elif rmb_pressed:
@@ -122,3 +152,10 @@ func handle_mouse_entered():
 func handle_mouse_out():
 	viewport_has_mouse = false
 	_place_back_remembered_cells()
+
+
+func _on_default_editor_check_button_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		under_edit.set_meta(EZ_TILE_CUSTOM_META, true)
+	else:
+		under_edit.remove_meta(EZ_TILE_CUSTOM_META)

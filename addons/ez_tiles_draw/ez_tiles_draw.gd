@@ -77,10 +77,11 @@ func _input(_event) -> void:
 
 func handle_selected_node():
 	var selected_node : Node = selection.get_selected_nodes().pop_back()
-	if is_instance_valid(selected_node) and selected_node is TileMapLayer and selected_node.has_meta("_is_ez_tiles_generated"):
+	if is_instance_valid(selected_node) and selected_node is TileMapLayer and is_instance_valid(selected_node.tile_set):
 		dock.activate(selected_node)
-		await get_tree().create_timer(0.5).timeout
-		make_bottom_panel_item_visible(dock)
+		if selected_node.has_meta("_is_ez_tiles_generated"):
+			await get_tree().create_timer(0.5).timeout
+			make_bottom_panel_item_visible(dock)
 	else:
 		dock.deactivate()
 
