@@ -17,6 +17,13 @@ var viewport_has_mouse := false
 var current_terrain_source_id := 0
 var neighbour_mode := NeighbourMode.INCLUSIVE
 
+const VEC_TO_CELL_NEIGHBOUR:= {
+	Vector2i.LEFT: TileSet.CELL_NEIGHBOR_LEFT_SIDE,
+	Vector2i.RIGHT: TileSet.CELL_NEIGHBOR_RIGHT_SIDE,
+	Vector2i.UP: TileSet.CELL_NEIGHBOR_TOP_SIDE,
+	Vector2i.DOWN: TileSet.CELL_NEIGHBOR_BOTTOM_SIDE,
+}
+
 const EZ_NEIGHBOUR_MAP := {
 	"....O...." : Vector2i.ZERO,
 	"....OX..." : Vector2i(0,3),
@@ -98,7 +105,7 @@ func _remember_cell(tile_pos : Vector2i) -> void:
 func _place_cells_preview(cells_in_current_draw_area : Array[Vector2i], source_id : int) -> void:
 	for tile_pos in cells_in_current_draw_area:
 		_remember_cell(tile_pos)
-		under_edit.set_cell(tile_pos, source_id, _get_ez_atlas_coord(tile_pos))
+		under_edit.set_cell(tile_pos, source_id, _get_ez_atlas_coord(tile_pos, source_id))
 		_update_atlas_coords(_get_neighbors(tile_pos))
 
 
@@ -114,7 +121,7 @@ func _update_atlas_coords(cells : Array[Vector2i]) -> void:
 	for tile_pos in cells:
 		_remember_cell(tile_pos)
 		under_edit.set_cell(tile_pos, under_edit.get_cell_source_id(tile_pos), 
-				_get_ez_atlas_coord(tile_pos))
+				_get_ez_atlas_coord(tile_pos, under_edit.get_cell_source_id(tile_pos)))
 
 
 func _erase_cells(cells : Array[Vector2i]):
@@ -127,28 +134,34 @@ func _get_neighbors(tile_pos : Vector2i) -> Array[Vector2i]:
 	return [tile_pos + Vector2i.LEFT, tile_pos + Vector2i.UP, tile_pos + Vector2i.DOWN, tile_pos + Vector2i.RIGHT]
 
 
-func _consider_a_neighbour(direction : Vector2i, of_cell : Vector2i) -> bool:
-	var for_source_id := under_edit.get_cell_source_id(of_cell)
-	var neighbour_source_id := under_edit.get_cell_source_id(of_cell + direction)
+func _get_godot_atlas_coords(cell : Vector2i, for_source_id : int) -> Vector2i:
+	# TODO: implement
+	return Vector2i.ZERO
+
+
+func _consider_a_neighbour(cell : Vector2i, for_source_id : int) -> bool:
+	var neighbour_source_id := under_edit.get_cell_source_id(cell)
 	match(neighbour_mode):
 		NeighbourMode.INCLUSIVE:
 			return neighbour_source_id > -1
 		NeighbourMode.EXCLUSIVE:
 			return neighbour_source_id > -1 and neighbour_source_id == for_source_id
 		NeighbourMode.PEERING_BIT:
+			printerr("illegal state: you should invoke _get_godot_atlas_coords")
 			return false
 	return false
 
 
-func _get_ez_atlas_coord(tile_pos : Vector2i) -> Vector2i:
-	var l = "X" if _consider_a_neighbour(Vector2i.LEFT, tile_pos) else "."
-	var r = "X" if _consider_a_neighbour(Vector2i.RIGHT, tile_pos) else ".";
-	var t = "X" if _consider_a_neighbour(Vector2i.UP, tile_pos) else "."
-	var b = "X" if _consider_a_neighbour(Vector2i.DOWN, tile_pos) else ".";
+func _get_ez_atlas_coord(tile_pos : Vector2i, for_source_id : int) -> Vector2i:
+	if neighbour_mode == NeighbourMode.PEERING_BIT:
+		return _get_godot_atlas_coords(tile_pos, for_source_id)
+	var l = "X" if _consider_a_neighbour(tile_pos + Vector2i.LEFT, for_source_id) else "."
+	var r = "X" if _consider_a_neighbour(tile_pos + Vector2i.RIGHT, for_source_id) else ".";
+	var t = "X" if _consider_a_neighbour(tile_pos + Vector2i.UP, for_source_id) else "."
+	var b = "X" if _consider_a_neighbour(tile_pos + Vector2i.DOWN, for_source_id) else ".";
 
 	var fmt = ".%s.%sO%s.%s." % [t, l, r, b]
 	return EZ_NEIGHBOUR_MAP[fmt]  if fmt in EZ_NEIGHBOUR_MAP else Vector2i.ZERO
-
 
 func handle_drawing_input(tile_pos : Vector2i, lmb_pressed : bool, rmb_pressed) -> void:
 	if is_instance_valid(under_edit):
