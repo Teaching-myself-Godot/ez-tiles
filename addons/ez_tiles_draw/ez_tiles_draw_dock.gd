@@ -14,7 +14,7 @@ var main_container : Control
 var default_editor_check_button : Button
 var terrain_list_container : VBoxContainer
 var drag_start := Vector2i.ZERO
-var drag_mode := DragMode.BRUSH
+var drag_mode := DragMode.AREA
 
 var remembered_cells := {}
 var viewport_has_mouse := false
@@ -173,7 +173,10 @@ func _place_cells_preview(cells_in_current_draw_area : Array[Vector2i], terrain_
 			_remember_cell(n_pos)
 		
 	for tile_pos in cells_in_current_draw_area:
-		under_edit.set_cell(tile_pos, _get_first_source_id_for_terrain(terrain_id), _get_ez_atlas_coord(tile_pos, terrain_id))
+		if terrain_id < 0:
+			under_edit.erase_cell(tile_pos)
+		else:
+			under_edit.set_cell(tile_pos, _get_first_source_id_for_terrain(terrain_id), _get_ez_atlas_coord(tile_pos, terrain_id))
 		_update_atlas_coords(_get_neighbors(tile_pos))
 
 
@@ -190,9 +193,7 @@ func _update_atlas_coords(cells : Array[Vector2i]) -> void:
 
 
 func _erase_cells(cells : Array[Vector2i]):
-	for tile_pos in cells:
-		under_edit.erase_cell(tile_pos)
-		_update_atlas_coords(_get_neighbors(tile_pos))
+	_place_cells_preview(cells, -1)
 
 
 func _get_neighbors(tile_pos : Vector2i) -> Array[Vector2i]:
@@ -274,17 +275,18 @@ func handle_mouse_move(tile_pos : Vector2i, mouse_pos : Vector2i) -> void:
 				_erase_cells([tile_pos])
 				_commit_cell_placement([tile_pos])
 		elif drag_mode == DragMode.AREA:
+			_place_back_remembered_cells()
 			if lmb_is_down:
-				_place_back_remembered_cells()
 				_place_cells_preview(_get_cell_range(drag_start, tile_pos), current_terrain_id)
 			elif rmb_is_down:
-				_place_back_remembered_cells()
 				_erase_cells(_get_cell_range(drag_start, tile_pos))
 			else:
-				_commit_cell_placement(_get_cell_range(drag_start, tile_pos))
+				_place_cells_preview([tile_pos], current_terrain_id)
 
+func handle_mouse_up(button : MouseButton, tile_pos: Vector2i):
+	if drag_mode == DragMode.AREA:
+		_commit_cell_placement(_get_cell_range(drag_start, tile_pos))
 
-func handle_mouse_up(button : MouseButton):
 	match(button):
 		MouseButton.MOUSE_BUTTON_LEFT:
 			lmb_is_down = false
