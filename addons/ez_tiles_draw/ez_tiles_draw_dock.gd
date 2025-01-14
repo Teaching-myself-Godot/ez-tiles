@@ -251,6 +251,21 @@ func _on_tab_container_tab_changed(tab: DragMode) -> void:
 	drag_mode = tab
 
 
+func get_draw_area(tile_pos : Vector2i) -> Rect2i:
+	match(drag_mode):
+		DragMode.AREA:
+			if rmb_is_down or lmb_is_down:
+				var from_x := drag_start.x if drag_start.x < tile_pos.x else tile_pos.x
+				var to_x := drag_start.x if drag_start.x > tile_pos.x else tile_pos.x
+				var from_y := drag_start.y if drag_start.y < tile_pos.y else tile_pos.y
+				var to_y := drag_start.y if drag_start.y > tile_pos.y else tile_pos.y
+				return Rect2i(Vector2i(from_x, from_y),  Vector2i(to_x, to_y) - Vector2i(from_x, from_y) + Vector2i.ONE)
+			else:
+				return Rect2i()
+		DragMode.BRUSH, _:
+			return Rect2i(tile_pos, Vector2i.ONE)
+
+
 func _get_cell_range(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
 	var cells : Array[Vector2i] = []
 	var from_x := p1.x if p1.x < p2.x else p2.x

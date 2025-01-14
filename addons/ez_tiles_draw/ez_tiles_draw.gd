@@ -53,29 +53,29 @@ func _tile_pos_from_mouse_pos() -> Vector2i:
 	return tile_pos
 
 
-func _forward_canvas_draw_over_viewport(overlay):
-	# Draw a circle at cursor position.
-	if dock.lmb_is_down:
-		var drag_start_cur_pos := (
+func _tile_pos_to_overlay_pos(tile_pos : Vector2i) -> Vector2:
+	return (
+		(
 			(
-				(
-					Vector2(dock.drag_start) * (Vector2(dock.under_edit.tile_set.tile_size) * dock.under_edit.global_scale).rotated(dock.under_edit.global_rotation)
-				) * EditorInterface.get_editor_viewport_2d().get_final_transform().get_scale()
-			) + EditorInterface.get_editor_viewport_2d().get_final_transform().get_origin()
-		)
-		
-		var rect_cur_pos := (
-			(
-				(
-					Vector2(_tile_pos_from_mouse_pos()) * (Vector2(dock.under_edit.tile_set.tile_size) * dock.under_edit.global_scale).rotated(dock.under_edit.global_rotation)
-				) * EditorInterface.get_editor_viewport_2d().get_final_transform().get_scale()
-			) + EditorInterface.get_editor_viewport_2d().get_final_transform().get_origin()
-		)
-		
-		
-		overlay.draw_circle(drag_start_cur_pos, 6, Color.WHITE)
+				(Vector2(tile_pos) * (Vector2(dock.under_edit.tile_set.tile_size) * dock.under_edit.global_scale)).rotated(dock.under_edit.global_rotation) + dock.under_edit.global_position
+			) * EditorInterface.get_editor_viewport_2d().get_final_transform().get_scale()
+		) + EditorInterface.get_editor_viewport_2d().get_final_transform().get_origin()
+	)
 
-		overlay.draw_circle(rect_cur_pos, 6, Color.WHITE)
+
+func _forward_canvas_draw_over_viewport(overlay):
+	var draw_area := dock.get_draw_area(_tile_pos_from_mouse_pos())
+	var fill :=  Color(1.0, 0.0, 0.0, 0.2) if dock.rmb_is_down else Color(Color.WHITE, 0.2)
+	var stroke := Color.RED if dock.rmb_is_down else Color.WHITE
+	
+	var tl_corner := _tile_pos_to_overlay_pos(draw_area.position)
+	var tr_corner := _tile_pos_to_overlay_pos(draw_area.position + draw_area.size * Vector2i.RIGHT)
+	var br_corner := _tile_pos_to_overlay_pos(draw_area.position + draw_area.size)
+	var bl_corner := _tile_pos_to_overlay_pos(draw_area.position + draw_area.size * Vector2i.DOWN)
+
+	overlay.draw_polygon(PackedVector2Array([tl_corner, tr_corner, br_corner, bl_corner]), [fill])
+	overlay.draw_polyline(PackedVector2Array([tl_corner, tr_corner, br_corner, bl_corner, tl_corner]), stroke, 0.5, true)
+
 
 
 func _input(_event) -> void:
