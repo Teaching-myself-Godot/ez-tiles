@@ -13,22 +13,24 @@ var hint_label : Label
 var main_container : Control
 var default_editor_check_button : Button
 var terrain_list_container : VBoxContainer
-var prev_pos := Vector2i.ZERO
-var drag_mode := DragMode.AREA
+var drag_start := Vector2i.ZERO
+var drag_mode := DragMode.BRUSH
 
 var remembered_cells := {}
 var viewport_has_mouse := false
+var lmb_is_down := false
+var rmb_is_down := false
 var current_terrain_id := 0
 var neighbour_mode := NeighbourMode.INCLUSIVE
 
 var rect_preview_container : GridContainer
 
-const VEC_TO_CELL_NEIGHBOUR:= {
-	Vector2i.LEFT: TileSet.CELL_NEIGHBOR_LEFT_SIDE,
-	Vector2i.RIGHT: TileSet.CELL_NEIGHBOR_RIGHT_SIDE,
-	Vector2i.UP: TileSet.CELL_NEIGHBOR_TOP_SIDE,
-	Vector2i.DOWN: TileSet.CELL_NEIGHBOR_BOTTOM_SIDE,
-}
+#const VEC_TO_CELL_NEIGHBOUR:= {
+	#Vector2i.LEFT: TileSet.CELL_NEIGHBOR_LEFT_SIDE,
+	#Vector2i.RIGHT: TileSet.CELL_NEIGHBOR_RIGHT_SIDE,
+	#Vector2i.UP: TileSet.CELL_NEIGHBOR_TOP_SIDE,
+	#Vector2i.DOWN: TileSet.CELL_NEIGHBOR_BOTTOM_SIDE,
+#}
 
 const EZ_NEIGHBOUR_MAP := {
 	"....O...." : Vector2i.ZERO,
@@ -167,6 +169,10 @@ func _remember_cell(tile_pos : Vector2i) -> void:
 func _place_cells_preview(cells_in_current_draw_area : Array[Vector2i], terrain_id : int) -> void:
 	for tile_pos in cells_in_current_draw_area:
 		_remember_cell(tile_pos)
+		for n_pos in _get_neighbors(tile_pos):
+			_remember_cell(n_pos)
+		
+	for tile_pos in cells_in_current_draw_area:
 		under_edit.set_cell(tile_pos, _get_first_source_id_for_terrain(terrain_id), _get_ez_atlas_coord(tile_pos, terrain_id))
 		_update_atlas_coords(_get_neighbors(tile_pos))
 
@@ -175,13 +181,10 @@ func _commit_cell_placement(cells_in_current_draw_area : Array[Vector2i]) -> voi
 	remembered_cells.clear()
 	for tile_pos in cells_in_current_draw_area:
 		_remember_cell(tile_pos)
-		for neighbor_pos in _get_neighbors(tile_pos):
-			_remember_cell(tile_pos)
-	
+
 
 func _update_atlas_coords(cells : Array[Vector2i]) -> void:
 	for tile_pos in cells:
-		_remember_cell(tile_pos)
 		under_edit.set_cell(tile_pos, under_edit.get_cell_source_id(tile_pos), 
 				_get_ez_atlas_coord(tile_pos, under_edit.get_cell_source_id(tile_pos)))
 
@@ -243,15 +246,61 @@ func _on_neighbour_mode_option_button_item_selected(index: NeighbourMode) -> voi
 	neighbour_mode = index
 
 
-func handle_drawing_input(tile_pos : Vector2i, lmb_pressed : bool, rmb_pressed) -> void:
+func _on_tab_container_tab_changed(tab: DragMode) -> void:
+	drag_mode = tab
+
+
+func _get_cell_range(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
+	var cells : Array[Vector2i] = []
+	var from_x := p1.x if p1.x < p2.x else p2.x
+	var to_x := p1.x if p1.x > p2.x else p2.x
+	var from_y := p1.y if p1.y < p2.y else p2.y
+	var to_y := p1.y if p1.y > p2.y else p2.y
+
+	for x in range(from_x, to_x + 1):
+		for y in range(from_y, to_y + 1):
+			cells.append(Vector2i(x, y))
+	return cells
+
+
+func handle_mouse_move(tile_pos : Vector2i, mouse_pos : Vector2i) -> void:
 	if is_instance_valid(under_edit):
-		_place_back_remembered_cells()
-		_place_cells_preview([tile_pos], current_terrain_id)
-		if lmb_pressed:
-			_commit_cell_placement([tile_pos])
-		elif rmb_pressed:
-			_erase_cells([tile_pos])
-			_commit_cell_placement([tile_pos])
+		if drag_mode == DragMode.BRUSH:
+			_place_back_remembered_cells()
+			_place_cells_preview([tile_pos], current_terrain_id)
+			if lmb_is_down:
+				_commit_cell_placement([tile_pos])
+			elif rmb_is_down:
+				_erase_cells([tile_pos])
+				_commit_cell_placement([tile_pos])
+		elif drag_mode == DragMode.AREA:
+			if lmb_is_down:
+				_place_back_remembered_cells()
+				_place_cells_preview(_get_cell_range(drag_start, tile_pos), current_terrain_id)
+			elif rmb_is_down:
+				_place_back_remembered_cells()
+				_erase_cells(_get_cell_range(drag_start, tile_pos))
+			else:
+				_commit_cell_placement(_get_cell_range(drag_start, tile_pos))
+
+
+func handle_mouse_up(button : MouseButton):
+	match(button):
+		MouseButton.MOUSE_BUTTON_LEFT:
+			lmb_is_down = false
+		MouseButton.MOUSE_BUTTON_RIGHT:
+			rmb_is_down = false
+
+	print("handle_mouse_up: " + str(button))
+
+
+func handle_mouse_down(button : MouseButton, tile_pos: Vector2i):
+	drag_start = tile_pos
+	match(button):
+		MouseButton.MOUSE_BUTTON_LEFT:
+			lmb_is_down = true
+		MouseButton.MOUSE_BUTTON_RIGHT:
+			rmb_is_down = true
 
 
 func handle_mouse_entered():
@@ -262,7 +311,3 @@ func handle_mouse_entered():
 func handle_mouse_out():
 	viewport_has_mouse = false
 	_place_back_remembered_cells()
-
-
-func _on_tab_container_tab_changed(tab: DragMode) -> void:
-	drag_mode = tab

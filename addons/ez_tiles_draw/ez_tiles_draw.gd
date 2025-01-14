@@ -5,6 +5,8 @@ var dock : EZTilesDrawDock
 var select_2D_viewport_button : Button
 var select_mode_button : Button
 var prev_tile_pos := Vector2i.ZERO
+var lmb_is_down_outside_2d_viewport := false
+
 
 func _enter_tree() -> void:
 	dock = preload("res://addons/ez_tiles_draw/ez_tiles_draw_dock.tscn").instantiate()
@@ -48,7 +50,11 @@ func _tile_pos_from_mouse_pos() -> Vector2i:
 	return tile_pos
 
 
+
+
+
 func _input(_event) -> void:
+
 	if is_instance_valid(dock.under_edit) and select_2D_viewport_button.button_pressed and _get_select_mode_button().button_pressed and dock.visible:
 		var viewport_2d := EditorInterface.get_editor_viewport_2d()
 		var g_mouse_pos = (
@@ -56,9 +62,25 @@ func _input(_event) -> void:
 					- viewport_2d.get_parent().global_position
 		)
 
-		if viewport_2d.get_visible_rect().has_point(g_mouse_pos):
+		if (viewport_2d.get_visible_rect().has_point(g_mouse_pos)
+					and not (g_mouse_pos.x <= 164 and g_mouse_pos.y <= 40)):
+
 			var tile_pos := _tile_pos_from_mouse_pos()
-			if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			if (Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) 
+						and not dock.lmb_is_down
+						and not lmb_is_down_outside_2d_viewport):
+				dock.handle_mouse_down(MOUSE_BUTTON_LEFT, tile_pos)
+
+			if Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT) and not dock.rmb_is_down:
+				dock.handle_mouse_down(MOUSE_BUTTON_RIGHT, tile_pos)
+
+			if dock.lmb_is_down and not  Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+				dock.handle_mouse_up(MOUSE_BUTTON_LEFT)
+
+			if dock.rmb_is_down and not Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+				dock.handle_mouse_up(MOUSE_BUTTON_RIGHT)
+
+			if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and dock.lmb_is_down:
 				viewport_2d.set_input_as_handled()
 			elif Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
 				viewport_2d.set_input_as_handled()
@@ -66,11 +88,9 @@ func _input(_event) -> void:
 			if not dock.viewport_has_mouse:
 				dock.handle_mouse_entered()
 
-			dock.handle_drawing_input(tile_pos,
-					Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT),
-					Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT)
-			)
+			dock.handle_mouse_move(tile_pos, g_mouse_pos)
 		else:
+			lmb_is_down_outside_2d_viewport = Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
 			if dock.viewport_has_mouse:
 				dock.handle_mouse_out()
 
