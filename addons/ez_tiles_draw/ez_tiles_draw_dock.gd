@@ -3,6 +3,7 @@ extends Control
 class_name EZTilesDrawDock
 
 enum NeighbourMode {INCLUSIVE, EXCLUSIVE, PEERING_BIT}
+enum DragMode {AREA, BRUSH, STAMP}
 
 const EZ_TILE_CUSTOM_META := "_is_ez_tiles_generated"
 
@@ -13,6 +14,7 @@ var main_container : Control
 var default_editor_check_button : Button
 var terrain_list_container : VBoxContainer
 var prev_pos := Vector2i.ZERO
+var drag_mode := DragMode.AREA
 
 var remembered_cells := {}
 var viewport_has_mouse := false
@@ -261,3 +263,6 @@ func handle_mouse_out():
 	viewport_has_mouse = false
 	_place_back_remembered_cells()
 
+
+func _on_tab_container_tab_changed(tab: DragMode) -> void:
+	drag_mode = tab

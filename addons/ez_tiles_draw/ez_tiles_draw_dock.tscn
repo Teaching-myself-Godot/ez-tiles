@@ -3,6 +3,10 @@
 [ext_resource type="Script" path="res://addons/ez_tiles_draw/ez_tiles_draw_dock.gd" id="1_wtbry"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fl86h"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
 bg_color = Color(0.12549, 0.145098, 0.172549, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ehgjy"]
@@ -70,93 +74,94 @@ custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/separation = 10
 
 [node name="TabContainer" type="TabContainer" parent="MainVBoxContainer/MainHBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 current_tab = 0
 
-[node name="Rectangle" type="PanelContainer" parent="MainVBoxContainer/MainHBoxContainer/TabContainer"]
+[node name="Area Draw" type="PanelContainer" parent="MainVBoxContainer/MainHBoxContainer/TabContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ehgjy")
 metadata/_tab_index = 0
 
-[node name="CenterContainer" type="CenterContainer" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Rectangle"]
+[node name="CenterContainer" type="CenterContainer" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="RectanglePreviewGridContainer" type="GridContainer" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Rectangle/CenterContainer"]
+[node name="RectanglePreviewGridContainer" type="GridContainer" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw/CenterContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/h_separation = 0
 theme_override_constants/v_separation = 0
 columns = 4
 
-[node name="TextureRect" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Rectangle/CenterContainer/RectanglePreviewGridContainer"]
+[node name="TextureRect" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw/CenterContainer/RectanglePreviewGridContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 
-[node name="TextureRect2" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Rectangle/CenterContainer/RectanglePreviewGridContainer"]
+[node name="TextureRect2" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw/CenterContainer/RectanglePreviewGridContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 
-[node name="TextureRect3" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Rectangle/CenterContainer/RectanglePreviewGridContainer"]
+[node name="TextureRect3" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw/CenterContainer/RectanglePreviewGridContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 
-[node name="TextureRect4" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Rectangle/CenterContainer/RectanglePreviewGridContainer"]
+[node name="TextureRect4" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw/CenterContainer/RectanglePreviewGridContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 
-[node name="TextureRect5" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Rectangle/CenterContainer/RectanglePreviewGridContainer"]
+[node name="TextureRect5" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw/CenterContainer/RectanglePreviewGridContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 
-[node name="TextureRect6" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Rectangle/CenterContainer/RectanglePreviewGridContainer"]
+[node name="TextureRect6" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw/CenterContainer/RectanglePreviewGridContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 
-[node name="TextureRect7" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Rectangle/CenterContainer/RectanglePreviewGridContainer"]
+[node name="TextureRect7" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw/CenterContainer/RectanglePreviewGridContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 
-[node name="TextureRect8" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Rectangle/CenterContainer/RectanglePreviewGridContainer"]
+[node name="TextureRect8" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw/CenterContainer/RectanglePreviewGridContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 
-[node name="TextureRect9" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Rectangle/CenterContainer/RectanglePreviewGridContainer"]
+[node name="TextureRect9" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw/CenterContainer/RectanglePreviewGridContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 
-[node name="TextureRect10" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Rectangle/CenterContainer/RectanglePreviewGridContainer"]
+[node name="TextureRect10" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw/CenterContainer/RectanglePreviewGridContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 
-[node name="TextureRect11" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Rectangle/CenterContainer/RectanglePreviewGridContainer"]
+[node name="TextureRect11" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw/CenterContainer/RectanglePreviewGridContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 
-[node name="TextureRect12" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Rectangle/CenterContainer/RectanglePreviewGridContainer"]
+[node name="TextureRect12" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw/CenterContainer/RectanglePreviewGridContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 
-[node name="TextureRect13" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Rectangle/CenterContainer/RectanglePreviewGridContainer"]
+[node name="TextureRect13" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw/CenterContainer/RectanglePreviewGridContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 
-[node name="TextureRect14" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Rectangle/CenterContainer/RectanglePreviewGridContainer"]
+[node name="TextureRect14" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw/CenterContainer/RectanglePreviewGridContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 
-[node name="TextureRect15" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Rectangle/CenterContainer/RectanglePreviewGridContainer"]
+[node name="TextureRect15" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw/CenterContainer/RectanglePreviewGridContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 
-[node name="TextureRect16" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Rectangle/CenterContainer/RectanglePreviewGridContainer"]
+[node name="TextureRect16" type="TextureRect" parent="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw/CenterContainer/RectanglePreviewGridContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 
-[node name="Pencil" type="PanelContainer" parent="MainVBoxContainer/MainHBoxContainer/TabContainer"]
+[node name="Brush Draw" type="PanelContainer" parent="MainVBoxContainer/MainHBoxContainer/TabContainer"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
@@ -176,3 +181,4 @@ vertical_alignment = 1
 
 [connection signal="item_selected" from="MainVBoxContainer/HBoxContainer/NeighbourModeOptionButton" to="." method="_on_neighbour_mode_option_button_item_selected"]
 [connection signal="toggled" from="MainVBoxContainer/HBoxContainer/DefaultEditorCheckButton" to="." method="_on_default_editor_check_button_toggled"]
+[connection signal="tab_changed" from="MainVBoxContainer/MainHBoxContainer/TabContainer" to="." method="_on_tab_container_tab_changed"]
