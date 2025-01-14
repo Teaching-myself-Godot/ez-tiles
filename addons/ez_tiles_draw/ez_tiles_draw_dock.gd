@@ -309,5 +309,7 @@ func handle_mouse_entered():
 
 
 func handle_mouse_out():
+	lmb_is_down = false
+	rmb_is_down = false
 	viewport_has_mouse = false
 	_place_back_remembered_cells()

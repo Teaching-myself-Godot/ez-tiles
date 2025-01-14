@@ -54,6 +54,8 @@ func _tile_pos_from_mouse_pos() -> Vector2i:
 
 
 func _input(_event) -> void:
+	if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		lmb_is_down_outside_2d_viewport = false
 
 	if is_instance_valid(dock.under_edit) and select_2D_viewport_button.button_pressed and _get_select_mode_button().button_pressed and dock.visible:
 		var viewport_2d := EditorInterface.get_editor_viewport_2d()
