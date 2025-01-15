@@ -22,9 +22,9 @@ var lmb_is_down := false
 var rmb_is_down := false
 var current_terrain_id := 0
 var neighbour_mode := NeighbourMode.INCLUSIVE
-
+var suppress_preview := false
 var rect_preview_container : GridContainer
-
+var undo_redo : EditorUndoRedoManager
 #const VEC_TO_CELL_NEIGHBOUR:= {
 	#Vector2i.LEFT: TileSet.CELL_NEIGHBOR_LEFT_SIDE,
 	#Vector2i.RIGHT: TileSet.CELL_NEIGHBOR_RIGHT_SIDE,
@@ -197,12 +197,27 @@ func _place_cells_preview(cells_in_current_draw_area : Array[Vector2i], terrain_
 
 
 func _commit_cell_placement(cells_in_current_draw_area : Array[Vector2i]) -> void:
+	undo_redo.create_action("Update cells in: " + under_edit.name)
+	for cell in remembered_cells:
+		if remembered_cells[cell][0] < 0:
+			undo_redo.add_undo_method(under_edit, "erase_cell", cell)
+		else:
+			undo_redo.add_undo_method(under_edit, "set_cell", cell, 
+					remembered_cells[cell][0], remembered_cells[cell][1])
 	remembered_cells.clear()
+	for cell in _grow_cells(cells_in_current_draw_area):
+		if under_edit.get_cell_source_id(cell) > -1:
+			undo_redo.add_do_method(under_edit, "set_cell", cell,
+					under_edit.get_cell_source_id(cell),
+					under_edit.get_cell_atlas_coords(cell))
+		else:
+			undo_redo.add_do_method(under_edit, "erase_cell", cell)
+	undo_redo.commit_action(false)
 
 
 func _update_atlas_coords(cells : Array[Vector2i]) -> void:
 	for tile_pos in cells:
-		under_edit.set_cell(tile_pos, under_edit.get_cell_source_id(tile_pos), 
+		under_edit.set_cell(tile_pos, under_edit.get_cell_source_id(tile_pos),
 				_get_ez_atlas_coord(tile_pos, under_edit.get_cell_source_id(tile_pos)))
 
 
@@ -289,6 +304,8 @@ func _get_cell_range(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
 
 
 func handle_mouse_move(tile_pos : Vector2i) -> void:
+	if suppress_preview:
+		pass
 	if is_instance_valid(under_edit):
 		if drag_mode == DragMode.BRUSH:
 			_place_back_remembered_cells()
@@ -317,7 +334,6 @@ func handle_mouse_up(button : MouseButton, tile_pos: Vector2i):
 		MouseButton.MOUSE_BUTTON_RIGHT:
 			rmb_is_down = false
 			if drag_mode == DragMode.AREA:
-				_erase_cells(_get_cell_range(drag_start, tile_pos))
 				_commit_cell_placement(_get_cell_range(drag_start, tile_pos))
 
 

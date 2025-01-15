@@ -16,6 +16,7 @@ func _enter_tree() -> void:
 	add_control_to_bottom_panel(dock as Control, "EZ Tiles Draw")
 	handle_selected_node()
 	select_2D_viewport_button = EditorInterface.get_base_control().find_child("2D", true, false)
+	dock.undo_redo = get_undo_redo()
 
 
 func _handles(object: Object) -> bool:
@@ -104,7 +105,7 @@ func _input(_event) -> void:
 			if Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT) and not dock.rmb_is_down:
 				dock.handle_mouse_down(MOUSE_BUTTON_RIGHT, tile_pos)
 
-			if dock.lmb_is_down and not  Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			if dock.lmb_is_down and not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 				dock.handle_mouse_up(MOUSE_BUTTON_LEFT, tile_pos)
 
 			if dock.rmb_is_down and not Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
@@ -112,9 +113,14 @@ func _input(_event) -> void:
 
 			if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and dock.lmb_is_down:
 				viewport_2d.set_input_as_handled()
-
 			elif Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
 				viewport_2d.set_input_as_handled()
+
+			if Input.is_key_pressed(KEY_CTRL):
+				dock._place_back_remembered_cells()
+				dock.suppress_preview = true
+			else:
+				dock.suppress_preview = false
 
 			if not dock.viewport_has_mouse:
 				dock.handle_mouse_entered()
