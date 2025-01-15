@@ -7,6 +7,7 @@ var select_mode_button : Button
 var prev_tile_pos := Vector2i.ZERO
 var lmb_is_down_outside_2d_viewport := false
 var hint_polygon : Polygon2D
+var prev_tile := Vector2i.ZERO
 
 func _enter_tree() -> void:
 	dock = preload("res://addons/ez_tiles_draw/ez_tiles_draw_dock.tscn").instantiate()
@@ -15,6 +16,7 @@ func _enter_tree() -> void:
 	add_control_to_bottom_panel(dock as Control, "EZ Tiles Draw")
 	handle_selected_node()
 	select_2D_viewport_button = EditorInterface.get_base_control().find_child("2D", true, false)
+	dock.undo_redo = get_undo_redo()
 
 
 func _handles(object: Object) -> bool:
@@ -77,6 +79,8 @@ func _forward_canvas_draw_over_viewport(overlay):
 	overlay.draw_polyline(PackedVector2Array([tl_corner, tr_corner, br_corner, bl_corner, tl_corner]), stroke, 0.5, true)
 
 
+func _testprint(msg : String) -> void:
+	print(msg)
 
 func _input(_event) -> void:
 	update_overlays()
@@ -117,8 +121,10 @@ func _input(_event) -> void:
 
 			if not dock.viewport_has_mouse:
 				dock.handle_mouse_entered()
-
-			dock.handle_mouse_move(tile_pos, g_mouse_pos)
+			
+			if tile_pos != prev_tile:
+				dock.handle_mouse_move(tile_pos)
+				prev_tile = tile_pos
 		else:
 			lmb_is_down_outside_2d_viewport = Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
 			if dock.viewport_has_mouse:

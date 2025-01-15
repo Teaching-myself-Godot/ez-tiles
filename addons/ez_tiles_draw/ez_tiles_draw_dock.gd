@@ -25,6 +25,8 @@ var neighbour_mode := NeighbourMode.INCLUSIVE
 
 var rect_preview_container : GridContainer
 
+var undo_redo : EditorUndoRedoManager
+
 #const VEC_TO_CELL_NEIGHBOUR:= {
 	#Vector2i.LEFT: TileSet.CELL_NEIGHBOR_LEFT_SIDE,
 	#Vector2i.RIGHT: TileSet.CELL_NEIGHBOR_RIGHT_SIDE,
@@ -158,12 +160,15 @@ func _place_back_remembered_cells() -> void:
 			under_edit.erase_cell(prev_pos)
 	remembered_cells.clear()
 
+func _get_remember_cell_data(tile_pos: Vector2i) -> Array:
+	if under_edit.get_cell_source_id(tile_pos) > -1:
+		return [under_edit.get_cell_source_id(tile_pos), under_edit.get_cell_atlas_coords(tile_pos)]
+	else:
+		return [-1, Vector2i.ZERO]
+
 
 func _remember_cell(tile_pos : Vector2i) -> void:
-	if under_edit.get_cell_source_id(tile_pos) > -1:
-		remembered_cells[tile_pos] = [under_edit.get_cell_source_id(tile_pos), under_edit.get_cell_atlas_coords(tile_pos)]
-	else:
-		remembered_cells[tile_pos] = [-1, Vector2i.ZERO]
+	remembered_cells[tile_pos] = _get_remember_cell_data(tile_pos)
 
 
 func _place_cells_preview(cells_in_current_draw_area : Array[Vector2i], terrain_id : int) -> void:
@@ -180,10 +185,51 @@ func _place_cells_preview(cells_in_current_draw_area : Array[Vector2i], terrain_
 		_update_atlas_coords(_get_neighbors(tile_pos))
 
 
+func _get_expanded_region(area_cells : Array[Vector2i]) -> Array:
+	var expanded_region := {}
+	for cell in area_cells:
+		if cell not in expanded_region:
+			expanded_region[cell] = true
+		for neighour in _get_neighbors(cell):
+			if neighour not in expanded_region:
+				expanded_region[neighour] = true
+
+	return expanded_region.keys()
+
+
 func _commit_cell_placement(cells_in_current_draw_area : Array[Vector2i]) -> void:
-	remembered_cells.clear()
-	for tile_pos in cells_in_current_draw_area:
+	undo_redo.create_action("Place tiles")
+	var expanded_region := _get_expanded_region(cells_in_current_draw_area)
+
+	var tile_state_to_commit := {}
+	for tile_pos in expanded_region:
+		tile_state_to_commit[tile_pos] = _get_remember_cell_data(tile_pos)
+	_place_back_remembered_cells()
+
+	for cell in expanded_region:
+		var intel := _get_remember_cell_data(cell)
+		if intel[0] == -1:
+			undo_redo.add_undo_method(under_edit, "erase_cell", cell)
+		else:
+			undo_redo.add_undo_method(under_edit, "set_cell", cell,  intel[0],  intel[1])
+
+	for tile_pos in tile_state_to_commit.keys():
+		var intel = tile_state_to_commit[tile_pos]
+		if intel[0] < 0:
+			under_edit.erase_cell(tile_pos)
+		else:
+			under_edit.set_cell(tile_pos, intel[0], intel[1])
 		_remember_cell(tile_pos)
+
+	for cell in expanded_region:
+		var intel := _get_remember_cell_data(cell)
+		if intel[0] == -1:
+			undo_redo.add_do_method(under_edit, "erase_cell", cell)
+		else:
+			undo_redo.add_do_method(under_edit, "set_cell", cell,  intel[0],  intel[1])
+
+	undo_redo.commit_action(false)
+
 
 
 func _update_atlas_coords(cells : Array[Vector2i]) -> void:
@@ -279,7 +325,7 @@ func _get_cell_range(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
 	return cells
 
 
-func handle_mouse_move(tile_pos : Vector2i, mouse_pos : Vector2i) -> void:
+func handle_mouse_move(tile_pos : Vector2i) -> void:
 	if is_instance_valid(under_edit):
 		if drag_mode == DragMode.BRUSH:
 			_place_back_remembered_cells()
@@ -295,8 +341,9 @@ func handle_mouse_move(tile_pos : Vector2i, mouse_pos : Vector2i) -> void:
 				_place_cells_preview(_get_cell_range(drag_start, tile_pos), current_terrain_id)
 			elif rmb_is_down:
 				_erase_cells(_get_cell_range(drag_start, tile_pos))
-			else:
-				_place_cells_preview([tile_pos], current_terrain_id)
+			#else:
+				#_place_cells_preview([tile_pos], current_terrain_id)
+
 
 func handle_mouse_up(button : MouseButton, tile_pos: Vector2i):
 	if drag_mode == DragMode.AREA:
