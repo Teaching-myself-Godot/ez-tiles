@@ -72,6 +72,7 @@ func activate(node : TileMapLayer):
 		if is_instance_valid(child):
 			child.queue_free()
 
+	# FIXME: move to separate scene
 	if under_edit.tile_set.get_terrain_sets_count() > 0:
 		for terrain_id in range(under_edit.tile_set.get_terrains_count(0)):
 			var entry : TerrainPickerEntry = TerrainPickerEntry.instantiate()
@@ -87,7 +88,7 @@ func activate(node : TileMapLayer):
 	else:
 		default_editor_check_button.button_pressed = false
 
-
+# FIXME: move to separate scene
 func _update_rectangle_grid_preview():
 	for i in range(rect_preview_container.get_child_count()):
 		var y := i / rect_preview_container.columns
@@ -165,6 +166,17 @@ func _remember_cell(tile_pos : Vector2i) -> void:
 	else:
 		remembered_cells[tile_pos] = [-1, Vector2i.ZERO]
 
+func _get_expanded_region(area_cells : Array[Vector2i]) -> Array:
+	var expanded_region := {}
+	for cell in area_cells:
+		if cell not in expanded_region:
+			expanded_region[cell] = true
+		for neighour in _get_neighbors(cell):
+			if neighour not in expanded_region:
+				expanded_region[neighour] = true
+	return expanded_region.keys()
+
+
 
 func _place_cells_preview(cells_in_current_draw_area : Array[Vector2i], terrain_id : int) -> void:
 	for tile_pos in cells_in_current_draw_area:
@@ -177,8 +189,10 @@ func _place_cells_preview(cells_in_current_draw_area : Array[Vector2i], terrain_
 			under_edit.erase_cell(tile_pos)
 		else:
 			under_edit.set_cell(tile_pos, _get_first_source_id_for_terrain(terrain_id), _get_ez_atlas_coord(tile_pos, terrain_id))
-		_update_atlas_coords(_get_neighbors(tile_pos))
-
+		if neighbour_mode != NeighbourMode.PEERING_BIT:
+			_update_atlas_coords(_get_neighbors(tile_pos))
+	if neighbour_mode == NeighbourMode.PEERING_BIT:
+		under_edit.set_cells_terrain_connect(cells_in_current_draw_area, 0, terrain_id, true)
 
 func _commit_cell_placement(cells_in_current_draw_area : Array[Vector2i]) -> void:
 	remembered_cells.clear()
@@ -200,11 +214,6 @@ func _get_neighbors(tile_pos : Vector2i) -> Array[Vector2i]:
 	return [tile_pos + Vector2i.LEFT, tile_pos + Vector2i.UP, tile_pos + Vector2i.DOWN, tile_pos + Vector2i.RIGHT]
 
 
-func _get_godot_atlas_coords(cell : Vector2i, for_source_id : int) -> Vector2i:
-	# TODO: implement
-	return Vector2i.ZERO
-
-
 func _consider_a_neighbour(cell : Vector2i, for_source_id : int) -> bool:
 	var neighbour_source_id := under_edit.get_cell_source_id(cell)
 	match(neighbour_mode):
@@ -213,14 +222,14 @@ func _consider_a_neighbour(cell : Vector2i, for_source_id : int) -> bool:
 		NeighbourMode.EXCLUSIVE:
 			return neighbour_source_id > -1 and neighbour_source_id == for_source_id
 		NeighbourMode.PEERING_BIT:
-			printerr("illegal state: you should invoke _get_godot_atlas_coords")
+			printerr("illegal state: should invoke `under_edit.set_cells_terrain_connect`")
 			return false
 	return false
 
 
 func _get_ez_atlas_coord(tile_pos : Vector2i, for_terrain_id : int) -> Vector2i:
 	if neighbour_mode == NeighbourMode.PEERING_BIT:
-		return _get_godot_atlas_coords(tile_pos, for_terrain_id)
+		return Vector2i.ZERO
 
 	# EZ Tiles considers the source_id to be equal to the terrain_id
 	# Therefore, in these modes the complexity of searching the correct texture is lost 
@@ -300,16 +309,16 @@ func handle_mouse_move(tile_pos : Vector2i) -> void:
 
 
 func handle_mouse_up(button : MouseButton, tile_pos: Vector2i):
-	if drag_mode == DragMode.AREA:
-		_commit_cell_placement(_get_cell_range(drag_start, tile_pos))
-
 	match(button):
 		MouseButton.MOUSE_BUTTON_LEFT:
 			lmb_is_down = false
+			if drag_mode == DragMode.AREA:
+				_commit_cell_placement(_get_cell_range(drag_start, tile_pos))
 		MouseButton.MOUSE_BUTTON_RIGHT:
 			rmb_is_down = false
-
-	print("handle_mouse_up: " + str(button))
+			if drag_mode == DragMode.AREA:
+				_erase_cells(_get_cell_range(drag_start, tile_pos))
+				_commit_cell_placement(_get_cell_range(drag_start, tile_pos))
 
 
 func handle_mouse_down(button : MouseButton, tile_pos: Vector2i):

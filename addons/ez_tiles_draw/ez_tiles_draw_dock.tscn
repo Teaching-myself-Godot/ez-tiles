@@ -48,7 +48,6 @@ popup/item_1/text = "Exclusive (consider only my terrain type as neighbour)"
 popup/item_1/id = 1
 popup/item_2/text = "Godot default (use terrain peering bit)"
 popup/item_2/id = 2
-popup/item_2/disabled = true
 
 [node name="DefaultEditorCheckButton" type="CheckButton" parent="MainVBoxContainer/HBoxContainer"]
 layout_mode = 2
