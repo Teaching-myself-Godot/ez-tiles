@@ -298,6 +298,7 @@ func handle_mouse_move(tile_pos : Vector2i) -> void:
 			else:
 				_place_cells_preview([tile_pos], current_terrain_id)
 
+
 func handle_mouse_up(button : MouseButton, tile_pos: Vector2i):
 	if drag_mode == DragMode.AREA:
 		_commit_cell_placement(_get_cell_range(drag_start, tile_pos))
@@ -313,11 +314,17 @@ func handle_mouse_up(button : MouseButton, tile_pos: Vector2i):
 
 func handle_mouse_down(button : MouseButton, tile_pos: Vector2i):
 	drag_start = tile_pos
+
 	match(button):
 		MouseButton.MOUSE_BUTTON_LEFT:
 			lmb_is_down = true
+			if drag_mode == DragMode.BRUSH:
+				_commit_cell_placement([tile_pos])
 		MouseButton.MOUSE_BUTTON_RIGHT:
 			rmb_is_down = true
+			if drag_mode == DragMode.BRUSH:
+				_erase_cells([tile_pos])
+				_commit_cell_placement([tile_pos])
 
 
 func handle_mouse_entered():
