@@ -279,7 +279,7 @@ func _get_cell_range(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
 	return cells
 
 
-func handle_mouse_move(tile_pos : Vector2i, mouse_pos : Vector2i) -> void:
+func handle_mouse_move(tile_pos : Vector2i) -> void:
 	if is_instance_valid(under_edit):
 		if drag_mode == DragMode.BRUSH:
 			_place_back_remembered_cells()

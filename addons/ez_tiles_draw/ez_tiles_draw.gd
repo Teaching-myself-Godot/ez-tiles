@@ -7,6 +7,7 @@ var select_mode_button : Button
 var prev_tile_pos := Vector2i.ZERO
 var lmb_is_down_outside_2d_viewport := false
 var hint_polygon : Polygon2D
+var prev_pos := Vector2i.ZERO
 
 func _enter_tree() -> void:
 	dock = preload("res://addons/ez_tiles_draw/ez_tiles_draw_dock.tscn").instantiate()
@@ -117,8 +118,9 @@ func _input(_event) -> void:
 
 			if not dock.viewport_has_mouse:
 				dock.handle_mouse_entered()
-
-			dock.handle_mouse_move(tile_pos, g_mouse_pos)
+			if prev_pos != tile_pos:
+				dock.handle_mouse_move(tile_pos)
+				prev_pos = tile_pos
 		else:
 			lmb_is_down_outside_2d_viewport = Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
 			if dock.viewport_has_mouse:

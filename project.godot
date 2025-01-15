@@ -19,6 +19,11 @@ config/icon="res://icon.svg"
 
 enabled=PackedStringArray("res://addons/ez_tiles/plugin.cfg", "res://addons/ez_tiles_draw/plugin.cfg", "res://addons/godot-plugin-refresher/plugin.cfg")
 
+[layer_names]
+
+2d_render/layer_1="foo"
+2d_render/layer_2="bar"
+
 [rendering]
 
 environment/defaults/default_clear_color=Color(0.285507, 0.455724, 0.779644, 1)
