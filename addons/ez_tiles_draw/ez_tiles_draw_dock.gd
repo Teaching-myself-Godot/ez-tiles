@@ -151,6 +151,7 @@ func _on_terrain_selected(id : int) -> void:
 	current_terrain_id = id
 	_update_rectangle_grid_preview()
 
+
 func _place_back_remembered_cells() -> void:
 	for prev_pos in remembered_cells.keys():
 		if remembered_cells[prev_pos][0] > -1:
@@ -166,7 +167,8 @@ func _remember_cell(tile_pos : Vector2i) -> void:
 	else:
 		remembered_cells[tile_pos] = [-1, Vector2i.ZERO]
 
-func _get_expanded_region(area_cells : Array[Vector2i]) -> Array:
+
+func _grow_cells(area_cells : Array[Vector2i]) -> Array:
 	var expanded_region := {}
 	for cell in area_cells:
 		if cell not in expanded_region:
@@ -177,13 +179,11 @@ func _get_expanded_region(area_cells : Array[Vector2i]) -> Array:
 	return expanded_region.keys()
 
 
-
 func _place_cells_preview(cells_in_current_draw_area : Array[Vector2i], terrain_id : int) -> void:
-	for tile_pos in cells_in_current_draw_area:
+	var all_cells := _grow_cells(cells_in_current_draw_area)
+	for tile_pos in all_cells:
 		_remember_cell(tile_pos)
-		for n_pos in _get_neighbors(tile_pos):
-			_remember_cell(n_pos)
-		
+
 	for tile_pos in cells_in_current_draw_area:
 		if terrain_id < 0:
 			under_edit.erase_cell(tile_pos)
@@ -191,13 +191,13 @@ func _place_cells_preview(cells_in_current_draw_area : Array[Vector2i], terrain_
 			under_edit.set_cell(tile_pos, _get_first_source_id_for_terrain(terrain_id), _get_ez_atlas_coord(tile_pos, terrain_id))
 		if neighbour_mode != NeighbourMode.PEERING_BIT:
 			_update_atlas_coords(_get_neighbors(tile_pos))
+
 	if neighbour_mode == NeighbourMode.PEERING_BIT:
 		under_edit.set_cells_terrain_connect(cells_in_current_draw_area, 0, terrain_id, true)
 
+
 func _commit_cell_placement(cells_in_current_draw_area : Array[Vector2i]) -> void:
 	remembered_cells.clear()
-	for tile_pos in cells_in_current_draw_area:
-		_remember_cell(tile_pos)
 
 
 func _update_atlas_coords(cells : Array[Vector2i]) -> void:
