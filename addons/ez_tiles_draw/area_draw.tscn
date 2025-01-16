@@ -105,7 +105,7 @@ size_flags_horizontal = 6
 size_flags_vertical = 6
 theme_override_constants/h_separation = 0
 theme_override_constants/v_separation = 0
-columns = 4
+columns = 5
 
 [node name="TextureRect" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
 custom_minimum_size = Vector2(32, 32)
@@ -198,6 +198,30 @@ size_flags_horizontal = 8
 size_flags_vertical = 8
 
 [node name="TextureRect16" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
+[node name="TextureRect17" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
+[node name="TextureRect18" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
+[node name="TextureRect19" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
+[node name="TextureRect20" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 size_flags_horizontal = 8

@@ -243,7 +243,7 @@ func _on_tab_container_tab_changed(tab: DragMode) -> void:
 	drag_mode = tab
 
 
-func get_draw_area(tile_pos : Vector2i) -> Rect2i:
+func get_draw_rect(tile_pos : Vector2i) -> Rect2i:
 	match(drag_mode):
 		DragMode.AREA:
 			if rmb_is_down or lmb_is_down:
@@ -258,17 +258,58 @@ func get_draw_area(tile_pos : Vector2i) -> Rect2i:
 			return Rect2i(tile_pos, Vector2i.ONE)
 
 
-func _get_cell_range(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
+func get_draw_area(tile_pos : Vector2i) -> Array[Vector2i]:
+	match(drag_mode):
+		DragMode.AREA:
+			if rmb_is_down or lmb_is_down:
+				return _get_draw_shape_for_area(drag_start, tile_pos)
+			else:
+				return []
+		DragMode.BRUSH, _:
+			return [tile_pos]
+
+
+func _get_cells_rectangle(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
 	var cells : Array[Vector2i] = []
+	for x in range(p1.x, p2.x + 1):
+		for y in range(p1.y, p2.y + 1):
+			cells.append(Vector2i(x, y))
+	return cells
+
+
+func _get_cells_slope_tl(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
+	var cells : Array[Vector2i] = []
+	var width := p2.x - p1.x + 1
+	var height := p2.y - p1.y + 1
+	var sq_siz := min(width, height)
+	for y in range(sq_siz):
+		for x in range(sq_siz - y - 1 if sq_siz - y - 1 > 0 else 0, sq_siz):
+			cells.append(Vector2i(p1.x + x, p1.y + y))
+	if width > sq_siz:
+		for x in range(sq_siz, width):
+			for y in range(height):
+				cells.append(Vector2i(p1.x + x, p1.y + y))
+	else:
+		for y in range(sq_siz, height):
+			for x in range(width):
+				cells.append(Vector2i(p1.x + x, p1.y + y))
+	return cells
+
+
+func _get_draw_shape_for_area(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
+	# normalize range
 	var from_x := p1.x if p1.x < p2.x else p2.x
 	var to_x := p1.x if p1.x > p2.x else p2.x
 	var from_y := p1.y if p1.y < p2.y else p2.y
 	var to_y := p1.y if p1.y > p2.y else p2.y
 
-	for x in range(from_x, to_x + 1):
-		for y in range(from_y, to_y + 1):
-			cells.append(Vector2i(x, y))
-	return cells
+	match(area_draw_tab.shape):
+		AreaDraw.Shape.RECTANGLE:
+			return _get_cells_rectangle(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
+		AreaDraw.Shape.SLOPE_TL:
+			return _get_cells_slope_tl(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
+
+	return []
 
 
 func handle_mouse_move(tile_pos : Vector2i) -> void:
@@ -286,9 +327,9 @@ func handle_mouse_move(tile_pos : Vector2i) -> void:
 		elif drag_mode == DragMode.AREA:
 			_place_back_remembered_cells()
 			if lmb_is_down:
-				_place_cells_preview(_get_cell_range(drag_start, tile_pos), current_terrain_id)
+				_place_cells_preview(_get_draw_shape_for_area(drag_start, tile_pos), current_terrain_id)
 			elif rmb_is_down:
-				_erase_cells(_get_cell_range(drag_start, tile_pos))
+				_erase_cells(_get_draw_shape_for_area(drag_start, tile_pos))
 			else:
 				_place_cells_preview([tile_pos], current_terrain_id)
 
@@ -298,11 +339,11 @@ func handle_mouse_up(button : MouseButton, tile_pos: Vector2i):
 		MouseButton.MOUSE_BUTTON_LEFT:
 			lmb_is_down = false
 			if drag_mode == DragMode.AREA:
-				_commit_cell_placement(_get_cell_range(drag_start, tile_pos))
+				_commit_cell_placement(_get_draw_shape_for_area(drag_start, tile_pos))
 		MouseButton.MOUSE_BUTTON_RIGHT:
 			rmb_is_down = false
 			if drag_mode == DragMode.AREA:
-				_commit_cell_placement(_get_cell_range(drag_start, tile_pos))
+				_commit_cell_placement(_get_draw_shape_for_area(drag_start, tile_pos))
 
 
 func handle_mouse_down(button : MouseButton, tile_pos: Vector2i):
