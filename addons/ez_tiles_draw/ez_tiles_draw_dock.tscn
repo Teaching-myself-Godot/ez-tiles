@@ -27,21 +27,27 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="MainVBoxContainer/HBoxContainer"]
 layout_mode = 2
-tooltip_text = "Determines in which cases a neighbouring tile is considered a neighbour. When a tile is considered a neighbour, this tile will act as if it is 'glued' to it."
+tooltip_text = "Determines how to connect neighbouring tiles.
+- Overwrite/Ignore (draw exactly like the preview in the bottom pane)
+- Inclusive (consider all terrains my neighbour)
+- Exclusive (consider only my terrain type as neighbour)
+- Godot default (use terrain peering bit)"
 mouse_filter = 0
-text = "Draw mode* "
+text = "Connect mode* "
 
 [node name="NeighbourModeOptionButton" type="OptionButton" parent="MainVBoxContainer/HBoxContainer"]
 layout_mode = 2
 tooltip_text = "Determines in which cases a neighbouring tile is considered a neighbour. When a tile is considered a neighbour, this tile will act as if it is 'glued' to it."
 selected = 0
 fit_to_longest_item = false
-item_count = 3
-popup/item_0/text = "Inclusive (consider all terrains my neighbour)"
-popup/item_1/text = "Exclusive (consider only my terrain type as neighbour)"
+item_count = 4
+popup/item_0/text = "Overwrite/Ignore (draw exactly like the preview in the bottom pane)"
+popup/item_1/text = "Inclusive (consider all terrains my neighbour)"
 popup/item_1/id = 1
-popup/item_2/text = "Godot default (use terrain peering bit)"
+popup/item_2/text = "Exclusive (consider only my terrain type as neighbour)"
 popup/item_2/id = 2
+popup/item_3/text = "Godot default (use terrain peering bit)"
+popup/item_3/id = 3
 
 [node name="DefaultEditorCheckButton" type="CheckButton" parent="MainVBoxContainer/HBoxContainer"]
 layout_mode = 2

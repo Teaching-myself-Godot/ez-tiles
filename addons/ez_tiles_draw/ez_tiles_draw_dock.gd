@@ -2,7 +2,7 @@
 extends Control
 class_name EZTilesDrawDock
 
-enum NeighbourMode {INCLUSIVE, EXCLUSIVE, PEERING_BIT}
+enum NeighbourMode {OVERWRITE, INCLUSIVE, EXCLUSIVE, PEERING_BIT}
 enum DragMode {AREA, BRUSH, STAMP}
 
 const EZ_TILE_CUSTOM_META := "_is_ez_tiles_generated"
@@ -21,7 +21,7 @@ var viewport_has_mouse := false
 var lmb_is_down := false
 var rmb_is_down := false
 var current_terrain_id := 0
-var neighbour_mode := NeighbourMode.INCLUSIVE
+var neighbour_mode := NeighbourMode.OVERWRITE
 var suppress_preview := false
 var undo_redo : EditorUndoRedoManager
 var area_draw_tab : AreaDraw
@@ -136,7 +136,7 @@ func _remember_cell(tile_pos : Vector2i) -> void:
 		remembered_cells[tile_pos] = [-1, Vector2i.ZERO]
 
 
-func _grow_cells(area_cells : Array[Vector2i]) -> Array:
+func _grow_cells(area_cells : Array) -> Array:
 	var expanded_region := {}
 	for cell in area_cells:
 		if cell not in expanded_region:
@@ -147,8 +147,8 @@ func _grow_cells(area_cells : Array[Vector2i]) -> Array:
 	return expanded_region.keys()
 
 
-func _place_cells_preview(cells_in_current_draw_area : Array[Vector2i], terrain_id : int) -> void:
-	var all_cells := _grow_cells(cells_in_current_draw_area)
+func _place_cells_preview(cells_in_current_draw_area : Dictionary, terrain_id : int) -> void:
+	var all_cells := _grow_cells(cells_in_current_draw_area.keys())
 	for tile_pos in all_cells:
 		_remember_cell(tile_pos)
 
@@ -156,15 +156,21 @@ func _place_cells_preview(cells_in_current_draw_area : Array[Vector2i], terrain_
 		if terrain_id < 0:
 			under_edit.erase_cell(tile_pos)
 		else:
-			under_edit.set_cell(tile_pos, _get_first_source_id_for_terrain(terrain_id), _get_ez_atlas_coord(tile_pos, terrain_id))
-		if neighbour_mode != NeighbourMode.PEERING_BIT:
+			var coord : Vector2i = (
+				cells_in_current_draw_area[tile_pos] if neighbour_mode == NeighbourMode.OVERWRITE 
+				else _get_ez_atlas_coord(tile_pos, terrain_id)
+			)
+			under_edit.set_cell(tile_pos, _get_first_source_id_for_terrain(terrain_id), 
+					coord
+			)
+		if neighbour_mode != NeighbourMode.PEERING_BIT and neighbour_mode != NeighbourMode.OVERWRITE:
 			_update_atlas_coords(_get_neighbors(tile_pos))
 
 	if neighbour_mode == NeighbourMode.PEERING_BIT:
-		under_edit.set_cells_terrain_connect(cells_in_current_draw_area, 0, terrain_id, true)
+		under_edit.set_cells_terrain_connect(cells_in_current_draw_area.keys(), 0, terrain_id, true)
 
 
-func _commit_cell_placement(cells_in_current_draw_area : Array[Vector2i]) -> void:
+func _commit_cell_placement(cells_in_current_draw_area : Array) -> void:
 	undo_redo.create_action("Update cells in: " + under_edit.name)
 	for cell in remembered_cells:
 		if remembered_cells[cell][0] < 0:
@@ -189,7 +195,7 @@ func _update_atlas_coords(cells : Array[Vector2i]) -> void:
 				_get_ez_atlas_coord(tile_pos, under_edit.get_cell_source_id(tile_pos)))
 
 
-func _erase_cells(cells : Array[Vector2i]):
+func _erase_cells(cells : Dictionary):
 	_place_cells_preview(cells, -1)
 
 
@@ -204,6 +210,9 @@ func _consider_a_neighbour(cell : Vector2i, for_source_id : int) -> bool:
 			return neighbour_source_id > -1
 		NeighbourMode.EXCLUSIVE:
 			return neighbour_source_id > -1 and neighbour_source_id == for_source_id
+		NeighbourMode.OVERWRITE:
+			printerr("illegal state: should not be considering neighbours")
+			return false
 		NeighbourMode.PEERING_BIT:
 			printerr("illegal state: should invoke `under_edit.set_cells_terrain_connect`")
 			return false
@@ -253,23 +262,23 @@ func get_draw_rect(tile_pos : Vector2i) -> Rect2i:
 				var to_y := drag_start.y if drag_start.y > tile_pos.y else tile_pos.y
 				return Rect2i(Vector2i(from_x, from_y),  Vector2i(to_x, to_y) - Vector2i(from_x, from_y) + Vector2i.ONE)
 			else:
-				return Rect2i()
+				return Rect2i(tile_pos, Vector2i.ONE)
 		DragMode.BRUSH, _:
 			return Rect2i(tile_pos, Vector2i.ONE)
 
 
-func get_draw_area(tile_pos : Vector2i) -> Array[Vector2i]:
+func get_draw_area(tile_pos : Vector2i) -> Array:
 	match(drag_mode):
 		DragMode.AREA:
 			if rmb_is_down or lmb_is_down:
-				return _get_draw_shape_for_area(drag_start, tile_pos)
+				return _get_draw_shape_for_area(drag_start, tile_pos).keys()
 			else:
 				return []
 		DragMode.BRUSH, _:
 			return [tile_pos]
 
 
-func _get_draw_shape_for_area(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
+func _get_draw_shape_for_area(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
 	var from_x := p1.x if p1.x < p2.x else p2.x
 	var to_x := p1.x if p1.x > p2.x else p2.x
 	var from_y := p1.y if p1.y < p2.y else p2.y
@@ -286,7 +295,7 @@ func _get_draw_shape_for_area(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
 			return AreaDraw.get_cells_slope_tr(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
 		AreaDraw.Shape.SLOPE_BR:
 			return AreaDraw.get_cells_slope_br(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
-	return []
+	return {}
 
 
 func handle_mouse_move(tile_pos : Vector2i) -> void:
@@ -295,11 +304,11 @@ func handle_mouse_move(tile_pos : Vector2i) -> void:
 	if is_instance_valid(under_edit):
 		if drag_mode == DragMode.BRUSH:
 			_place_back_remembered_cells()
-			_place_cells_preview([tile_pos], current_terrain_id)
+			_place_cells_preview({tile_pos: Vector2i.ZERO}, current_terrain_id)
 			if lmb_is_down:
 				_commit_cell_placement([tile_pos])
 			elif rmb_is_down:
-				_erase_cells([tile_pos])
+				_erase_cells({tile_pos: Vector2i.ZERO})
 				_commit_cell_placement([tile_pos])
 		elif drag_mode == DragMode.AREA:
 			_place_back_remembered_cells()
@@ -307,8 +316,7 @@ func handle_mouse_move(tile_pos : Vector2i) -> void:
 				_place_cells_preview(_get_draw_shape_for_area(drag_start, tile_pos), current_terrain_id)
 			elif rmb_is_down:
 				_erase_cells(_get_draw_shape_for_area(drag_start, tile_pos))
-			else:
-				_place_cells_preview([tile_pos], current_terrain_id)
+
 
 
 func handle_mouse_up(button : MouseButton, tile_pos: Vector2i):
@@ -316,11 +324,11 @@ func handle_mouse_up(button : MouseButton, tile_pos: Vector2i):
 		MouseButton.MOUSE_BUTTON_LEFT:
 			lmb_is_down = false
 			if drag_mode == DragMode.AREA:
-				_commit_cell_placement(_get_draw_shape_for_area(drag_start, tile_pos))
+				_commit_cell_placement(_get_draw_shape_for_area(drag_start, tile_pos).keys())
 		MouseButton.MOUSE_BUTTON_RIGHT:
 			rmb_is_down = false
 			if drag_mode == DragMode.AREA:
-				_commit_cell_placement(_get_draw_shape_for_area(drag_start, tile_pos))
+				_commit_cell_placement(_get_draw_shape_for_area(drag_start, tile_pos).keys())
 
 
 func handle_mouse_down(button : MouseButton, tile_pos: Vector2i):
@@ -329,12 +337,18 @@ func handle_mouse_down(button : MouseButton, tile_pos: Vector2i):
 	match(button):
 		MouseButton.MOUSE_BUTTON_LEFT:
 			lmb_is_down = true
-			if drag_mode == DragMode.BRUSH:
+			if drag_mode == DragMode.AREA and not suppress_preview:
+				_place_back_remembered_cells()
+				_place_cells_preview(_get_draw_shape_for_area(drag_start, tile_pos), current_terrain_id)
+			elif drag_mode == DragMode.BRUSH:
 				_commit_cell_placement([tile_pos])
 		MouseButton.MOUSE_BUTTON_RIGHT:
 			rmb_is_down = true
-			if drag_mode == DragMode.BRUSH:
-				_erase_cells([tile_pos])
+			if drag_mode == DragMode.AREA and not suppress_preview:
+				_place_back_remembered_cells()
+				_erase_cells(_get_draw_shape_for_area(drag_start, tile_pos))
+			elif drag_mode == DragMode.BRUSH:
+				_erase_cells({tile_pos: Vector2i.ZERO})
 				_commit_cell_placement([tile_pos])
 
 

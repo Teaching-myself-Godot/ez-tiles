@@ -109,88 +109,142 @@ func _on_slopes_bl_button_pressed() -> void:
 	update_grid_preview()
 
 
-static func get_cells_rectangle(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
-	var cells : Array[Vector2i] = []
+static func get_cells_rectangle(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
+	var cells := {}
 	for x in range(p1.x, p2.x + 1):
 		for y in range(p1.y, p2.y + 1):
-			cells.append(Vector2i(x, y))
+			if x == p1.x and y == p1.y:
+				cells[Vector2i(x, y)] = TL
+			elif x == p2.x and y == p1.y:
+				cells[Vector2i(x, y)] = TR
+			elif x == p1.x and y == p2.y:
+				cells[Vector2i(x, y)] = BL
+			elif x == p2.x and y == p2.y:
+				cells[Vector2i(x, y)] = BR
+			elif x == p2.x:
+				cells[Vector2i(x, y)] = RM
+			elif x == p1.x:
+				cells[Vector2i(x, y)] = LM
+			elif y == p2.y:
+				cells[Vector2i(x, y)] = BM
+			elif y == p1.y:
+				cells[Vector2i(x, y)] = TM
+			else:
+				cells[Vector2i(x, y)] = CM
 	return cells
 
 
-static func get_cells_slope_tl(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
-	var cells : Array[Vector2i] = []
+static func get_cells_slope_tl(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
+	var cells := {}
 	var width := p2.x - p1.x + 1
 	var height := p2.y - p1.y + 1
 	var sq_siz := min(width, height)
-	for y in range(sq_siz):
-		for x in range(sq_siz - y - 1 if sq_siz - y - 1 > 0 else 0, sq_siz):
-			cells.append(Vector2i(p1.x + x, p1.y + y))
+	for y : int in range(sq_siz):
+		var range_start = sq_siz - y - 1 if sq_siz - y - 1 > 0 else 0
+		for x in range(range_start, sq_siz):
+			cells[Vector2i(p1.x + x, p1.y + y)] = TL if x == range_start else CM
 	if width > sq_siz:
 		for x in range(sq_siz, width):
 			for y in range(height):
-				cells.append(Vector2i(p1.x + x, p1.y + y))
+				cells[Vector2i(p1.x + x, p1.y + y)] = TM if y == 0 else CM
 	else:
 		for y in range(sq_siz, height):
 			for x in range(width):
-				cells.append(Vector2i(p1.x + x, p1.y + y))
+				cells[Vector2i(p1.x + x, p1.y + y)] = LM if x == 0 else CM
 	return cells
 
-
-static func get_cells_slope_tr(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
-	var cells : Array[Vector2i] = []
+static func get_cells_slope_tr(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
+	var cells := {}
 	var width := p2.x - p1.x + 1
 	var height := p2.y - p1.y + 1
 	var sq_siz := min(width, height)
-
-	for y in range(sq_siz):
-		for x in range(sq_siz - y - 1 if sq_siz - y - 1 > 0 else 0, sq_siz):
-			cells.append(Vector2i(p1.x + (width-x-1), p1.y + y))
+	for y : int in range(sq_siz):
+		var range_start = sq_siz - y - 1 if sq_siz - y - 1 > 0 else 0
+		for x in range(range_start, sq_siz):
+			cells[Vector2i(p1.x + (width-x-1), p1.y + y)] = TR if x == range_start else CM
 	if width > sq_siz:
 		for x in range(sq_siz, width):
 			for y in range(height):
-				cells.append(Vector2i(p1.x + (width-x-1), p1.y + y))
+				cells[Vector2i(p1.x + (width-x-1), p1.y + y)] = TM if y == 0 else CM
 	else:
 		for y in range(sq_siz, height):
 			for x in range(width):
-				cells.append(Vector2i(p1.x + (width-x-1), p1.y + y))
+				cells[Vector2i(p1.x + (width-x-1), p1.y + y)] = RM if x == 0 else CM
 	return cells
 
-
-static func get_cells_slope_bl(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
-	var cells : Array[Vector2i] = []
+static func get_cells_slope_bl(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
+	var cells := {}
 	var width := p2.x - p1.x + 1
 	var height := p2.y - p1.y + 1
 	var sq_siz := min(width, height)
-
+	for y : int in range(sq_siz):
+		var range_start = sq_siz - y - 1 if sq_siz - y - 1 > 0 else 0
+		for x in range(range_start, sq_siz):
+			cells[Vector2i(p1.x + x, p1.y + (height - y - 1))] = BL if x == range_start else CM
 	if width > sq_siz:
 		for x in range(sq_siz, width):
 			for y in range(height):
-				cells.append(Vector2i(p1.x + x, p1.y + y))
-		for y in range(sq_siz):
-			for x in range(sq_siz - (height-y) if sq_siz - (height-y) > 0 else 0, sq_siz):
-				cells.append(Vector2i(p1.x + x, p1.y + y))
+				cells[Vector2i(p1.x + x, p1.y + (height - y - 1))] = BM if y == 0 else CM
 	else:
-		for y in range(height):
-			for x in range(sq_siz - (height-y) if sq_siz - (height-y) > 0 else 0, sq_siz):
-				cells.append(Vector2i(p1.x + x, p1.y + y))
+		for y in range(sq_siz, height):
+			for x in range(width):
+				cells[Vector2i(p1.x + x, p1.y + (height - y - 1))] = LM if x == 0 else CM
 	return cells
 
-
-static func get_cells_slope_br(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
-	var cells : Array[Vector2i] = []
+static func get_cells_slope_br(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
+	var cells := {}
 	var width := p2.x - p1.x + 1
 	var height := p2.y - p1.y + 1
 	var sq_siz := min(width, height)
-
+	for y : int in range(sq_siz):
+		var range_start = sq_siz - y - 1 if sq_siz - y - 1 > 0 else 0
+		for x in range(range_start, sq_siz):
+			cells[Vector2i(p1.x + (width-x-1), p1.y + (height - y - 1))] = BR if x == range_start else CM
 	if width > sq_siz:
 		for x in range(sq_siz, width):
 			for y in range(height):
-				cells.append(Vector2i(p1.x + (width-x-1), p1.y + y))
-		for y in range(sq_siz):
-			for x in range(sq_siz - (height-y) if sq_siz - (height-y) > 0 else 0, sq_siz):
-				cells.append(Vector2i(p1.x + (width-x-1), p1.y + y))
+				cells[Vector2i(p1.x + (width-x-1), p1.y + (height - y - 1))] = BM if y == 0 else CM
 	else:
-		for y in range(height):
-			for x in range(sq_siz - (height-y) if sq_siz - (height-y) > 0 else 0, sq_siz):
-				cells.append(Vector2i(p1.x + (width-x-1), p1.y + y))
+		for y in range(sq_siz, height):
+			for x in range(width):
+				cells[Vector2i(p1.x + (width-x-1), p1.y + (height - y - 1))] = RM if x == 0 else CM
 	return cells
+
+#static func get_cells_slope_bl(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
+	#var cells := {}
+	#var width := p2.x - p1.x + 1
+	#var height := p2.y - p1.y + 1
+	#var sq_siz := min(width, height)
+#
+	#if width > sq_siz:
+		#for x in range(sq_siz, width):
+			#for y in range(height):
+				#cells[Vector2i(p1.x + x, p1.y + y)] = CM
+		#for y in range(sq_siz):
+			#for x in range(sq_siz - (height-y) if sq_siz - (height-y) > 0 else 0, sq_siz):
+				#cells[Vector2i(p1.x + x, p1.y + y)] = CM
+	#else:
+		#for y in range(height):
+			#for x in range(sq_siz - (height-y) if sq_siz - (height-y) > 0 else 0, sq_siz):
+				#cells[Vector2i(p1.x + x, p1.y + y)] = CM
+	#return cells
+#
+#
+#static func get_cells_slope_br(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
+	#var cells := {}
+	#var width := p2.x - p1.x + 1
+	#var height := p2.y - p1.y + 1
+	#var sq_siz := min(width, height)
+#
+	#if width > sq_siz:
+		#for x in range(sq_siz, width):
+			#for y in range(height):
+				#cells[Vector2i(p1.x + (width-x-1), p1.y + y)] = CM
+		#for y in range(sq_siz):
+			#for x in range(sq_siz - (height-y) if sq_siz - (height-y) > 0 else 0, sq_siz):
+				#cells[Vector2i(p1.x + (width-x-1), p1.y + y)] = CM
+	#else:
+		#for y in range(height):
+			#for x in range(sq_siz - (height-y) if sq_siz - (height-y) > 0 else 0, sq_siz):
+				#cells[Vector2i(p1.x + (width-x-1), p1.y + y)] = CM
+	#return cells
