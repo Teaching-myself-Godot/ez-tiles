@@ -1,7 +1,9 @@
 @tool
-extends PanelContainer
-class_name Area_Draw
+extends Control
+class_name AreaDraw
 
+enum Shape {RECTANGLE, SLOPE_TL, SLOPE_TR, SLOPE_BR, SLOPE_BL}
+var shape := Shape.RECTANGLE
 var preview_container : GridContainer
 
 func _enter_tree() -> void:
@@ -34,3 +36,23 @@ func update_grid_preview(terrain_texture : Texture2D, tile_size : Vector2i):
 		else:
 			atlas_texture.region = Rect2i(Vector2i(4, 1) * tile_size, tile_size)
 		tex_rect.texture = atlas_texture
+
+
+func _on_rectangles_button_pressed() -> void:
+	shape = Shape.RECTANGLE
+
+
+func _on_slopes_tl_button_pressed() -> void:
+	shape = Shape.SLOPE_TL
+
+
+func _on_slopes_tr_button_pressed() -> void:
+	shape = Shape.SLOPE_TR
+
+
+func _on_slopes_br_button_pressed() -> void:
+	shape = Shape.SLOPE_BR
+
+
+func _on_slopes_bl_button_pressed() -> void:
+	shape = Shape.SLOPE_BL

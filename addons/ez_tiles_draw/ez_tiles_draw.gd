@@ -44,6 +44,8 @@ func _get_select_mode_button() -> Button:
 
 
 func _tile_pos_from_mouse_pos() -> Vector2i:
+	if not is_instance_valid(dock.under_edit):
+		return Vector2i.ZERO
 	var mouse_pos := EditorInterface.get_editor_viewport_2d().get_mouse_position()
 	var cursor_pos_on_tilemaplayer := (mouse_pos - dock.under_edit.global_position).rotated(-dock.under_edit.global_rotation)
 
@@ -56,6 +58,8 @@ func _tile_pos_from_mouse_pos() -> Vector2i:
 
 
 func _tile_pos_to_overlay_pos(tile_pos : Vector2i) -> Vector2:
+	if not is_instance_valid(dock.under_edit):
+		return Vector2i.ZERO
 	return (
 		(
 			(

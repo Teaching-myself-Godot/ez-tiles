@@ -24,7 +24,7 @@ var current_terrain_id := 0
 var neighbour_mode := NeighbourMode.INCLUSIVE
 var suppress_preview := false
 var undo_redo : EditorUndoRedoManager
-var area_draw_tab : Area_Draw
+var area_draw_tab : AreaDraw
 
 const EZ_NEIGHBOUR_MAP := {
 	"....O...." : Vector2i.ZERO,

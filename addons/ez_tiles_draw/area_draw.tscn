@@ -1,6 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://bitqwiwmn3s0r"]
+[gd_scene load_steps=9 format=3 uid="uid://bitqwiwmn3s0r"]
 
 [ext_resource type="Script" path="res://addons/ez_tiles_draw/area_draw.gd" id="1_ee3lv"]
+[ext_resource type="Texture2D" uid="uid://dooqg3fapf15x" path="res://addons/ez_tiles_draw/Rectangle.svg" id="2_0c16j"]
+[ext_resource type="Texture2D" uid="uid://behgjlyeldpdv" path="res://addons/ez_tiles_draw/SlopeTL.svg" id="3_j68q8"]
+[ext_resource type="Texture2D" uid="uid://dbjof7q6tq4d6" path="res://addons/ez_tiles_draw/SlopeTR.svg" id="4_703fo"]
+[ext_resource type="Texture2D" uid="uid://7crpolmxjj2r" path="res://addons/ez_tiles_draw/SlopeBR.svg" id="5_f5qx1"]
+[ext_resource type="Texture2D" uid="uid://clpg11r4kdy8v" path="res://addons/ez_tiles_draw/SlopeBL.svg" id="6_r38ls"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ehgjy"]
 content_margin_left = 10.0
@@ -9,82 +14,197 @@ content_margin_right = 10.0
 content_margin_bottom = 10.0
 bg_color = Color(0.12549, 0.145098, 0.172549, 1)
 
-[node name="Area Draw" type="PanelContainer"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_ehgjy")
+[sub_resource type="ButtonGroup" id="ButtonGroup_82nql"]
+
+[node name="AreaDraw" type="HBoxContainer"]
+clip_children = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_ee3lv")
 metadata/_tab_index = 0
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="Panel2" type="Panel" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.3
+theme_override_styles/panel = SubResource("StyleBoxFlat_ehgjy")
 
-[node name="PreviewGridContainer" type="GridContainer" parent="CenterContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RectanglesButton" type="Button" parent="Panel2/VBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_82nql")
+text = "Rectangles"
+icon = ExtResource("2_0c16j")
+alignment = 0
+
+[node name="SlopesTLButton" type="Button" parent="Panel2/VBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_82nql")
+text = "Slopes (Top Left)"
+icon = ExtResource("3_j68q8")
+alignment = 0
+
+[node name="SlopesTRButton" type="Button" parent="Panel2/VBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_82nql")
+text = "Slopes (Top Right)"
+icon = ExtResource("4_703fo")
+alignment = 0
+
+[node name="SlopesBRButton" type="Button" parent="Panel2/VBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_82nql")
+text = "Slopes (Bottom Right)"
+icon = ExtResource("5_f5qx1")
+alignment = 0
+
+[node name="SlopesBLButton" type="Button" parent="Panel2/VBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_82nql")
+text = "Slopes (Bottom Left)"
+icon = ExtResource("6_r38ls")
+alignment = 0
+
+[node name="Panel" type="Panel" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_ehgjy")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PreviewGridContainer" type="GridContainer" parent="Panel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
 theme_override_constants/h_separation = 0
 theme_override_constants/v_separation = 0
 columns = 4
 
-[node name="TextureRect" type="TextureRect" parent="CenterContainer/PreviewGridContainer"]
-custom_minimum_size = Vector2(64, 64)
+[node name="TextureRect" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
 
-[node name="TextureRect2" type="TextureRect" parent="CenterContainer/PreviewGridContainer"]
-custom_minimum_size = Vector2(64, 64)
+[node name="TextureRect2" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
 
-[node name="TextureRect3" type="TextureRect" parent="CenterContainer/PreviewGridContainer"]
-custom_minimum_size = Vector2(64, 64)
+[node name="TextureRect3" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
 
-[node name="TextureRect4" type="TextureRect" parent="CenterContainer/PreviewGridContainer"]
-custom_minimum_size = Vector2(64, 64)
+[node name="TextureRect4" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
 
-[node name="TextureRect5" type="TextureRect" parent="CenterContainer/PreviewGridContainer"]
-custom_minimum_size = Vector2(64, 64)
+[node name="TextureRect5" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
 
-[node name="TextureRect6" type="TextureRect" parent="CenterContainer/PreviewGridContainer"]
-custom_minimum_size = Vector2(64, 64)
+[node name="TextureRect6" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
 
-[node name="TextureRect7" type="TextureRect" parent="CenterContainer/PreviewGridContainer"]
-custom_minimum_size = Vector2(64, 64)
+[node name="TextureRect7" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
 
-[node name="TextureRect8" type="TextureRect" parent="CenterContainer/PreviewGridContainer"]
-custom_minimum_size = Vector2(64, 64)
+[node name="TextureRect8" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
 
-[node name="TextureRect9" type="TextureRect" parent="CenterContainer/PreviewGridContainer"]
-custom_minimum_size = Vector2(64, 64)
+[node name="TextureRect9" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
 
-[node name="TextureRect10" type="TextureRect" parent="CenterContainer/PreviewGridContainer"]
-custom_minimum_size = Vector2(64, 64)
+[node name="TextureRect10" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
 
-[node name="TextureRect11" type="TextureRect" parent="CenterContainer/PreviewGridContainer"]
-custom_minimum_size = Vector2(64, 64)
+[node name="TextureRect11" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
 
-[node name="TextureRect12" type="TextureRect" parent="CenterContainer/PreviewGridContainer"]
-custom_minimum_size = Vector2(64, 64)
+[node name="TextureRect12" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
 
-[node name="TextureRect13" type="TextureRect" parent="CenterContainer/PreviewGridContainer"]
-custom_minimum_size = Vector2(64, 64)
+[node name="TextureRect13" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
 
-[node name="TextureRect14" type="TextureRect" parent="CenterContainer/PreviewGridContainer"]
-custom_minimum_size = Vector2(64, 64)
+[node name="TextureRect14" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
 
-[node name="TextureRect15" type="TextureRect" parent="CenterContainer/PreviewGridContainer"]
-custom_minimum_size = Vector2(64, 64)
+[node name="TextureRect15" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
 
-[node name="TextureRect16" type="TextureRect" parent="CenterContainer/PreviewGridContainer"]
-custom_minimum_size = Vector2(64, 64)
+[node name="TextureRect16" type="TextureRect" parent="Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
+[connection signal="pressed" from="Panel2/VBoxContainer/RectanglesButton" to="." method="_on_rectangles_button_pressed"]
+[connection signal="pressed" from="Panel2/VBoxContainer/SlopesTLButton" to="." method="_on_slopes_tl_button_pressed"]
+[connection signal="pressed" from="Panel2/VBoxContainer/SlopesTRButton" to="." method="_on_slopes_tr_button_pressed"]
+[connection signal="pressed" from="Panel2/VBoxContainer/SlopesBRButton" to="." method="_on_slopes_br_button_pressed"]
+[connection signal="pressed" from="Panel2/VBoxContainer/SlopesBLButton" to="." method="_on_slopes_bl_button_pressed"]

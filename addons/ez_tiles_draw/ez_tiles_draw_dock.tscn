@@ -69,25 +69,22 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 10
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MainVBoxContainer/MainHBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="TabContainer" type="TabContainer" parent="MainVBoxContainer/MainHBoxContainer/ScrollContainer"]
+[node name="TabContainer" type="TabContainer" parent="MainVBoxContainer/MainHBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-current_tab = 1
+current_tab = 0
 
-[node name="Area Draw" parent="MainVBoxContainer/MainHBoxContainer/ScrollContainer/TabContainer" instance=ExtResource("2_k0y3s")]
-visible = false
+[node name="Area Draw" parent="MainVBoxContainer/MainHBoxContainer/TabContainer" instance=ExtResource("2_k0y3s")]
+clip_contents = true
 layout_mode = 2
 
-[node name="Brush Draw" type="PanelContainer" parent="MainVBoxContainer/MainHBoxContainer/ScrollContainer/TabContainer"]
+[node name="Brush Draw" type="PanelContainer" parent="MainVBoxContainer/MainHBoxContainer/TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="Stamp" type="PanelContainer" parent="MainVBoxContainer/MainHBoxContainer/ScrollContainer/TabContainer"]
+[node name="Stamp" type="PanelContainer" parent="MainVBoxContainer/MainHBoxContainer/TabContainer"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
@@ -102,4 +99,4 @@ vertical_alignment = 1
 
 [connection signal="item_selected" from="MainVBoxContainer/HBoxContainer/NeighbourModeOptionButton" to="." method="_on_neighbour_mode_option_button_item_selected"]
 [connection signal="toggled" from="MainVBoxContainer/HBoxContainer/DefaultEditorCheckButton" to="." method="_on_default_editor_check_button_toggled"]
-[connection signal="tab_changed" from="MainVBoxContainer/MainHBoxContainer/ScrollContainer/TabContainer" to="." method="_on_tab_container_tab_changed"]
+[connection signal="tab_changed" from="MainVBoxContainer/MainHBoxContainer/TabContainer" to="." method="_on_tab_container_tab_changed"]
