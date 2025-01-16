@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://bitqwiwmn3s0r"]
+[gd_scene load_steps=10 format=3 uid="uid://bitqwiwmn3s0r"]
 
 [ext_resource type="Script" path="res://addons/ez_tiles_draw/area_draw.gd" id="1_ee3lv"]
 [ext_resource type="Texture2D" uid="uid://dooqg3fapf15x" path="res://addons/ez_tiles_draw/Rectangle.svg" id="2_0c16j"]
+[ext_resource type="Texture2D" uid="uid://xetkyyw6y8ff" path="res://addons/ez_tiles_draw/RectangleSoft.svg" id="2_lfgj6"]
 [ext_resource type="Texture2D" uid="uid://behgjlyeldpdv" path="res://addons/ez_tiles_draw/SlopeTL.svg" id="3_j68q8"]
 [ext_resource type="Texture2D" uid="uid://dbjof7q6tq4d6" path="res://addons/ez_tiles_draw/SlopeTR.svg" id="4_703fo"]
 [ext_resource type="Texture2D" uid="uid://7crpolmxjj2r" path="res://addons/ez_tiles_draw/SlopeBR.svg" id="5_f5qx1"]
@@ -44,14 +45,23 @@ grow_vertical = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="RectanglesButton" type="Button" parent="Panel2/ScrollContainer/VBoxContainer"]
+[node name="HardRectanglesButton" type="Button" parent="Panel2/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 mouse_default_cursor_shape = 2
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_82nql")
-text = "Rectangles"
+text = "Rectangles (Hard)"
 icon = ExtResource("2_0c16j")
+alignment = 0
+
+[node name="RectanglesButton" type="Button" parent="Panel2/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_82nql")
+text = "Rectangles (Soft)"
+icon = ExtResource("2_lfgj6")
 alignment = 0
 
 [node name="SlopesTLButton" type="Button" parent="Panel2/ScrollContainer/VBoxContainer"]
@@ -231,6 +241,7 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 
+[connection signal="pressed" from="Panel2/ScrollContainer/VBoxContainer/HardRectanglesButton" to="." method="_on_hard_rectangles_button_pressed"]
 [connection signal="pressed" from="Panel2/ScrollContainer/VBoxContainer/RectanglesButton" to="." method="_on_rectangles_button_pressed"]
 [connection signal="pressed" from="Panel2/ScrollContainer/VBoxContainer/SlopesTLButton" to="." method="_on_slopes_tl_button_pressed"]
 [connection signal="pressed" from="Panel2/ScrollContainer/VBoxContainer/SlopesTRButton" to="." method="_on_slopes_tr_button_pressed"]

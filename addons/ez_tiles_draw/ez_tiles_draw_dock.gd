@@ -285,8 +285,10 @@ func _get_draw_shape_for_area(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
 	var to_y := p1.y if p1.y > p2.y else p2.y
 
 	match(area_draw_tab.shape):
-		AreaDraw.Shape.RECTANGLE:
+		AreaDraw.Shape.HARD_RECTANGLE:
 			return AreaDraw.get_cells_rectangle(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
+		AreaDraw.Shape.RECTANGLE:
+			return AreaDraw.get_cells_rectangle(Vector2i(from_x, from_y), Vector2i(to_x, to_y), true)
 		AreaDraw.Shape.SLOPE_TL:
 			return AreaDraw.get_cells_slope_tl(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
 		AreaDraw.Shape.SLOPE_BL:
@@ -358,7 +360,8 @@ func handle_mouse_entered():
 
 
 func handle_mouse_out():
-	lmb_is_down = false
-	rmb_is_down = false
+	#lmb_is_down = false
+	#rmb_is_down = false
 	viewport_has_mouse = false
-	_place_back_remembered_cells()
+	if not lmb_is_down:
+		_place_back_remembered_cells()

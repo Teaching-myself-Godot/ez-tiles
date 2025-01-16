@@ -58,7 +58,7 @@ func _tile_pos_from_mouse_pos() -> Vector2i:
 
 
 func _tile_pos_to_overlay_pos(tile_pos : Vector2i) -> Vector2:
-	if not is_instance_valid(dock.under_edit):
+	if not(dock.visible and is_instance_valid(dock.under_edit) and _get_select_mode_button().button_pressed):
 		return Vector2i.ZERO
 	return (
 		(
@@ -103,8 +103,9 @@ func _input(_event) -> void:
 					- viewport_2d.get_parent().global_position
 		)
 
-		if (viewport_2d.get_visible_rect().has_point(g_mouse_pos)
-					and not (g_mouse_pos.x <= 164 and g_mouse_pos.y <= 40)):
+		if ((viewport_2d.get_visible_rect().has_point(g_mouse_pos)
+					and not (g_mouse_pos.x <= 164 and g_mouse_pos.y <= 40))
+					or dock.lmb_is_down or dock.rmb_is_down):
 
 			var tile_pos := _tile_pos_from_mouse_pos()
 			if (Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) 

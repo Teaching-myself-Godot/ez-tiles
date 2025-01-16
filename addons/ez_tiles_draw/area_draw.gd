@@ -2,8 +2,8 @@
 extends Control
 class_name AreaDraw
 
-enum Shape {RECTANGLE, SLOPE_TL, SLOPE_TR, SLOPE_BR, SLOPE_BL}
-var shape := Shape.RECTANGLE
+enum Shape {RECTANGLE, SLOPE_TL, SLOPE_TR, SLOPE_BR, SLOPE_BL, HARD_RECTANGLE}
+var shape := Shape.HARD_RECTANGLE
 var preview_container : GridContainer
 
 const TL := Vector2i(3, 0)
@@ -48,6 +48,12 @@ const SHAPE_MAP := {
 		[XX, XX, BL, CM, CM],
 		[XX, XX, XX, BL, BM],
 	],
+	Shape.HARD_RECTANGLE: [
+		[TM, TM, TM, TM, TM],
+		[LM, CM, CM, CM, RM],
+		[LM, CM, CM, CM, RM],
+		[BM, BM, BM, BM, BM],
+	]
 }
 
 var cur_terrain_texture : Texture2D
@@ -84,46 +90,21 @@ func update_grid_preview(terrain_texture : Texture2D = cur_terrain_texture, tile
 			tex_rect.texture = atlas_texture
 
 
-func _on_rectangles_button_pressed() -> void:
-	shape = Shape.RECTANGLE
-	update_grid_preview()
-
-
-func _on_slopes_tl_button_pressed() -> void:
-	shape = Shape.SLOPE_TL
-	update_grid_preview()
-
-
-func _on_slopes_tr_button_pressed() -> void:
-	shape = Shape.SLOPE_TR
-	update_grid_preview()
-
-
-func _on_slopes_br_button_pressed() -> void:
-	shape = Shape.SLOPE_BR
-	update_grid_preview()
-
-
-func _on_slopes_bl_button_pressed() -> void:
-	shape = Shape.SLOPE_BL
-	update_grid_preview()
-
-
-static func get_cells_rectangle(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
+static func get_cells_rectangle(p1 : Vector2i, p2 : Vector2i, soft := false) -> Dictionary:
 	var cells := {}
 	for x in range(p1.x, p2.x + 1):
 		for y in range(p1.y, p2.y + 1):
-			if x == p1.x and y == p1.y:
+			if x == p1.x and y == p1.y and soft:
 				cells[Vector2i(x, y)] = TL
-			elif x == p2.x and y == p1.y:
+			elif x == p2.x and y == p1.y and soft:
 				cells[Vector2i(x, y)] = TR
-			elif x == p1.x and y == p2.y:
+			elif x == p1.x and y == p2.y and soft:
 				cells[Vector2i(x, y)] = BL
-			elif x == p2.x and y == p2.y:
+			elif x == p2.x and y == p2.y and soft:
 				cells[Vector2i(x, y)] = BR
-			elif x == p2.x:
+			elif x == p2.x and y > p1.y and y < p2.y:
 				cells[Vector2i(x, y)] = RM
-			elif x == p1.x:
+			elif x == p1.x and y > p1.y and y < p2.y:
 				cells[Vector2i(x, y)] = LM
 			elif y == p2.y:
 				cells[Vector2i(x, y)] = BM
@@ -210,41 +191,32 @@ static func get_cells_slope_br(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
 				cells[Vector2i(p1.x + (width-x-1), p1.y + (height - y - 1))] = RM if x == 0 else CM
 	return cells
 
-#static func get_cells_slope_bl(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
-	#var cells := {}
-	#var width := p2.x - p1.x + 1
-	#var height := p2.y - p1.y + 1
-	#var sq_siz := min(width, height)
-#
-	#if width > sq_siz:
-		#for x in range(sq_siz, width):
-			#for y in range(height):
-				#cells[Vector2i(p1.x + x, p1.y + y)] = CM
-		#for y in range(sq_siz):
-			#for x in range(sq_siz - (height-y) if sq_siz - (height-y) > 0 else 0, sq_siz):
-				#cells[Vector2i(p1.x + x, p1.y + y)] = CM
-	#else:
-		#for y in range(height):
-			#for x in range(sq_siz - (height-y) if sq_siz - (height-y) > 0 else 0, sq_siz):
-				#cells[Vector2i(p1.x + x, p1.y + y)] = CM
-	#return cells
-#
-#
-#static func get_cells_slope_br(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
-	#var cells := {}
-	#var width := p2.x - p1.x + 1
-	#var height := p2.y - p1.y + 1
-	#var sq_siz := min(width, height)
-#
-	#if width > sq_siz:
-		#for x in range(sq_siz, width):
-			#for y in range(height):
-				#cells[Vector2i(p1.x + (width-x-1), p1.y + y)] = CM
-		#for y in range(sq_siz):
-			#for x in range(sq_siz - (height-y) if sq_siz - (height-y) > 0 else 0, sq_siz):
-				#cells[Vector2i(p1.x + (width-x-1), p1.y + y)] = CM
-	#else:
-		#for y in range(height):
-			#for x in range(sq_siz - (height-y) if sq_siz - (height-y) > 0 else 0, sq_siz):
-				#cells[Vector2i(p1.x + (width-x-1), p1.y + y)] = CM
-	#return cells
+
+func _on_rectangles_button_pressed() -> void:
+	shape = Shape.RECTANGLE
+	update_grid_preview()
+
+
+func _on_slopes_tl_button_pressed() -> void:
+	shape = Shape.SLOPE_TL
+	update_grid_preview()
+
+
+func _on_slopes_tr_button_pressed() -> void:
+	shape = Shape.SLOPE_TR
+	update_grid_preview()
+
+
+func _on_slopes_br_button_pressed() -> void:
+	shape = Shape.SLOPE_BR
+	update_grid_preview()
+
+
+func _on_slopes_bl_button_pressed() -> void:
+	shape = Shape.SLOPE_BL
+	update_grid_preview()
+
+
+func _on_hard_rectangles_button_pressed() -> void:
+	shape = Shape.HARD_RECTANGLE
+	update_grid_preview()
