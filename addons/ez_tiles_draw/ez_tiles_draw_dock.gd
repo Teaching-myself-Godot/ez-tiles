@@ -23,14 +23,8 @@ var rmb_is_down := false
 var current_terrain_id := 0
 var neighbour_mode := NeighbourMode.INCLUSIVE
 var suppress_preview := false
-var rect_preview_container : GridContainer
 var undo_redo : EditorUndoRedoManager
-#const VEC_TO_CELL_NEIGHBOUR:= {
-	#Vector2i.LEFT: TileSet.CELL_NEIGHBOR_LEFT_SIDE,
-	#Vector2i.RIGHT: TileSet.CELL_NEIGHBOR_RIGHT_SIDE,
-	#Vector2i.UP: TileSet.CELL_NEIGHBOR_TOP_SIDE,
-	#Vector2i.DOWN: TileSet.CELL_NEIGHBOR_BOTTOM_SIDE,
-#}
+var area_draw_tab : Area_Draw
 
 const EZ_NEIGHBOUR_MAP := {
 	"....O...." : Vector2i.ZERO,
@@ -58,8 +52,7 @@ func _enter_tree() -> void:
 	main_container = find_child("MainVBoxContainer")
 	default_editor_check_button = find_child("DefaultEditorCheckButton")
 	terrain_list_container = find_child("TerrainListVboxContainer")
-	rect_preview_container = find_child("RectanglePreviewGridContainer")
-
+	area_draw_tab = find_child("Area Draw")
 
 func activate(node : TileMapLayer):
 	current_terrain_id = 0
@@ -81,40 +74,14 @@ func activate(node : TileMapLayer):
 			entry.terrain_id = terrain_id
 			entry.selected.connect(_on_terrain_selected)
 			terrain_list_container.add_child(entry)
-		_update_rectangle_grid_preview()
+		area_draw_tab.update_grid_preview(
+			_get_first_texture_for_terrain(current_terrain_id),
+			under_edit.tile_set.tile_size)
 
 	if under_edit.has_meta(EZ_TILE_CUSTOM_META):
 		default_editor_check_button.button_pressed = true
 	else:
 		default_editor_check_button.button_pressed = false
-
-# FIXME: move to separate scene
-func _update_rectangle_grid_preview():
-	for i in range(rect_preview_container.get_child_count()):
-		var y := i / rect_preview_container.columns
-		var x := i % rect_preview_container.columns
-		var tex_rect : TextureRect = rect_preview_container.get_child(i)
-		var atlas_texture : AtlasTexture = tex_rect.texture if tex_rect.texture is AtlasTexture else  AtlasTexture.new()
-		atlas_texture.atlas = _get_first_texture_for_terrain(current_terrain_id)
-		if x == 0 and y == 0:
-			atlas_texture.region = Rect2i(Vector2i(3, 0) * under_edit.tile_set.tile_size, under_edit.tile_set.tile_size)
-		elif x == 3 and y == 0:
-			atlas_texture.region = Rect2i(Vector2i(5, 0) * under_edit.tile_set.tile_size, under_edit.tile_set.tile_size)
-		elif y == 0:
-			atlas_texture.region = Rect2i(Vector2i(4, 0) * under_edit.tile_set.tile_size, under_edit.tile_set.tile_size)
-		elif y == 3 and x == 0:
-			atlas_texture.region = Rect2i(Vector2i(3, 2) * under_edit.tile_set.tile_size, under_edit.tile_set.tile_size)
-		elif y == 3 and x == 3:
-			atlas_texture.region = Rect2i(Vector2i(5, 2) * under_edit.tile_set.tile_size, under_edit.tile_set.tile_size)
-		elif y == 3:
-			atlas_texture.region = Rect2i(Vector2i(4, 2) * under_edit.tile_set.tile_size, under_edit.tile_set.tile_size)
-		elif x == 0:
-			atlas_texture.region = Rect2i(Vector2i(3, 1) * under_edit.tile_set.tile_size, under_edit.tile_set.tile_size)
-		elif x == 3:
-			atlas_texture.region = Rect2i(Vector2i(5, 1) * under_edit.tile_set.tile_size, under_edit.tile_set.tile_size)
-		else:
-			atlas_texture.region = Rect2i(Vector2i(4, 1) * under_edit.tile_set.tile_size, under_edit.tile_set.tile_size)
-		tex_rect.texture = atlas_texture
 
 
 func _get_first_source_id_for_terrain(terrain_id : int) -> int:
@@ -149,7 +116,8 @@ func deactivate():
 
 func _on_terrain_selected(id : int) -> void:
 	current_terrain_id = id
-	_update_rectangle_grid_preview()
+	area_draw_tab.update_grid_preview(
+			_get_first_texture_for_terrain(id), under_edit.tile_set.tile_size)
 
 
 func _place_back_remembered_cells() -> void:
