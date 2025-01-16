@@ -269,35 +269,7 @@ func get_draw_area(tile_pos : Vector2i) -> Array[Vector2i]:
 			return [tile_pos]
 
 
-func _get_cells_rectangle(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
-	var cells : Array[Vector2i] = []
-	for x in range(p1.x, p2.x + 1):
-		for y in range(p1.y, p2.y + 1):
-			cells.append(Vector2i(x, y))
-	return cells
-
-
-func _get_cells_slope_tl(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
-	var cells : Array[Vector2i] = []
-	var width := p2.x - p1.x + 1
-	var height := p2.y - p1.y + 1
-	var sq_siz := min(width, height)
-	for y in range(sq_siz):
-		for x in range(sq_siz - y - 1 if sq_siz - y - 1 > 0 else 0, sq_siz):
-			cells.append(Vector2i(p1.x + x, p1.y + y))
-	if width > sq_siz:
-		for x in range(sq_siz, width):
-			for y in range(height):
-				cells.append(Vector2i(p1.x + x, p1.y + y))
-	else:
-		for y in range(sq_siz, height):
-			for x in range(width):
-				cells.append(Vector2i(p1.x + x, p1.y + y))
-	return cells
-
-
 func _get_draw_shape_for_area(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
-	# normalize range
 	var from_x := p1.x if p1.x < p2.x else p2.x
 	var to_x := p1.x if p1.x > p2.x else p2.x
 	var from_y := p1.y if p1.y < p2.y else p2.y
@@ -305,10 +277,11 @@ func _get_draw_shape_for_area(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
 
 	match(area_draw_tab.shape):
 		AreaDraw.Shape.RECTANGLE:
-			return _get_cells_rectangle(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
+			return AreaDraw.get_cells_rectangle(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
 		AreaDraw.Shape.SLOPE_TL:
-			return _get_cells_slope_tl(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
-
+			return AreaDraw.get_cells_slope_tl(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
+		AreaDraw.Shape.SLOPE_BL:
+			return AreaDraw.get_cells_slope_bl(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
 	return []
 
 

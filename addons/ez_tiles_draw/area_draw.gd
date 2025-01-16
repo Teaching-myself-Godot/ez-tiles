@@ -107,3 +107,50 @@ func _on_slopes_br_button_pressed() -> void:
 func _on_slopes_bl_button_pressed() -> void:
 	shape = Shape.SLOPE_BL
 	update_grid_preview()
+
+
+static func get_cells_rectangle(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
+	var cells : Array[Vector2i] = []
+	for x in range(p1.x, p2.x + 1):
+		for y in range(p1.y, p2.y + 1):
+			cells.append(Vector2i(x, y))
+	return cells
+
+
+static func get_cells_slope_tl(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
+	var cells : Array[Vector2i] = []
+	var width := p2.x - p1.x + 1
+	var height := p2.y - p1.y + 1
+	var sq_siz := min(width, height)
+	for y in range(sq_siz):
+		for x in range(sq_siz - y - 1 if sq_siz - y - 1 > 0 else 0, sq_siz):
+			cells.append(Vector2i(p1.x + x, p1.y + y))
+	if width > sq_siz:
+		for x in range(sq_siz, width):
+			for y in range(height):
+				cells.append(Vector2i(p1.x + x, p1.y + y))
+	else:
+		for y in range(sq_siz, height):
+			for x in range(width):
+				cells.append(Vector2i(p1.x + x, p1.y + y))
+	return cells
+
+
+static func get_cells_slope_bl(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
+	var cells : Array[Vector2i] = []
+	var width := p2.x - p1.x + 1
+	var height := p2.y - p1.y + 1
+	var sq_siz := min(width, height)
+
+	if width > sq_siz:
+		for x in range(sq_siz, width):
+			for y in range(height):
+				cells.append(Vector2i(p1.x + x, p1.y + y))
+		for y in range(sq_siz):
+			for x in range(sq_siz - (height-y) if sq_siz - (height-y) > 0 else 0, sq_siz):
+				cells.append(Vector2i(p1.x + x, p1.y + y))
+	else:
+		for y in range(height):
+			for x in range(sq_siz - (height-y) if sq_siz - (height-y) > 0 else 0, sq_siz):
+				cells.append(Vector2i(p1.x + x, p1.y + y))
+	return cells
