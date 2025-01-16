@@ -282,6 +282,10 @@ func _get_draw_shape_for_area(p1 : Vector2i, p2 : Vector2i) -> Array[Vector2i]:
 			return AreaDraw.get_cells_slope_tl(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
 		AreaDraw.Shape.SLOPE_BL:
 			return AreaDraw.get_cells_slope_bl(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
+		AreaDraw.Shape.SLOPE_TR:
+			return AreaDraw.get_cells_slope_tr(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
+		AreaDraw.Shape.SLOPE_BR:
+			return AreaDraw.get_cells_slope_br(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
 	return []
 
 
