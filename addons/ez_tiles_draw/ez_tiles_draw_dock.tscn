@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bylxp7tq3yo5s"]
+[gd_scene load_steps=10 format=3 uid="uid://bylxp7tq3yo5s"]
 
 [ext_resource type="Script" path="res://addons/ez_tiles_draw/ez_tiles_draw_dock.gd" id="1_wtbry"]
 [ext_resource type="Texture2D" uid="uid://pyivvoarllad" path="res://addons/ez_tiles_draw/Connect1.svg" id="2_dplls"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dooqg3fapf15x" path="res://addons/ez_tiles_draw/Rectangle.svg" id="2_urupm"]
 [ext_resource type="Texture2D" uid="uid://d10gshlv0aq2d" path="res://addons/ez_tiles_draw/Edit.svg" id="3_qgjav"]
 [ext_resource type="Texture2D" uid="uid://dhhtq6kkxpaus" path="res://addons/ez_tiles_draw/Stamp.svg" id="4_uxbhq"]
+[ext_resource type="PackedScene" uid="uid://is8n20fchd2q" path="res://addons/ez_tiles_draw/brush_draw.tscn" id="7_sh02n"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_m6mfs"]
 
@@ -114,10 +115,9 @@ current_tab = 0
 clip_contents = true
 layout_mode = 2
 
-[node name="Brush Draw" type="PanelContainer" parent="MainVBoxContainer/MainHBoxContainer/TabContainer"]
+[node name="Brush Draw" parent="MainVBoxContainer/MainHBoxContainer/TabContainer" instance=ExtResource("7_sh02n")]
 visible = false
 layout_mode = 2
-metadata/_tab_index = 1
 
 [node name="Stamp" type="PanelContainer" parent="MainVBoxContainer/MainHBoxContainer/TabContainer"]
 visible = false

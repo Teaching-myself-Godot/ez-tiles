@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3 uid="uid://chi7cp6qp6vki"]
+
+[ext_resource type="Script" path="res://addons/ez_tiles_draw/range_slider_with_line_edit.gd" id="1_6fi0e"]
+
+[node name="RangeSliderWithLineEdit" type="HBoxContainer"]
+script = ExtResource("1_6fi0e")
+
+[node name="Slider" type="HSlider" parent="."]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 1
+min_value = 1.0
+max_value = 25.0
+value = 1.0
+rounded = true
+allow_greater = true
+
+[node name="LineEdit" type="LineEdit" parent="."]
+layout_mode = 2
+text = "1"
+alignment = 2
+
+[connection signal="value_changed" from="Slider" to="." method="_on_slider_value_changed"]
+[connection signal="text_submitted" from="LineEdit" to="." method="_on_line_edit_text_submitted"]

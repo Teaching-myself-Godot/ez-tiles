@@ -1,0 +1,51 @@
+[gd_scene load_steps=5 format=3 uid="uid://is8n20fchd2q"]
+
+[ext_resource type="Script" path="res://addons/ez_tiles_draw/brush_draw.gd" id="1_qrfye"]
+[ext_resource type="PackedScene" uid="uid://chi7cp6qp6vki" path="res://addons/ez_tiles_draw/range_slider_with_line_edit.tscn" id="2_g17n4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gwowe"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.211765, 0.239216, 0.290196, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qgks4"]
+content_margin_left = 10.0
+content_margin_top = 2.0
+content_margin_right = 10.0
+content_margin_bottom = 2.0
+bg_color = Color(0.12549, 0.145098, 0.172549, 1)
+
+[node name="BrushDraw" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gwowe")
+script = ExtResource("1_qrfye")
+metadata/_tab_index = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qgks4")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "Brush size"
+
+[node name="RangeSliderWithLineEdit" parent="VBoxContainer/PanelContainer/HBoxContainer" instance=ExtResource("2_g17n4")]
+layout_mode = 2
+
+[connection signal="value_changed" from="VBoxContainer/PanelContainer/HBoxContainer/RangeSliderWithLineEdit" to="." method="_on_range_slider_with_line_edit_value_changed"]
