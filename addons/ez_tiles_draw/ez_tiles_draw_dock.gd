@@ -26,7 +26,7 @@ var suppress_preview := false
 var undo_redo : EditorUndoRedoManager
 
 var area_draw_tab : AreaDraw
-var brush_tab : Control
+var brush_tab : BrushDraw
 var stamp_tab : Control
 
 var area_draw_toggle_button : Button
@@ -86,7 +86,6 @@ func activate(node : TileMapLayer):
 		if is_instance_valid(child):
 			child.queue_free()
 
-	# FIXME: move to separate scene
 	if under_edit.tile_set.get_terrain_sets_count() > 0:
 		for terrain_id in range(under_edit.tile_set.get_terrains_count(0)):
 			var entry : TerrainPickerEntry = TerrainPickerEntry.instantiate()
@@ -98,7 +97,9 @@ func activate(node : TileMapLayer):
 		area_draw_tab.update_grid_preview(
 			_get_first_texture_for_terrain(current_terrain_id),
 			under_edit.tile_set.tile_size)
-
+		brush_tab.update_tile_buttons(
+			_get_first_texture_for_terrain(current_terrain_id),
+			under_edit.tile_set.tile_size)
 	if under_edit.has_meta(EZ_TILE_CUSTOM_META):
 		default_editor_check_button.button_pressed = true
 	else:
@@ -139,7 +140,8 @@ func _on_terrain_selected(id : int) -> void:
 	current_terrain_id = id
 	area_draw_tab.update_grid_preview(
 			_get_first_texture_for_terrain(id), under_edit.tile_set.tile_size)
-
+	brush_tab.update_tile_buttons(
+		_get_first_texture_for_terrain(id), under_edit.tile_set.tile_size)
 
 func _place_back_remembered_cells() -> void:
 	for prev_pos in remembered_cells.keys():
@@ -321,7 +323,7 @@ func handle_mouse_move(tile_pos : Vector2i) -> void:
 	if is_instance_valid(under_edit):
 		if drag_mode == DragMode.BRUSH:
 			_place_back_remembered_cells()
-			_place_cells_preview({tile_pos: Vector2i.ZERO}, current_terrain_id)
+			_place_cells_preview({tile_pos: brush_tab.tile_coords}, current_terrain_id)
 			if lmb_is_down:
 				_commit_cell_placement([tile_pos])
 			elif rmb_is_down:
@@ -423,11 +425,13 @@ func _on_tab_container_tab_changed(tab: DragMode) -> void:
 func _on_connecting_toggle_toggled(toggled_on: bool) -> void:
 	if toggled_on:
 		connect_toggle_button.icon = connect_icon_connected
+		connect_toggle_button.button_pressed = true
 		if neighbour_mode == NeighbourMode.OVERWRITE:
 			neighbour_mode = NeighbourMode.PEERING_BIT
 			neighbor_mode_option_button.selected = NeighbourMode.PEERING_BIT
 		# else it's already in a connected mode
 	else:
 		connect_toggle_button.icon = connect_icon_disconnected
+		connect_toggle_button.button_pressed = false
 		neighbour_mode = NeighbourMode.OVERWRITE
 		neighbor_mode_option_button.selected = NeighbourMode.OVERWRITE

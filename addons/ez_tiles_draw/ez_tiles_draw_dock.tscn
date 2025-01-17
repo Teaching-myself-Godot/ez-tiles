@@ -57,11 +57,13 @@ popup/item_3/id = 2
 
 [node name="ConnectingToggle" type="Button" parent="MainVBoxContainer/HBoxContainer"]
 layout_mode = 2
+tooltip_text = "Toggle connected drawing"
 toggle_mode = true
 icon = ExtResource("2_dplls")
 
 [node name="AreaDrawButton" type="Button" parent="MainVBoxContainer/HBoxContainer"]
 layout_mode = 2
+tooltip_text = "Area draw"
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_m6mfs")
@@ -69,12 +71,14 @@ icon = ExtResource("2_urupm")
 
 [node name="BrushDrawButton" type="Button" parent="MainVBoxContainer/HBoxContainer"]
 layout_mode = 2
+tooltip_text = "Brush/Pencil draw"
 toggle_mode = true
 button_group = SubResource("ButtonGroup_m6mfs")
 icon = ExtResource("3_qgjav")
 
 [node name="StampDrawButton" type="Button" parent="MainVBoxContainer/HBoxContainer"]
 layout_mode = 2
+tooltip_text = "Stamp, Copy/Paste draw"
 toggle_mode = true
 button_group = SubResource("ButtonGroup_m6mfs")
 icon = ExtResource("4_uxbhq")
@@ -139,3 +143,4 @@ vertical_alignment = 1
 [connection signal="pressed" from="MainVBoxContainer/HBoxContainer/StampDrawButton" to="." method="_on_stamp_draw_button_pressed"]
 [connection signal="toggled" from="MainVBoxContainer/HBoxContainer/DefaultEditorCheckButton" to="." method="_on_default_editor_check_button_toggled"]
 [connection signal="tab_changed" from="MainVBoxContainer/MainHBoxContainer/TabContainer" to="." method="_on_tab_container_tab_changed"]
+[connection signal="connect_mode_toggled" from="MainVBoxContainer/MainHBoxContainer/TabContainer/Brush Draw" to="." method="_on_connecting_toggle_toggled"]
