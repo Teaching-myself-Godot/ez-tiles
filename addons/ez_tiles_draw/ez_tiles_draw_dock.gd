@@ -2,7 +2,7 @@
 extends Control
 class_name EZTilesDrawDock
 
-enum NeighbourMode {OVERWRITE, INCLUSIVE, EXCLUSIVE, PEERING_BIT}
+enum NeighbourMode {OVERWRITE, PEERING_BIT, INCLUSIVE, EXCLUSIVE}
 enum DragMode {AREA, BRUSH, STAMP}
 
 const EZ_TILE_CUSTOM_META := "_is_ez_tiles_generated"
@@ -24,7 +24,15 @@ var current_terrain_id := 0
 var neighbour_mode := NeighbourMode.OVERWRITE
 var suppress_preview := false
 var undo_redo : EditorUndoRedoManager
+
 var area_draw_tab : AreaDraw
+var brush_tab : Control
+var stamp_tab : Control
+
+var area_draw_toggle_button : Button
+var brush_draw_toggle_button : Button
+var stamp_draw_toggle_button : Button
+
 
 const EZ_NEIGHBOUR_MAP := {
 	"....O...." : Vector2i.ZERO,
@@ -53,6 +61,12 @@ func _enter_tree() -> void:
 	default_editor_check_button = find_child("DefaultEditorCheckButton")
 	terrain_list_container = find_child("TerrainListVboxContainer")
 	area_draw_tab = find_child("Area Draw")
+	brush_tab = find_child("Brush Draw")
+	stamp_tab = find_child("Stamp")
+	area_draw_toggle_button = find_child("AreaDrawButton")
+	brush_draw_toggle_button = find_child("BrushDrawButton")
+	stamp_draw_toggle_button = find_child("StampDrawButton")
+
 
 func activate(node : TileMapLayer):
 	current_terrain_id = 0
@@ -237,21 +251,6 @@ func _get_ez_atlas_coord(tile_pos : Vector2i, for_terrain_id : int) -> Vector2i:
 	return EZ_NEIGHBOUR_MAP[fmt]  if fmt in EZ_NEIGHBOUR_MAP else Vector2i.ZERO
 
 
-func _on_default_editor_check_button_toggled(toggled_on: bool) -> void:
-	if toggled_on:
-		under_edit.set_meta(EZ_TILE_CUSTOM_META, true)
-	else:
-		under_edit.remove_meta(EZ_TILE_CUSTOM_META)
-
-
-func _on_neighbour_mode_option_button_item_selected(index: NeighbourMode) -> void:
-	neighbour_mode = index
-
-
-func _on_tab_container_tab_changed(tab: DragMode) -> void:
-	drag_mode = tab
-
-
 func get_draw_rect(tile_pos : Vector2i) -> Rect2i:
 	match(drag_mode):
 		DragMode.AREA:
@@ -360,8 +359,40 @@ func handle_mouse_entered():
 
 
 func handle_mouse_out():
-	#lmb_is_down = false
-	#rmb_is_down = false
 	viewport_has_mouse = false
 	if not lmb_is_down:
 		_place_back_remembered_cells()
+
+
+func _on_area_draw_button_pressed() -> void:
+	area_draw_tab.show()
+
+
+func _on_brush_draw_button_pressed() -> void:
+	brush_tab.show()
+
+
+func _on_stamp_draw_button_pressed() -> void:
+	stamp_tab.show()
+
+
+func _on_default_editor_check_button_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		under_edit.set_meta(EZ_TILE_CUSTOM_META, true)
+	else:
+		under_edit.remove_meta(EZ_TILE_CUSTOM_META)
+
+
+func _on_neighbour_mode_option_button_item_selected(index: NeighbourMode) -> void:
+	neighbour_mode = index
+
+
+func _on_tab_container_tab_changed(tab: DragMode) -> void:
+	drag_mode = tab
+	match(drag_mode):
+		DragMode.AREA:
+			area_draw_toggle_button.button_pressed = true
+		DragMode.BRUSH:
+			brush_draw_toggle_button.button_pressed = true
+		DragMode.STAMP:
+			stamp_draw_toggle_button.button_pressed = true

@@ -1,7 +1,12 @@
-[gd_scene load_steps=4 format=3 uid="uid://bylxp7tq3yo5s"]
+[gd_scene load_steps=8 format=3 uid="uid://bylxp7tq3yo5s"]
 
 [ext_resource type="Script" path="res://addons/ez_tiles_draw/ez_tiles_draw_dock.gd" id="1_wtbry"]
 [ext_resource type="PackedScene" uid="uid://bitqwiwmn3s0r" path="res://addons/ez_tiles_draw/area_draw.tscn" id="2_k0y3s"]
+[ext_resource type="Texture2D" uid="uid://dooqg3fapf15x" path="res://addons/ez_tiles_draw/Rectangle.svg" id="2_urupm"]
+[ext_resource type="Texture2D" uid="uid://d10gshlv0aq2d" path="res://addons/ez_tiles_draw/Edit.svg" id="3_qgjav"]
+[ext_resource type="Texture2D" uid="uid://dhhtq6kkxpaus" path="res://addons/ez_tiles_draw/Stamp.svg" id="4_uxbhq"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_m6mfs"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fl86h"]
 content_margin_left = 10.0
@@ -41,20 +46,39 @@ tooltip_text = "Determines in which cases a neighbouring tile is considered a ne
 selected = 0
 fit_to_longest_item = false
 item_count = 4
-popup/item_0/text = "Overwrite/Ignore (draw exactly like the preview in the bottom pane)"
-popup/item_1/text = "Inclusive (consider all terrains my neighbour)"
-popup/item_1/id = 1
-popup/item_2/text = "Exclusive (consider only my terrain type as neighbour)"
-popup/item_2/id = 2
-popup/item_3/text = "Godot default (use terrain peering bit)"
-popup/item_3/id = 3
+popup/item_0/text = "Overwrite"
+popup/item_1/text = "Use Terrain Peering Bit"
+popup/item_1/id = 3
+popup/item_2/text = "Inclusive"
+popup/item_2/id = 1
+popup/item_3/text = "Exclusive"
+popup/item_3/id = 2
+
+[node name="AreaDrawButton" type="Button" parent="MainVBoxContainer/HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_m6mfs")
+icon = ExtResource("2_urupm")
+
+[node name="BrushDrawButton" type="Button" parent="MainVBoxContainer/HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_m6mfs")
+icon = ExtResource("3_qgjav")
+
+[node name="StampDrawButton" type="Button" parent="MainVBoxContainer/HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_m6mfs")
+icon = ExtResource("4_uxbhq")
 
 [node name="DefaultEditorCheckButton" type="CheckButton" parent="MainVBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
 tooltip_text = "When you select a TileMapLayer in your scene, Godot will normally open the builtin TileMap or TileSet bottom pane.
 When this toggle is on, EZ Tiles Draw will automatically open for the current TileMapLayer."
-text = "Automatically Show EZ Tiles Draw"
+text = "Default Editor"
 
 [node name="MainHBoxContainer" type="HBoxContainer" parent="MainVBoxContainer"]
 layout_mode = 2
@@ -104,5 +128,8 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [connection signal="item_selected" from="MainVBoxContainer/HBoxContainer/NeighbourModeOptionButton" to="." method="_on_neighbour_mode_option_button_item_selected"]
+[connection signal="pressed" from="MainVBoxContainer/HBoxContainer/AreaDrawButton" to="." method="_on_area_draw_button_pressed"]
+[connection signal="pressed" from="MainVBoxContainer/HBoxContainer/BrushDrawButton" to="." method="_on_brush_draw_button_pressed"]
+[connection signal="pressed" from="MainVBoxContainer/HBoxContainer/StampDrawButton" to="." method="_on_stamp_draw_button_pressed"]
 [connection signal="toggled" from="MainVBoxContainer/HBoxContainer/DefaultEditorCheckButton" to="." method="_on_default_editor_check_button_toggled"]
 [connection signal="tab_changed" from="MainVBoxContainer/MainHBoxContainer/TabContainer" to="." method="_on_tab_container_tab_changed"]
