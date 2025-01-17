@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://bylxp7tq3yo5s"]
+[gd_scene load_steps=9 format=3 uid="uid://bylxp7tq3yo5s"]
 
 [ext_resource type="Script" path="res://addons/ez_tiles_draw/ez_tiles_draw_dock.gd" id="1_wtbry"]
+[ext_resource type="Texture2D" uid="uid://pyivvoarllad" path="res://addons/ez_tiles_draw/Connect1.svg" id="2_dplls"]
 [ext_resource type="PackedScene" uid="uid://bitqwiwmn3s0r" path="res://addons/ez_tiles_draw/area_draw.tscn" id="2_k0y3s"]
 [ext_resource type="Texture2D" uid="uid://dooqg3fapf15x" path="res://addons/ez_tiles_draw/Rectangle.svg" id="2_urupm"]
 [ext_resource type="Texture2D" uid="uid://d10gshlv0aq2d" path="res://addons/ez_tiles_draw/Edit.svg" id="3_qgjav"]
@@ -44,7 +45,6 @@ text = "Connect mode* "
 layout_mode = 2
 tooltip_text = "Determines in which cases a neighbouring tile is considered a neighbour. When a tile is considered a neighbour, this tile will act as if it is 'glued' to it."
 selected = 0
-fit_to_longest_item = false
 item_count = 4
 popup/item_0/text = "Overwrite"
 popup/item_1/text = "Use Terrain Peering Bit"
@@ -53,6 +53,11 @@ popup/item_2/text = "Inclusive"
 popup/item_2/id = 1
 popup/item_3/text = "Exclusive"
 popup/item_3/id = 2
+
+[node name="ConnectingToggle" type="Button" parent="MainVBoxContainer/HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+icon = ExtResource("2_dplls")
 
 [node name="AreaDrawButton" type="Button" parent="MainVBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -128,6 +133,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [connection signal="item_selected" from="MainVBoxContainer/HBoxContainer/NeighbourModeOptionButton" to="." method="_on_neighbour_mode_option_button_item_selected"]
+[connection signal="toggled" from="MainVBoxContainer/HBoxContainer/ConnectingToggle" to="." method="_on_connecting_toggle_toggled"]
 [connection signal="pressed" from="MainVBoxContainer/HBoxContainer/AreaDrawButton" to="." method="_on_area_draw_button_pressed"]
 [connection signal="pressed" from="MainVBoxContainer/HBoxContainer/BrushDrawButton" to="." method="_on_brush_draw_button_pressed"]
 [connection signal="pressed" from="MainVBoxContainer/HBoxContainer/StampDrawButton" to="." method="_on_stamp_draw_button_pressed"]

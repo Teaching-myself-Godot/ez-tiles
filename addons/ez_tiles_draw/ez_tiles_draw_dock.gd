@@ -33,6 +33,10 @@ var area_draw_toggle_button : Button
 var brush_draw_toggle_button : Button
 var stamp_draw_toggle_button : Button
 
+var connect_toggle_button : Button
+var connect_icon_connected : Texture2D
+var connect_icon_disconnected : Texture2D
+var neighbor_mode_option_button : OptionButton
 
 const EZ_NEIGHBOUR_MAP := {
 	"....O...." : Vector2i.ZERO,
@@ -66,7 +70,10 @@ func _enter_tree() -> void:
 	area_draw_toggle_button = find_child("AreaDrawButton")
 	brush_draw_toggle_button = find_child("BrushDrawButton")
 	stamp_draw_toggle_button = find_child("StampDrawButton")
-
+	connect_toggle_button = find_child("ConnectingToggle")
+	connect_icon_disconnected = preload("res://addons/ez_tiles_draw/Connect1.svg")
+	connect_icon_connected = preload("res://addons/ez_tiles_draw/Connect2.svg")
+	neighbor_mode_option_button = find_child("NeighbourModeOptionButton")
 
 func activate(node : TileMapLayer):
 	current_terrain_id = 0
@@ -150,19 +157,19 @@ func _remember_cell(tile_pos : Vector2i) -> void:
 		remembered_cells[tile_pos] = [-1, Vector2i.ZERO]
 
 
-func _grow_cells(area_cells : Array) -> Array:
+func _grow_cells(area_cells : Array, diagonal := false) -> Array:
 	var expanded_region := {}
 	for cell in area_cells:
 		if cell not in expanded_region:
 			expanded_region[cell] = true
-		for neighour in _get_neighbors(cell):
+		for neighour in _get_neighbors(cell, diagonal):
 			if neighour not in expanded_region:
 				expanded_region[neighour] = true
 	return expanded_region.keys()
 
 
 func _place_cells_preview(cells_in_current_draw_area : Dictionary, terrain_id : int) -> void:
-	var all_cells := _grow_cells(cells_in_current_draw_area.keys())
+	var all_cells := _grow_cells(cells_in_current_draw_area.keys(), neighbour_mode == NeighbourMode.PEERING_BIT)
 	for tile_pos in all_cells:
 		_remember_cell(tile_pos)
 
@@ -174,9 +181,7 @@ func _place_cells_preview(cells_in_current_draw_area : Dictionary, terrain_id : 
 				cells_in_current_draw_area[tile_pos] if neighbour_mode == NeighbourMode.OVERWRITE 
 				else _get_ez_atlas_coord(tile_pos, terrain_id)
 			)
-			under_edit.set_cell(tile_pos, _get_first_source_id_for_terrain(terrain_id), 
-					coord
-			)
+			under_edit.set_cell(tile_pos, _get_first_source_id_for_terrain(terrain_id), coord)
 		if neighbour_mode != NeighbourMode.PEERING_BIT and neighbour_mode != NeighbourMode.OVERWRITE:
 			_update_atlas_coords(_get_neighbors(tile_pos))
 
@@ -213,7 +218,18 @@ func _erase_cells(cells : Dictionary):
 	_place_cells_preview(cells, -1)
 
 
-func _get_neighbors(tile_pos : Vector2i) -> Array[Vector2i]:
+func _get_neighbors(tile_pos : Vector2i, diagonal := false) -> Array[Vector2i]:
+	if diagonal:
+		return [
+			tile_pos + Vector2i.LEFT,
+			tile_pos + Vector2i.UP,
+			tile_pos + Vector2i.DOWN,
+			tile_pos + Vector2i.RIGHT,
+			tile_pos - Vector2i.ONE,
+			tile_pos + Vector2i.ONE,
+			tile_pos + Vector2i(-1, 1),
+			tile_pos + Vector2i(1, -1)
+		]
 	return [tile_pos + Vector2i.LEFT, tile_pos + Vector2i.UP, tile_pos + Vector2i.DOWN, tile_pos + Vector2i.RIGHT]
 
 
@@ -396,3 +412,14 @@ func _on_tab_container_tab_changed(tab: DragMode) -> void:
 			brush_draw_toggle_button.button_pressed = true
 		DragMode.STAMP:
 			stamp_draw_toggle_button.button_pressed = true
+
+
+func _on_connecting_toggle_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		connect_toggle_button.icon = connect_icon_connected
+		neighbour_mode = NeighbourMode.PEERING_BIT
+		neighbor_mode_option_button.selected = NeighbourMode.PEERING_BIT
+	else:
+		connect_toggle_button.icon = connect_icon_disconnected
+		neighbour_mode = NeighbourMode.OVERWRITE
+		neighbor_mode_option_button.selected = NeighbourMode.OVERWRITE
