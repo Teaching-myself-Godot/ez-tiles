@@ -75,6 +75,7 @@ func _enter_tree() -> void:
 	connect_icon_connected = preload("res://addons/ez_tiles_draw/Connect2.svg")
 	neighbor_mode_option_button = find_child("NeighbourModeOptionButton")
 
+
 func activate(node : TileMapLayer):
 	current_terrain_id = 0
 	remembered_cells = {}
@@ -129,7 +130,6 @@ func _get_first_texture_for_terrain(terrain_id : int) -> Texture2D:
 	return null
 
 
-
 func deactivate():
 	under_edit = null
 	hint_label.show()
@@ -142,6 +142,7 @@ func _on_terrain_selected(id : int) -> void:
 			_get_first_texture_for_terrain(id), under_edit.tile_set.tile_size)
 	brush_tab.update_tile_buttons(
 		_get_first_texture_for_terrain(id), under_edit.tile_set.tile_size)
+
 
 func _place_back_remembered_cells() -> void:
 	for prev_pos in remembered_cells.keys():
@@ -159,15 +160,36 @@ func _remember_cell(tile_pos : Vector2i) -> void:
 		remembered_cells[tile_pos] = [-1, Vector2i.ZERO]
 
 
-func _grow_cells(area_cells : Array, diagonal := false) -> Array:
+func _grow_cells(area_cells : Array, diagonal := false,  base_dir := Vector2i.ZERO) -> Array:
 	var expanded_region := {}
 	for cell in area_cells:
 		if cell not in expanded_region:
 			expanded_region[cell] = true
-		for neighour in _get_neighbors(cell, diagonal):
+		for neighour in _get_neighbors(cell, diagonal, base_dir):
 			if neighour not in expanded_region:
 				expanded_region[neighour] = true
 	return expanded_region.keys()
+
+
+func _get_sized_brush(cell : Dictionary):
+	if brush_tab.brush_size == 1:
+		return cell
+	var out := Dictionary()
+	var cur_keys := cell.keys()
+	var base_dir := Vector2i(-1, -1)
+	for i in range(brush_tab.brush_size - 1):
+		cur_keys = _grow_cells(cur_keys, false, base_dir)
+		if base_dir == Vector2i(-1, -1):
+			base_dir = Vector2i(1, -1)
+		elif base_dir == Vector2i(1, -1):
+			base_dir = Vector2i(1, 1)
+		elif base_dir == Vector2i(1, 1):
+			base_dir = Vector2i(-1, 1)
+		else:
+			base_dir = Vector2i(-1, -1)
+	for k in cur_keys:
+		out[k] = cell.values()[0]
+	return out
 
 
 func _place_cells_preview(cells_in_current_draw_area : Dictionary, terrain_id : int) -> void:
@@ -220,7 +242,13 @@ func _erase_cells(cells : Dictionary):
 	_place_cells_preview(cells, -1)
 
 
-func _get_neighbors(tile_pos : Vector2i, diagonal := false) -> Array[Vector2i]:
+func _get_neighbors(tile_pos : Vector2i, diagonal := false,  base_dir := Vector2i.ZERO) -> Array[Vector2i]:
+	if base_dir:
+		return [
+			tile_pos + base_dir,
+			tile_pos + Vector2i(base_dir.x , 0),
+			tile_pos + Vector2i(0, base_dir.y)
+		]
 	if diagonal:
 		return [
 			tile_pos + Vector2i.LEFT,
@@ -292,7 +320,7 @@ func get_draw_area(tile_pos : Vector2i) -> Array:
 			else:
 				return []
 		DragMode.BRUSH, _:
-			return [tile_pos]
+			return _get_sized_brush({tile_pos: Vector2.ZERO}).keys()
 
 
 func _get_draw_shape_for_area(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
@@ -323,12 +351,12 @@ func handle_mouse_move(tile_pos : Vector2i) -> void:
 	if is_instance_valid(under_edit):
 		if drag_mode == DragMode.BRUSH:
 			_place_back_remembered_cells()
-			_place_cells_preview({tile_pos: brush_tab.tile_coords}, current_terrain_id)
+			_place_cells_preview(_get_sized_brush({tile_pos: brush_tab.tile_coords}), current_terrain_id)
 			if lmb_is_down:
-				_commit_cell_placement([tile_pos])
+				_commit_cell_placement(_get_sized_brush({tile_pos: brush_tab.tile_coords}).keys())
 			elif rmb_is_down:
-				_erase_cells({tile_pos: Vector2i.ZERO})
-				_commit_cell_placement([tile_pos])
+				_erase_cells(_get_sized_brush({tile_pos: Vector2i.ZERO}))
+				_commit_cell_placement(_get_sized_brush({tile_pos: brush_tab.tile_coords}).keys())
 		elif drag_mode == DragMode.AREA:
 			_place_back_remembered_cells()
 			if lmb_is_down:
@@ -360,15 +388,15 @@ func handle_mouse_down(button : MouseButton, tile_pos: Vector2i):
 				_place_back_remembered_cells()
 				_place_cells_preview(_get_draw_shape_for_area(drag_start, tile_pos), current_terrain_id)
 			elif drag_mode == DragMode.BRUSH:
-				_commit_cell_placement([tile_pos])
+				_commit_cell_placement(_get_sized_brush({tile_pos: brush_tab.tile_coords}).keys())
 		MouseButton.MOUSE_BUTTON_RIGHT:
 			rmb_is_down = true
 			if drag_mode == DragMode.AREA and not suppress_preview:
 				_place_back_remembered_cells()
 				_erase_cells(_get_draw_shape_for_area(drag_start, tile_pos))
 			elif drag_mode == DragMode.BRUSH:
-				_erase_cells({tile_pos: Vector2i.ZERO})
-				_commit_cell_placement([tile_pos])
+				_erase_cells(_get_sized_brush({tile_pos: brush_tab.tile_coords}))
+				_commit_cell_placement(_get_sized_brush({tile_pos: brush_tab.tile_coords}).keys())
 
 
 func handle_mouse_entered():
