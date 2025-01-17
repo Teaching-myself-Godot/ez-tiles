@@ -401,6 +401,12 @@ func _on_default_editor_check_button_toggled(toggled_on: bool) -> void:
 
 func _on_neighbour_mode_option_button_item_selected(index: NeighbourMode) -> void:
 	neighbour_mode = index
+	if neighbour_mode == NeighbourMode.OVERWRITE:
+		connect_toggle_button.icon = connect_icon_disconnected
+		connect_toggle_button.button_pressed = false
+	else:
+		connect_toggle_button.icon = connect_icon_connected
+		connect_toggle_button.button_pressed = true
 
 
 func _on_tab_container_tab_changed(tab: DragMode) -> void:
@@ -417,8 +423,10 @@ func _on_tab_container_tab_changed(tab: DragMode) -> void:
 func _on_connecting_toggle_toggled(toggled_on: bool) -> void:
 	if toggled_on:
 		connect_toggle_button.icon = connect_icon_connected
-		neighbour_mode = NeighbourMode.PEERING_BIT
-		neighbor_mode_option_button.selected = NeighbourMode.PEERING_BIT
+		if neighbour_mode == NeighbourMode.OVERWRITE:
+			neighbour_mode = NeighbourMode.PEERING_BIT
+			neighbor_mode_option_button.selected = NeighbourMode.PEERING_BIT
+		# else it's already in a connected mode
 	else:
 		connect_toggle_button.icon = connect_icon_disconnected
 		neighbour_mode = NeighbourMode.OVERWRITE
