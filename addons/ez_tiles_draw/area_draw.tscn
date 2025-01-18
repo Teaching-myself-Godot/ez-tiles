@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bitqwiwmn3s0r"]
+[gd_scene load_steps=16 format=3 uid="uid://bitqwiwmn3s0r"]
 
 [ext_resource type="Script" path="res://addons/ez_tiles_draw/area_draw.gd" id="1_ee3lv"]
 [ext_resource type="Texture2D" uid="uid://dooqg3fapf15x" path="res://addons/ez_tiles_draw/Rectangle.svg" id="2_0c16j"]
@@ -8,7 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://7crpolmxjj2r" path="res://addons/ez_tiles_draw/SlopeBR.svg" id="5_f5qx1"]
 [ext_resource type="Texture2D" uid="uid://clpg11r4kdy8v" path="res://addons/ez_tiles_draw/SlopeBL.svg" id="6_r38ls"]
 [ext_resource type="Texture2D" uid="uid://c7u17hgk6jvet" path="res://addons/ez_tiles_draw/TerrainConnect.svg" id="8_05x1s"]
-[ext_resource type="Texture2D" uid="uid://c0t85l7oiep61" path="res://addons/ez_tiles/examples/16x16/tinyworlds-tileset-floating-dirt-isles.png" id="9_obyl0"]
+[ext_resource type="Texture2D" uid="uid://cri2mdk3hr6s1" path="res://addons/ez_tiles_draw/HillT.svg" id="8_trf31"]
+[ext_resource type="Texture2D" uid="uid://dudbsnchdio2u" path="res://addons/ez_tiles/examples/15x15/sand.png" id="10_3dest"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_51lt4"]
 content_margin_left = 10.0
@@ -29,8 +30,8 @@ bg_color = Color(0.12549, 0.145098, 0.172549, 1)
 [sub_resource type="ButtonGroup" id="ButtonGroup_3cdnu"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_mcu38"]
-atlas = ExtResource("9_obyl0")
-region = Rect2(0, 0, 16, 16)
+atlas = ExtResource("10_3dest")
+region = Rect2(0, 0, 15, 15)
 
 [node name="AreaDraw" type="PanelContainer"]
 clip_children = 2
@@ -70,7 +71,7 @@ mouse_default_cursor_shape = 2
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_82nql")
-text = "Rectangles (Hard)"
+text = "Rectangle (Hard)"
 icon = ExtResource("2_0c16j")
 alignment = 0
 
@@ -79,7 +80,7 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_82nql")
-text = "Rectangles (Soft)"
+text = "Rectangle (Soft)"
 icon = ExtResource("2_lfgj6")
 alignment = 0
 
@@ -88,7 +89,7 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_82nql")
-text = "Slopes (Top Left)"
+text = "Slope (Top Left)"
 icon = ExtResource("3_j68q8")
 alignment = 0
 
@@ -97,7 +98,7 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_82nql")
-text = "Slopes (Top Right)"
+text = "Slope (Top Right)"
 icon = ExtResource("4_703fo")
 alignment = 0
 
@@ -106,7 +107,7 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_82nql")
-text = "Slopes (Bottom Right)"
+text = "Slope (Bottom Right)"
 icon = ExtResource("5_f5qx1")
 alignment = 0
 
@@ -115,8 +116,17 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_82nql")
-text = "Slopes (Bottom Left)"
+text = "Slope (Bottom Left)"
 icon = ExtResource("6_r38ls")
+alignment = 0
+
+[node name="HillTopButton" type="Button" parent="HBoxContainer/Panel2/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_82nql")
+text = "Hill (Top)"
+icon = ExtResource("8_trf31")
 alignment = 0
 
 [node name="Panel" type="Panel" parent="HBoxContainer"]
@@ -296,5 +306,6 @@ expand_icon = true
 [connection signal="pressed" from="HBoxContainer/Panel2/ScrollContainer/VBoxContainer/SlopesTRButton" to="." method="_on_slopes_tr_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/Panel2/ScrollContainer/VBoxContainer/SlopesBRButton" to="." method="_on_slopes_br_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/Panel2/ScrollContainer/VBoxContainer/SlopesBLButton" to="." method="_on_slopes_bl_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/Panel2/ScrollContainer/VBoxContainer/HillTopButton" to="." method="_on_hill_top_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/Panel/HFlowContainer/ConnectTerrainsButton" to="." method="_on_connect_terrains_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/Panel/HFlowContainer/TileButton1" to="." method="_on_tile_button_1_pressed"]

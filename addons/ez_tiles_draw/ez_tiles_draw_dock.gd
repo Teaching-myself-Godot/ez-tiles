@@ -350,6 +350,8 @@ func _get_draw_shape_for_area(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
 			return AreaDraw.get_cells_slope_tr(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
 		AreaDraw.Shape.SLOPE_BR:
 			return AreaDraw.get_cells_slope_br(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
+		AreaDraw.Shape.HILL_TOP:
+			return AreaDraw.get_cells_hill_top(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
 	return {}
 
 

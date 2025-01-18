@@ -4,7 +4,15 @@ class_name AreaDraw
 
 signal connect_mode_toggled(toggled : bool)
 
-enum Shape {RECTANGLE, SLOPE_TL, SLOPE_TR, SLOPE_BR, SLOPE_BL, HARD_RECTANGLE}
+enum Shape {
+	RECTANGLE,
+	SLOPE_TL,
+	SLOPE_TR,
+	SLOPE_BR,
+	SLOPE_BL,
+	HARD_RECTANGLE,
+	HILL_TOP
+}
 var shape := Shape.HARD_RECTANGLE
 var preview_container : GridContainer
 
@@ -55,6 +63,12 @@ const SHAPE_MAP := {
 		[LM, CM, CM, CM, RM],
 		[LM, CM, CM, CM, RM],
 		[BM, BM, BM, BM, BM],
+	],
+	Shape.HILL_TOP: [
+		[XX, TL, TM, TR, XX],
+		[TL, CM, CM, CM, TR],
+		[LM, CM, CM, CM, RM],
+		[LM, CM, CM, CM, RM],
 	]
 }
 
@@ -199,6 +213,21 @@ static func get_cells_slope_br(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
 				cells[Vector2i(p1.x + (width-x-1), p1.y + (height - y - 1))] = RM if x == 0 else CM
 	return cells
 
+static func get_cells_hill_top(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
+	var width := p2.x - p1.x + 1
+	var height := p2.y - p1.y
+	var out = get_cells_slope_tl(p1, p1 + Vector2i(floor(width / 2.0) - 1, height))
+	out.merge(get_cells_slope_tr(p1 + Vector2i(floor(width / 2.0), 0), p2))
+	return out
+
+
+func _on_connect_terrains_button_pressed() -> void:
+	connect_mode_toggled.emit(true)
+
+
+func _on_tile_button_1_pressed() -> void:
+	connect_mode_toggled.emit(false)
+
 
 func _on_rectangles_button_pressed() -> void:
 	shape = Shape.RECTANGLE
@@ -230,9 +259,6 @@ func _on_hard_rectangles_button_pressed() -> void:
 	update_grid_preview()
 
 
-func _on_connect_terrains_button_pressed() -> void:
-	connect_mode_toggled.emit(true)
-
-
-func _on_tile_button_1_pressed() -> void:
-	connect_mode_toggled.emit(false)
+func _on_hill_top_button_pressed() -> void:
+	shape = Shape.HILL_TOP
+	update_grid_preview()
