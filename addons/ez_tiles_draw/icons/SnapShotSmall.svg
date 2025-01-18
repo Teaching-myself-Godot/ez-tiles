@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="16"
+   height="16"
+   viewBox="0 0 8 8"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="SnapShotSmall.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="18.517494"
+     inkscape:cx="-16.63292"
+     inkscape:cy="15.201841"
+     inkscape:current-layer="svg1" />
+  <rect
+     style="fill:none;stroke:#ffffff;stroke-width:0.613207;stroke-linecap:square;stroke-miterlimit:80;stroke-dasharray:1.83961, 1.83961;stroke-dashoffset:1.28772;stroke-opacity:1;paint-order:markers fill stroke"
+     id="rect1"
+     width="7.3135638"
+     height="6.8348627"
+     x="0.31278491"
+     y="0.5355143" />
+  <rect
+     style="fill:none;stroke:#ffffff;stroke-width:0.5;stroke-linecap:square;stroke-miterlimit:80;stroke-dasharray:none;stroke-dashoffset:127.298;stroke-opacity:1;paint-order:markers fill stroke"
+     id="rect2"
+     width="4.5377569"
+     height="3.2569134"
+     x="1.5653104"
+     y="2.3722904" />
+  <rect
+     style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:0.5;stroke-linecap:square;stroke-miterlimit:80;stroke-dasharray:none;stroke-dashoffset:127.298;stroke-opacity:1;paint-order:markers fill stroke"
+     id="rect3"
+     width="1.2587619"
+     height="0.18228032"
+     x="4.5167646"
+     y="1.6342689" />
+  <ellipse
+     style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.6668;stroke-linecap:square;stroke-miterlimit:80;stroke-dasharray:none;stroke-dashoffset:127.298;stroke-opacity:1;paint-order:markers fill stroke"
+     id="path3"
+     cx="3.9386501"
+     cy="3.922601"
+     rx="0.77252257"
+     ry="0.79491466" />
+</svg>

@@ -11,9 +11,9 @@
 [ext_resource type="Texture2D" uid="uid://cri2mdk3hr6s1" path="res://addons/ez_tiles_draw/icons/HillT.svg" id="8_trf31"]
 [ext_resource type="Texture2D" uid="uid://dntkx0h8qim1n" path="res://addons/ez_tiles_draw/icons/HillB.svg" id="9_abenc"]
 [ext_resource type="Texture2D" uid="uid://dpmrju1gvdr16" path="res://addons/ez_tiles_draw/icons/HillL.svg" id="10_dsu38"]
-[ext_resource type="Texture2D" uid="uid://c0t85l7oiep61" path="res://addons/ez_tiles/examples/16x16/tinyworlds-tileset-floating-dirt-isles.png" id="11_hi6q3"]
 [ext_resource type="Texture2D" uid="uid://dv855gccwqgu" path="res://addons/ez_tiles_draw/icons/HillR.svg" id="11_nyydi"]
 [ext_resource type="Texture2D" uid="uid://frudvs8p10ea" path="res://addons/ez_tiles_draw/icons/Island.svg" id="12_qvlkp"]
+[ext_resource type="Texture2D" uid="uid://dyf2x07bqc1kw" path="res://addons/ez_tiles/examples/15x15/big_brick.png" id="14_lxg8b"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_51lt4"]
 content_margin_left = 10.0
@@ -34,8 +34,8 @@ bg_color = Color(0.12549, 0.145098, 0.172549, 1)
 [sub_resource type="ButtonGroup" id="ButtonGroup_3cdnu"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_mcu38"]
-atlas = ExtResource("11_hi6q3")
-region = Rect2(0, 0, 16, 16)
+atlas = ExtResource("14_lxg8b")
+region = Rect2(0, 0, 15, 15)
 
 [node name="AreaDraw" type="PanelContainer"]
 clip_children = 2

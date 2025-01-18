@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://cn1kk5uedjgwp"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q2mxv"]
+
+[node name="StampTile" type="TextureRect"]
+custom_minimum_size = Vector2(16, 16)
+size_flags_horizontal = 8
+size_flags_vertical = 8
+texture = SubResource("AtlasTexture_q2mxv")
