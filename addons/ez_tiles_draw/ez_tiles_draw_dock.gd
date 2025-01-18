@@ -14,7 +14,7 @@ var main_container : Control
 var default_editor_check_button : Button
 var terrain_list_container : VBoxContainer
 var drag_start := Vector2i.ZERO
-var drag_mode := DragMode.AREA
+var drag_mode := DragMode.BRUSH
 
 var remembered_cells := {}
 var viewport_has_mouse := false

@@ -115,13 +115,15 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 current_tab = 0
 
+[node name="Brush Draw" parent="MainVBoxContainer/MainHBoxContainer/TabContainer" instance=ExtResource("7_sh02n")]
+layout_mode = 2
+metadata/_tab_index = 0
+
 [node name="Area Draw" parent="MainVBoxContainer/MainHBoxContainer/TabContainer" instance=ExtResource("2_k0y3s")]
+visible = false
 clip_contents = true
 layout_mode = 2
-
-[node name="Brush Draw" parent="MainVBoxContainer/MainHBoxContainer/TabContainer" instance=ExtResource("7_sh02n")]
-visible = false
-layout_mode = 2
+metadata/_tab_index = 1
 
 [node name="Stamp" type="PanelContainer" parent="MainVBoxContainer/MainHBoxContainer/TabContainer"]
 visible = false
