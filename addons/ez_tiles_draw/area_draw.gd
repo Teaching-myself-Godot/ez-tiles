@@ -2,6 +2,8 @@
 extends Control
 class_name AreaDraw
 
+signal connect_mode_toggled(toggled : bool)
+
 enum Shape {RECTANGLE, SLOPE_TL, SLOPE_TR, SLOPE_BR, SLOPE_BL, HARD_RECTANGLE}
 var shape := Shape.HARD_RECTANGLE
 var preview_container : GridContainer
@@ -58,10 +60,13 @@ const SHAPE_MAP := {
 
 var cur_terrain_texture : Texture2D
 var cur_tile_size : Vector2i
+var connect_terrains_button : Button
+var tile_button : Button
 
 func _enter_tree() -> void:
 	preview_container = find_child("PreviewGridContainer")
-
+	connect_terrains_button = find_child("ConnectTerrainsButton")
+	tile_button = find_child("TileButton1")
 
 func _get_empty_tex(tile_size : Vector2i) -> Texture2D:
 	var plc_tex := GradientTexture2D.new()
@@ -71,7 +76,10 @@ func _get_empty_tex(tile_size : Vector2i) -> Texture2D:
 	plc_tex.gradient.colors = [Color.TRANSPARENT]
 	return plc_tex
 
+
 func update_grid_preview(terrain_texture : Texture2D = cur_terrain_texture, tile_size : Vector2i = cur_tile_size):
+	tile_button.icon.atlas = terrain_texture
+	tile_button.icon.region = Rect2i(Vector2i.ZERO, Vector2i.ONE * tile_size)
 	cur_terrain_texture = terrain_texture
 	cur_tile_size = tile_size 
 	var i := 0
@@ -220,3 +228,11 @@ func _on_slopes_bl_button_pressed() -> void:
 func _on_hard_rectangles_button_pressed() -> void:
 	shape = Shape.HARD_RECTANGLE
 	update_grid_preview()
+
+
+func _on_connect_terrains_button_pressed() -> void:
+	connect_mode_toggled.emit(true)
+
+
+func _on_tile_button_1_pressed() -> void:
+	connect_mode_toggled.emit(false)

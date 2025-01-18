@@ -183,10 +183,10 @@ func _get_sized_brush(cell : Dictionary) -> Dictionary:
 				cur_keys.append(Vector2i(x, y))
 	elif brush_tab.brush_shape == BrushDraw.BrushShape.CIRCLE:
 		var m : Vector2i = cell.keys()[0]
-		var sz := brush_tab.brush_size * 2 + 1
-		for x in range(m.x - sz - 1, m.x + sz - 1):
-			for y in range(m.y - sz - 1, m.y + sz - 1):
-				if Vector2i(x, y).distance_to(m) <= sz * 0.5:
+		var sz := brush_tab.brush_size
+		for x in range(m.x - sz - 1, m.x + sz + 1):
+			for y in range(m.y - sz - 1, m.y + sz + 1):
+				if Vector2i(x, y).distance_to(m) <= sz * 0.67:
 					cur_keys.append(Vector2i(x, y))
 	for k in cur_keys:
 		out[k] = cell.values()[0]
@@ -437,16 +437,6 @@ func _on_default_editor_check_button_toggled(toggled_on: bool) -> void:
 		under_edit.remove_meta(EZ_TILE_CUSTOM_META)
 
 
-func _on_neighbour_mode_option_button_item_selected(index: NeighbourMode) -> void:
-	neighbour_mode = index
-	if neighbour_mode == NeighbourMode.OVERWRITE:
-		connect_toggle_button.icon = connect_icon_disconnected
-		connect_toggle_button.button_pressed = false
-	else:
-		connect_toggle_button.icon = connect_icon_connected
-		connect_toggle_button.button_pressed = true
-
-
 func _on_tab_container_tab_changed(tab: DragMode) -> void:
 	drag_mode = tab
 	match(drag_mode):
@@ -458,6 +448,19 @@ func _on_tab_container_tab_changed(tab: DragMode) -> void:
 			stamp_draw_toggle_button.button_pressed = true
 
 
+func _on_neighbour_mode_option_button_item_selected(index: NeighbourMode) -> void:
+	neighbour_mode = index
+	if neighbour_mode == NeighbourMode.OVERWRITE:
+		connect_toggle_button.icon = connect_icon_disconnected
+		connect_toggle_button.button_pressed = false
+		brush_tab.find_child("TileButton1").button_pressed = true
+		area_draw_tab.find_child("TileButton1").button_pressed = true
+	else:
+		connect_toggle_button.icon = connect_icon_connected
+		connect_toggle_button.button_pressed = true
+		brush_tab.connect_terrains_button.button_pressed = true
+		area_draw_tab.connect_terrains_button.button_pressed = true
+
 func _on_connecting_toggle_toggled(toggled_on: bool) -> void:
 	if toggled_on:
 		connect_toggle_button.icon = connect_icon_connected
@@ -465,9 +468,13 @@ func _on_connecting_toggle_toggled(toggled_on: bool) -> void:
 		if neighbour_mode == NeighbourMode.OVERWRITE:
 			neighbour_mode = NeighbourMode.PEERING_BIT
 			neighbor_mode_option_button.selected = NeighbourMode.PEERING_BIT
+			brush_tab.connect_terrains_button.button_pressed = true
+			area_draw_tab.connect_terrains_button.button_pressed = true
 		# else it's already in a connected mode
 	else:
 		connect_toggle_button.icon = connect_icon_disconnected
 		connect_toggle_button.button_pressed = false
 		neighbour_mode = NeighbourMode.OVERWRITE
 		neighbor_mode_option_button.selected = NeighbourMode.OVERWRITE
+		brush_tab.find_child("TileButton1").button_pressed = true
+		area_draw_tab.find_child("TileButton1").button_pressed = true
