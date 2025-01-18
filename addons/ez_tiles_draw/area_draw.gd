@@ -15,6 +15,7 @@ enum Shape {
 	HILL_BOTTOM,
 	HILL_RIGHT,
 	HILL_LEFT,
+	ISLAND
 }
 var shape := Shape.HARD_RECTANGLE
 var preview_container : GridContainer
@@ -100,6 +101,13 @@ const SHAPE_MAP := {
 		[CM, CM, CM, CM, RM],
 		[CM, CM, CM, CM, BR],
 		[BM, BM, BM, BR, XX],
+	],
+	Shape.ISLAND: [
+		[XX, TL, TM, TR, XX],
+		[TL, CM, CM, CM, TR],
+		[CM, CM, CM, CM, RM],
+		[BL, CM, CM, CM, BR],
+		[XX, BL, BM, BR, XX],
 	],
 }
 
@@ -275,6 +283,17 @@ static func get_cells_hill_right(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
 	return out
 
 
+static func get_cells_island(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
+	var width := p2.x - p1.x
+	var height := p2.y - p1.y
+	var out = get_cells_slope_tl(p1, p1 + Vector2i(ceil(width / 2.0) - 1, ceil(height / 2.0) - 1))
+	out.merge(get_cells_slope_tr(p1 + Vector2i(ceil(width / 2.0), 0), Vector2i(p2.x, p1.y + ceil(height / 2.0) - 1)))
+	out.merge(get_cells_slope_bl(p1 + Vector2i(0, ceil(height / 2.0)),  Vector2i(p1.x + ceil(width / 2.0) - 1, p2.y)))
+	out.merge(get_cells_slope_br(p1 + Vector2i(ceil(width / 2.0), ceil(height / 2.0)), p2), true)
+	return out
+
+
+
 func _on_connect_terrains_button_pressed() -> void:
 	connect_mode_toggled.emit(true)
 
@@ -330,4 +349,9 @@ func _on_hill_left_button_pressed() -> void:
 
 func _on_hill_right_button_pressed() -> void:
 	shape = Shape.HILL_RIGHT
+	update_grid_preview()
+
+
+func _on_island_button_pressed() -> void:
+	shape = Shape.ISLAND
 	update_grid_preview()

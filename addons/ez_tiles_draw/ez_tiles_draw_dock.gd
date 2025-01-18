@@ -358,7 +358,8 @@ func _get_draw_shape_for_area(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
 			return AreaDraw.get_cells_hill_left(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
 		AreaDraw.Shape.HILL_RIGHT:
 			return AreaDraw.get_cells_hill_right(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
-
+		AreaDraw.Shape.ISLAND:
+			return AreaDraw.get_cells_island(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
 	return {}
 
 

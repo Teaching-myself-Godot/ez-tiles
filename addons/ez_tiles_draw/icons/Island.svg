@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="16"
+   height="16"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="Island.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     showguides="true"
+     inkscape:zoom="38.139572"
+     inkscape:cx="11.74633"
+     inkscape:cy="9.6618808"
+     inkscape:current-layer="svg1">
+    <sodipodi:guide
+       position="8.4727694,8.00927"
+       orientation="0,-1"
+       id="guide1"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="7.99073,14.553882"
+       orientation="1,0"
+       id="guide2"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <path
+     id="path1"
+     style="fill:none;stroke:#e0e0e0;stroke-width:2.31574;stroke-linecap:square;stroke-miterlimit:80;stroke-dashoffset:127.298;paint-order:markers fill stroke"
+     transform="matrix(0.8559562,0.10240944,-0.10202128,0.85921285,2.0186786,0.59508019)"
+     d="M 9.659011,1.7575128 13.96836,6.881018 11.24657,13.270319 6.430428,13.844888 2.282291,8.2749484 5.0542887,2.3068837 Z"
+     sodipodi:nodetypes="ccccccc" />
+</svg>
