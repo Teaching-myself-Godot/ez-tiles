@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bylxp7tq3yo5s"]
+[gd_scene load_steps=12 format=3 uid="uid://bylxp7tq3yo5s"]
 
 [ext_resource type="Script" path="res://addons/ez_tiles_draw/ez_tiles_draw_dock.gd" id="1_wtbry"]
 [ext_resource type="Texture2D" uid="uid://pyivvoarllad" path="res://addons/ez_tiles_draw/icons/Connect1.svg" id="2_dplls"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dooqg3fapf15x" path="res://addons/ez_tiles_draw/icons/Rectangle.svg" id="2_urupm"]
 [ext_resource type="Texture2D" uid="uid://d10gshlv0aq2d" path="res://addons/ez_tiles_draw/icons/Edit.svg" id="3_qgjav"]
 [ext_resource type="Texture2D" uid="uid://dhhtq6kkxpaus" path="res://addons/ez_tiles_draw/icons/Stamp.svg" id="4_uxbhq"]
+[ext_resource type="Texture2D" uid="uid://cj2hivk8xemhb" path="res://addons/ez_tiles_draw/icons/SnapShotSmall.svg" id="6_lleak"]
 [ext_resource type="PackedScene" uid="uid://is8n20fchd2q" path="res://addons/ez_tiles_draw/brush_draw.tscn" id="7_sh02n"]
 [ext_resource type="PackedScene" uid="uid://catlvg1l82g5v" path="res://addons/ez_tiles_draw/stamp_tab.tscn" id="8_6lfv8"]
 
@@ -84,6 +85,12 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_m6mfs")
 icon = ExtResource("4_uxbhq")
 
+[node name="SelectSnapShotButton" type="Button" parent="MainVBoxContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Stamp, Copy/Paste draw"
+toggle_mode = true
+icon = ExtResource("6_lleak")
+
 [node name="DefaultEditorCheckButton" type="CheckButton" parent="MainVBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
@@ -143,7 +150,9 @@ vertical_alignment = 1
 [connection signal="pressed" from="MainVBoxContainer/HBoxContainer/BrushDrawButton" to="." method="_on_brush_draw_button_pressed"]
 [connection signal="pressed" from="MainVBoxContainer/HBoxContainer/AreaDrawButton" to="." method="_on_area_draw_button_pressed"]
 [connection signal="pressed" from="MainVBoxContainer/HBoxContainer/StampDrawButton" to="." method="_on_stamp_draw_button_pressed"]
+[connection signal="toggled" from="MainVBoxContainer/HBoxContainer/SelectSnapShotButton" to="." method="_on_stamp_snapshot_toggled"]
 [connection signal="toggled" from="MainVBoxContainer/HBoxContainer/DefaultEditorCheckButton" to="." method="_on_default_editor_check_button_toggled"]
 [connection signal="tab_changed" from="MainVBoxContainer/MainHBoxContainer/TabContainer" to="." method="_on_tab_container_tab_changed"]
 [connection signal="connect_mode_toggled" from="MainVBoxContainer/MainHBoxContainer/TabContainer/Brush Draw" to="." method="_on_connecting_toggle_toggled"]
 [connection signal="connect_mode_toggled" from="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw" to="." method="_on_connecting_toggle_toggled"]
+[connection signal="snapshot_toggled" from="MainVBoxContainer/MainHBoxContainer/TabContainer/Stamp" to="." method="_on_stamp_snapshot_toggled"]

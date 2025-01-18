@@ -3,7 +3,7 @@ extends Control
 class_name EZTilesDrawDock
 
 enum NeighbourMode {OVERWRITE, PEERING_BIT, INCLUSIVE, EXCLUSIVE}
-enum DragMode {BRUSH, AREA, STAMP}
+enum DragMode {BRUSH, AREA, STAMP, SNAPSHOT}
 
 const EZ_TILE_CUSTOM_META := "_is_ez_tiles_generated"
 
@@ -32,6 +32,7 @@ var stamp_tab : Control
 var area_draw_toggle_button : Button
 var brush_draw_toggle_button : Button
 var stamp_draw_toggle_button : Button
+var select_snap_shot_button : Button
 
 var connect_toggle_button : Button
 var connect_icon_connected : Texture2D
@@ -70,6 +71,7 @@ func _enter_tree() -> void:
 	area_draw_toggle_button = find_child("AreaDrawButton")
 	brush_draw_toggle_button = find_child("BrushDrawButton")
 	stamp_draw_toggle_button = find_child("StampDrawButton")
+	select_snap_shot_button = find_child("SelectSnapShotButton")
 	connect_toggle_button = find_child("ConnectingToggle")
 	connect_icon_disconnected = preload("res://addons/ez_tiles_draw/icons/Connect1.svg")
 	connect_icon_connected = preload("res://addons/ez_tiles_draw/icons/Connect2.svg")
@@ -307,6 +309,15 @@ func _get_ez_atlas_coord(tile_pos : Vector2i, for_terrain_id : int) -> Vector2i:
 
 func get_draw_rect(tile_pos : Vector2i) -> Rect2i:
 	match(drag_mode):
+		DragMode.SNAPSHOT:
+			if lmb_is_down:
+				var from_x := drag_start.x if drag_start.x < tile_pos.x else tile_pos.x
+				var to_x := drag_start.x if drag_start.x > tile_pos.x else tile_pos.x
+				var from_y := drag_start.y if drag_start.y < tile_pos.y else tile_pos.y
+				var to_y := drag_start.y if drag_start.y > tile_pos.y else tile_pos.y
+				return Rect2i(Vector2i(from_x, from_y),  Vector2i(to_x, to_y) - Vector2i(from_x, from_y) + Vector2i.ONE)
+			else:
+				return Rect2i(tile_pos, Vector2i.ONE)
 		DragMode.AREA:
 			if rmb_is_down or lmb_is_down:
 				var from_x := drag_start.x if drag_start.x < tile_pos.x else tile_pos.x
@@ -322,14 +333,24 @@ func get_draw_rect(tile_pos : Vector2i) -> Rect2i:
 
 func get_draw_area(tile_pos : Vector2i) -> Array:
 	match(drag_mode):
+		DragMode.SNAPSHOT:
+			if lmb_is_down:
+				var from_x := drag_start.x if drag_start.x < tile_pos.x else tile_pos.x
+				var to_x := drag_start.x if drag_start.x > tile_pos.x else tile_pos.x
+				var from_y := drag_start.y if drag_start.y < tile_pos.y else tile_pos.y
+				var to_y := drag_start.y if drag_start.y > tile_pos.y else tile_pos.y
+				return AreaDraw.get_cells_rectangle(Vector2i(from_x, from_y), Vector2i(to_x, to_y)).keys()
+			else:
+				return []
 		DragMode.AREA:
 			if rmb_is_down or lmb_is_down:
 				return _get_draw_shape_for_area(drag_start, tile_pos).keys()
 			else:
 				return []
-		DragMode.BRUSH, _:
+		DragMode.BRUSH:
 			return _get_sized_brush({tile_pos: Vector2.ZERO}).keys()
-
+		_:
+			return []
 
 func _get_draw_shape_for_area(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
 	var from_x := p1.x if p1.x < p2.x else p2.x
@@ -390,10 +411,14 @@ func handle_mouse_up(button : MouseButton, tile_pos: Vector2i):
 			lmb_is_down = false
 			if drag_mode == DragMode.AREA:
 				_commit_cell_placement(_get_draw_shape_for_area(drag_start, tile_pos).keys())
+			if drag_mode == DragMode.SNAPSHOT:
+				print("TODO: snapshot!")
+				_on_stamp_snapshot_toggled(false)
 		MouseButton.MOUSE_BUTTON_RIGHT:
 			rmb_is_down = false
 			if drag_mode == DragMode.AREA:
 				_commit_cell_placement(_get_draw_shape_for_area(drag_start, tile_pos).keys())
+
 
 
 func handle_mouse_down(button : MouseButton, tile_pos: Vector2i):
@@ -415,6 +440,9 @@ func handle_mouse_down(button : MouseButton, tile_pos: Vector2i):
 			elif drag_mode == DragMode.BRUSH:
 				_erase_cells(_get_sized_brush({tile_pos: brush_tab.tile_coords}))
 				_commit_cell_placement(_get_sized_brush({tile_pos: brush_tab.tile_coords}).keys())
+			elif drag_mode == DragMode.SNAPSHOT:
+				print("TODO: cancel snapshot")
+				_on_stamp_snapshot_toggled(false)
 
 
 func handle_mouse_entered():
@@ -440,6 +468,18 @@ func _on_stamp_draw_button_pressed() -> void:
 	stamp_tab.show()
 
 
+func _on_stamp_snapshot_toggled(on_off: bool) -> void:
+	select_snap_shot_button.button_pressed = on_off
+	if on_off:
+		stamp_tab.show()
+		stamp_tab.start_snapshot()
+		drag_mode = DragMode.SNAPSHOT
+	else:
+		stamp_tab.stop_snapshotting()
+		select_snap_shot_button.focus_mode = Control.FOCUS_NONE
+		drag_mode = DragMode.STAMP
+
+
 func _on_default_editor_check_button_toggled(toggled_on: bool) -> void:
 	if toggled_on:
 		under_edit.set_meta(EZ_TILE_CUSTOM_META, true)
@@ -449,6 +489,10 @@ func _on_default_editor_check_button_toggled(toggled_on: bool) -> void:
 
 func _on_tab_container_tab_changed(tab: DragMode) -> void:
 	drag_mode = tab
+	if tab != DragMode.STAMP:
+		stamp_tab.stop_snapshotting()
+		select_snap_shot_button.button_pressed = false
+
 	match(drag_mode):
 		DragMode.AREA:
 			area_draw_toggle_button.button_pressed = true
@@ -471,6 +515,7 @@ func _on_neighbour_mode_option_button_item_selected(index: NeighbourMode) -> voi
 		brush_tab.connect_terrains_button.button_pressed = true
 		area_draw_tab.connect_terrains_button.button_pressed = true
 
+
 func _on_connecting_toggle_toggled(toggled_on: bool) -> void:
 	if toggled_on:
 		connect_toggle_button.icon = connect_icon_connected
@@ -488,3 +533,4 @@ func _on_connecting_toggle_toggled(toggled_on: bool) -> void:
 		neighbor_mode_option_button.selected = NeighbourMode.OVERWRITE
 		brush_tab.find_child("TileButton1").button_pressed = true
 		area_draw_tab.find_child("TileButton1").button_pressed = true
+

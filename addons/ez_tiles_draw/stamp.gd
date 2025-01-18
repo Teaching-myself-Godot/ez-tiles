@@ -29,7 +29,6 @@ func _enter_tree() -> void:
 func deselect():
 	is_selected = false
 	add_theme_stylebox_override("panel", style_box_normal)
-	print("deselecting " + name)
 
 
 func _on_mouse_entered() -> void:

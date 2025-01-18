@@ -30,7 +30,7 @@ size_flags_vertical = 3
 theme_override_constants/h_separation = 5
 theme_override_constants/v_separation = 5
 
-[node name="PhotoSelectButton" type="Button" parent="ScrollContainer/HFlowContainer"]
+[node name="SnapShotSelectButton" type="Button" parent="ScrollContainer/HFlowContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -43,3 +43,5 @@ layout_mode = 2
 
 [node name="Stamp2" parent="ScrollContainer/HFlowContainer" instance=ExtResource("3_m6k5g")]
 layout_mode = 2
+
+[connection signal="toggled" from="ScrollContainer/HFlowContainer/SnapShotSelectButton" to="." method="_on_snap_shot_select_button_toggled"]
