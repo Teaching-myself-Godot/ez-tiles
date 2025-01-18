@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bitqwiwmn3s0r"]
+[gd_scene load_steps=19 format=3 uid="uid://bitqwiwmn3s0r"]
 
 [ext_resource type="Script" path="res://addons/ez_tiles_draw/area_draw.gd" id="1_ee3lv"]
 [ext_resource type="Texture2D" uid="uid://dooqg3fapf15x" path="res://addons/ez_tiles_draw/icons/Rectangle.svg" id="2_0c16j"]
@@ -9,7 +9,10 @@
 [ext_resource type="Texture2D" uid="uid://clpg11r4kdy8v" path="res://addons/ez_tiles_draw/icons/SlopeBL.svg" id="6_r38ls"]
 [ext_resource type="Texture2D" uid="uid://c7u17hgk6jvet" path="res://addons/ez_tiles_draw/icons/TerrainConnect.svg" id="8_05x1s"]
 [ext_resource type="Texture2D" uid="uid://cri2mdk3hr6s1" path="res://addons/ez_tiles_draw/icons/HillT.svg" id="8_trf31"]
-[ext_resource type="Texture2D" uid="uid://dyf2x07bqc1kw" path="res://addons/ez_tiles/examples/15x15/big_brick.png" id="10_yh835"]
+[ext_resource type="Texture2D" uid="uid://dntkx0h8qim1n" path="res://addons/ez_tiles_draw/icons/HillB.svg" id="9_abenc"]
+[ext_resource type="Texture2D" uid="uid://dudbsnchdio2u" path="res://addons/ez_tiles/examples/15x15/sand.png" id="10_3dest"]
+[ext_resource type="Texture2D" uid="uid://dpmrju1gvdr16" path="res://addons/ez_tiles_draw/icons/HillL.svg" id="10_dsu38"]
+[ext_resource type="Texture2D" uid="uid://dv855gccwqgu" path="res://addons/ez_tiles_draw/icons/HillR.svg" id="11_nyydi"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_51lt4"]
 content_margin_left = 10.0
@@ -30,7 +33,7 @@ bg_color = Color(0.12549, 0.145098, 0.172549, 1)
 [sub_resource type="ButtonGroup" id="ButtonGroup_3cdnu"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_mcu38"]
-atlas = ExtResource("10_yh835")
+atlas = ExtResource("10_3dest")
 region = Rect2(0, 0, 15, 15)
 
 [node name="AreaDraw" type="PanelContainer"]
@@ -127,6 +130,33 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_82nql")
 text = "Hill (Top)"
 icon = ExtResource("8_trf31")
+alignment = 0
+
+[node name="HillBottomButton" type="Button" parent="HBoxContainer/Panel2/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_82nql")
+text = "Hill (Bottom)"
+icon = ExtResource("9_abenc")
+alignment = 0
+
+[node name="HillLeftButton" type="Button" parent="HBoxContainer/Panel2/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_82nql")
+text = "Hill (Left)"
+icon = ExtResource("10_dsu38")
+alignment = 0
+
+[node name="HillRightButton" type="Button" parent="HBoxContainer/Panel2/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_82nql")
+text = "Hill (Right)"
+icon = ExtResource("11_nyydi")
 alignment = 0
 
 [node name="Panel" type="Panel" parent="HBoxContainer"]
@@ -270,6 +300,36 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 
+[node name="TextureRect21" type="TextureRect" parent="HBoxContainer/Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
+[node name="TextureRect22" type="TextureRect" parent="HBoxContainer/Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
+[node name="TextureRect23" type="TextureRect" parent="HBoxContainer/Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
+[node name="TextureRect24" type="TextureRect" parent="HBoxContainer/Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
+[node name="TextureRect25" type="TextureRect" parent="HBoxContainer/Panel/ScrollContainer/PreviewGridContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
 [node name="HFlowContainer" type="HFlowContainer" parent="HBoxContainer/Panel"]
 layout_mode = 1
 anchors_preset = 10
@@ -307,5 +367,8 @@ expand_icon = true
 [connection signal="pressed" from="HBoxContainer/Panel2/ScrollContainer/VBoxContainer/SlopesBRButton" to="." method="_on_slopes_br_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/Panel2/ScrollContainer/VBoxContainer/SlopesBLButton" to="." method="_on_slopes_bl_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/Panel2/ScrollContainer/VBoxContainer/HillTopButton" to="." method="_on_hill_top_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/Panel2/ScrollContainer/VBoxContainer/HillBottomButton" to="." method="_on_hill_bottom_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/Panel2/ScrollContainer/VBoxContainer/HillLeftButton" to="." method="_on_hill_left_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/Panel2/ScrollContainer/VBoxContainer/HillRightButton" to="." method="_on_hill_right_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/Panel/HFlowContainer/ConnectTerrainsButton" to="." method="_on_connect_terrains_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/Panel/HFlowContainer/TileButton1" to="." method="_on_tile_button_1_pressed"]

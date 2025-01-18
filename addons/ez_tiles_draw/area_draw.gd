@@ -11,7 +11,10 @@ enum Shape {
 	SLOPE_BR,
 	SLOPE_BL,
 	HARD_RECTANGLE,
-	HILL_TOP
+	HILL_TOP,
+	HILL_BOTTOM,
+	HILL_RIGHT,
+	HILL_LEFT,
 }
 var shape := Shape.HARD_RECTANGLE
 var preview_container : GridContainer
@@ -33,43 +36,71 @@ const SHAPE_MAP := {
 		[LM, CM, CM, CM, RM],
 		[LM, CM, CM, CM, RM],
 		[BL, BM, BM, BM, BR],
+		[XX, XX, XX, XX, XX],
 	],
 	Shape.SLOPE_TL: [
 		[XX, XX, XX, TL, TM],
 		[XX, XX, TL, CM, CM],
 		[XX, TL, CM, CM, CM],
 		[TL, CM, CM, CM, CM],
+		[XX, XX, XX, XX, XX],
 	],
 	Shape.SLOPE_TR: [
 		[TM, TR, XX, XX, XX],
 		[CM, CM, TR, XX, XX],
 		[CM, CM, CM, TR, XX],
 		[CM, CM, CM, CM, TR],
+		[XX, XX, XX, XX, XX],
 	],
 	Shape.SLOPE_BR: [
 		[CM, CM, CM, CM, BR],
 		[CM, CM, CM, BR, XX],
 		[CM, CM, BR, XX, XX],
 		[BM, BR, XX, XX, XX],
+		[XX, XX, XX, XX, XX],
 	],
 	Shape.SLOPE_BL: [
 		[BL, CM, CM, CM, CM],
 		[XX, BL, CM, CM, CM],
 		[XX, XX, BL, CM, CM],
 		[XX, XX, XX, BL, BM],
+		[XX, XX, XX, XX, XX],
 	],
 	Shape.HARD_RECTANGLE: [
 		[TM, TM, TM, TM, TM],
 		[LM, CM, CM, CM, RM],
 		[LM, CM, CM, CM, RM],
 		[BM, BM, BM, BM, BM],
+		[XX, XX, XX, XX, XX],
 	],
 	Shape.HILL_TOP: [
 		[XX, TL, TM, TR, XX],
 		[TL, CM, CM, CM, TR],
 		[LM, CM, CM, CM, RM],
 		[LM, CM, CM, CM, RM],
-	]
+		[XX, XX, XX, XX, XX],
+	],
+	Shape.HILL_BOTTOM: [
+		[LM, CM, CM, CM, RM],
+		[LM, CM, CM, CM, RM],
+		[BL, CM, CM, CM, BR],
+		[XX, BL, BM, BR, XX],
+		[XX, XX, XX, XX, XX],
+	],
+	Shape.HILL_LEFT: [
+		[XX, TL, TM, TM, TM],
+		[TL, CM, CM, CM, CM],
+		[LM, CM, CM, CM, CM],
+		[BL, CM, CM, CM, CM],
+		[XX, BL, BM, BM, BM],
+	],
+	Shape.HILL_RIGHT: [
+		[TM, TM, TM, TR, XX],
+		[CM, CM, CM, CM, TR],
+		[CM, CM, CM, CM, RM],
+		[CM, CM, CM, CM, BR],
+		[BM, BM, BM, BR, XX],
+	],
 }
 
 var cur_terrain_texture : Texture2D
@@ -214,10 +245,33 @@ static func get_cells_slope_br(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
 	return cells
 
 static func get_cells_hill_top(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
-	var width := p2.x - p1.x + 1
+	var width := p2.x - p1.x
 	var height := p2.y - p1.y
-	var out = get_cells_slope_tl(p1, p1 + Vector2i(floor(width / 2.0) - 1, height))
-	out.merge(get_cells_slope_tr(p1 + Vector2i(floor(width / 2.0), 0), p2))
+	var out = get_cells_slope_tl(p1, p1 + Vector2i(ceil(width / 2.0) - 1, height))
+	out.merge(get_cells_slope_tr(p1 + Vector2i(ceil(width / 2.0), 0), p2))
+	return out
+
+
+static func get_cells_hill_bottom(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
+	var width := p2.x - p1.x
+	var height := p2.y - p1.y
+	var out = get_cells_slope_bl(p1, p1 + Vector2i(ceil(width / 2.0) - 1, height))
+	out.merge(get_cells_slope_br(p1 + Vector2i(ceil(width / 2.0), 0), p2))
+	return out
+
+static func get_cells_hill_left(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
+	var width := p2.x - p1.x
+	var height := p2.y - p1.y
+	var out = get_cells_slope_tl(p1, p1 + Vector2i(width, ceil(height / 2.0) - 1))
+	out.merge(get_cells_slope_bl(p1 + Vector2i(0, ceil(height / 2.0)), p2))
+	return out
+
+
+static func get_cells_hill_right(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
+	var width := p2.x - p1.x
+	var height := p2.y - p1.y
+	var out = get_cells_slope_tr(p1, p1 + Vector2i(width, ceil(height / 2.0) - 1))
+	out.merge(get_cells_slope_br(p1 + Vector2i(0, ceil(height / 2.0)), p2))
 	return out
 
 
@@ -261,4 +315,19 @@ func _on_hard_rectangles_button_pressed() -> void:
 
 func _on_hill_top_button_pressed() -> void:
 	shape = Shape.HILL_TOP
+	update_grid_preview()
+
+
+func _on_hill_bottom_button_pressed() -> void:
+	shape = Shape.HILL_BOTTOM
+	update_grid_preview()
+
+
+func _on_hill_left_button_pressed() -> void:
+	shape = Shape.HILL_LEFT
+	update_grid_preview()
+
+
+func _on_hill_right_button_pressed() -> void:
+	shape = Shape.HILL_RIGHT
 	update_grid_preview()

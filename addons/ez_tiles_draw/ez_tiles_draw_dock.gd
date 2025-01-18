@@ -71,8 +71,8 @@ func _enter_tree() -> void:
 	brush_draw_toggle_button = find_child("BrushDrawButton")
 	stamp_draw_toggle_button = find_child("StampDrawButton")
 	connect_toggle_button = find_child("ConnectingToggle")
-	connect_icon_disconnected = preload("res://addons/ez_tiles_draw/Connect1.svg")
-	connect_icon_connected = preload("res://addons/ez_tiles_draw/Connect2.svg")
+	connect_icon_disconnected = preload("res://addons/ez_tiles_draw/icons/Connect1.svg")
+	connect_icon_connected = preload("res://addons/ez_tiles_draw/icons/Connect2.svg")
 	neighbor_mode_option_button = find_child("NeighbourModeOptionButton")
 
 
@@ -352,6 +352,13 @@ func _get_draw_shape_for_area(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
 			return AreaDraw.get_cells_slope_br(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
 		AreaDraw.Shape.HILL_TOP:
 			return AreaDraw.get_cells_hill_top(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
+		AreaDraw.Shape.HILL_BOTTOM:
+			return AreaDraw.get_cells_hill_bottom(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
+		AreaDraw.Shape.HILL_LEFT:
+			return AreaDraw.get_cells_hill_left(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
+		AreaDraw.Shape.HILL_RIGHT:
+			return AreaDraw.get_cells_hill_right(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
+
 	return {}
 
 
