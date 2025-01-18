@@ -176,10 +176,18 @@ func _get_sized_brush(cell : Dictionary) -> Dictionary:
 		return cell
 	var out := Dictionary()
 	var cur_keys := []
-	var middle : Vector2i = cell.keys()[0] + Vector2i.ONE
-	for x in range(middle.x -  floor(brush_tab.brush_size / 2), middle.x + ceil(brush_tab.brush_size / 2)):
-		for y in range(middle.y -  floor(brush_tab.brush_size / 2), middle.y + ceil(brush_tab.brush_size / 2)):
-			cur_keys.append(Vector2i(x, y))
+	if brush_tab.brush_shape == BrushDraw.BrushShape.SQUARE:
+		var middle : Vector2i = cell.keys()[0] + Vector2i.ONE
+		for x in range(middle.x -  ceil(brush_tab.brush_size / 2.0), middle.x + floor(brush_tab.brush_size / 2.0)):
+			for y in range(middle.y -  ceil(brush_tab.brush_size / 2.0), middle.y + floor(brush_tab.brush_size / 2.0)):
+				cur_keys.append(Vector2i(x, y))
+	elif brush_tab.brush_shape == BrushDraw.BrushShape.CIRCLE:
+		var m : Vector2i = cell.keys()[0]
+		var sz := brush_tab.brush_size * 2 + 1
+		for x in range(m.x - sz - 1, m.x + sz - 1):
+			for y in range(m.y - sz - 1, m.y + sz - 1):
+				if Vector2i(x, y).distance_to(m) <= sz * 0.5:
+					cur_keys.append(Vector2i(x, y))
 	for k in cur_keys:
 		out[k] = cell.values()[0]
 	return out

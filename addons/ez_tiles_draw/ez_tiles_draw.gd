@@ -70,6 +70,13 @@ func _tile_pos_to_overlay_pos(tile_pos : Vector2i) -> Vector2:
 
 
 func _forward_canvas_draw_over_viewport(overlay):
+	var viewport_2d := EditorInterface.get_editor_viewport_2d()
+	var g_mouse_pos = (
+		EditorInterface.get_base_control().get_global_mouse_position()
+				- viewport_2d.get_parent().global_position
+	)
+	if not viewport_2d.get_visible_rect().has_point(g_mouse_pos):
+		return
 	var draw_area := dock.get_draw_area(_tile_pos_from_mouse_pos())
 	var fill :=  Color(1.0, 0.0, 0.0, 0.2) if dock.rmb_is_down else Color(Color.WHITE, 0.2)
 	var stroke := Color.RED if dock.rmb_is_down else Color.WHITE

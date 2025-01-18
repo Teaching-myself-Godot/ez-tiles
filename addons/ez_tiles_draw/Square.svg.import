@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://o78078ga0i16"
-path="res://.godot/imported/Outline.svg-2c18d96b62558097bc0d1279eb87e232.ctex"
+uid="uid://bps21xe8h1m2p"
+path="res://.godot/imported/Square.svg-3a4ab6f20a48afa4e54a1c3bc199d2d9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/ez_tiles_draw/Outline.svg"
-dest_files=["res://.godot/imported/Outline.svg-2c18d96b62558097bc0d1279eb87e232.ctex"]
+source_file="res://addons/ez_tiles_draw/Square.svg"
+dest_files=["res://.godot/imported/Square.svg-3a4ab6f20a48afa4e54a1c3bc199d2d9.ctex"]
 
 [params]
 

@@ -22,11 +22,13 @@ const CM := Vector2i(4, 1)
 const COORDS : Array[Vector2i] = [
 	MC, VT, VM, VB, HL, HM, HR, TL, TM, TR, LM, CM, RM, BL, BM, BR
 ]
-
+enum BrushShape {CIRCLE, SQUARE}
 signal connect_mode_toggled(toggled : bool)
 
 var tile_coords := MC
 var connect_terrains_button : Button
+var brush_shape := BrushShape.SQUARE
+
 
 func _enter_tree() -> void:
 	var buttons := find_children("TileButton*")
@@ -50,3 +52,11 @@ func update_tile_buttons(terrain_texture : Texture2D, tile_size : Vector2i):
 	for i in range(buttons.size()):
 		buttons[i].icon.atlas = terrain_texture
 		buttons[i].icon.region = Rect2i(COORDS[i] * tile_size, tile_size)
+
+
+func _on_brush_shape_square_button_pressed() -> void:
+	brush_shape = BrushShape.SQUARE
+
+
+func _on_brush_shape_circle_button_pressed() -> void:
+	brush_shape = BrushShape.CIRCLE

@@ -35,3 +35,17 @@ func _on_line_edit_text_submitted(new_text: String) -> void:
 	slider.grab_focus()
 	if prev_value != my_value:
 		value_changed.emit(my_value)
+
+
+func _on_line_edit_text_changed(new_text: String) -> void:
+	var prev_value := my_value
+	if num_regex.search(new_text):
+		my_value = int(new_text)
+		if my_value < 0:
+			my_value = 1
+		if my_value > slider.max_value:
+			my_value = int(slider.max_value)
+	line_edit.text = str(my_value)
+	slider.value = float(my_value)
+	if prev_value != my_value:
+		value_changed.emit(my_value)
