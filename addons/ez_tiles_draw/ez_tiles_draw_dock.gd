@@ -3,7 +3,7 @@ extends Control
 class_name EZTilesDrawDock
 
 enum NeighbourMode {OVERWRITE, PEERING_BIT, INCLUSIVE, EXCLUSIVE}
-enum DragMode {AREA, BRUSH, STAMP}
+enum DragMode {BRUSH, AREA, STAMP}
 
 const EZ_TILE_CUSTOM_META := "_is_ez_tiles_generated"
 
@@ -241,11 +241,12 @@ func _update_atlas_coords(cells : Array[Vector2i]) -> void:
 
 func _erase_cells(cells : Dictionary):
 	# prevent current preview placement from being added to the undo list
-	for cell in cells.keys():
-		if cell in remembered_cells and remembered_cells[cell][0] > -1:
-			under_edit.set_cell(cell, remembered_cells[cell][0], remembered_cells[cell][1])
-		else:
-			under_edit.erase_cell(cell)
+	if drag_mode == DragMode.BRUSH:
+		for cell in cells.keys():
+			if cell in remembered_cells and remembered_cells[cell][0] > -1:
+				under_edit.set_cell(cell, remembered_cells[cell][0], remembered_cells[cell][1])
+			else:
+				under_edit.erase_cell(cell)
 	_place_cells_preview(cells, -1)
 
 
