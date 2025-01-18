@@ -171,22 +171,15 @@ func _grow_cells(area_cells : Array, diagonal := false,  base_dir := Vector2i.ZE
 	return expanded_region.keys()
 
 
-func _get_sized_brush(cell : Dictionary):
+func _get_sized_brush(cell : Dictionary) -> Dictionary:
 	if brush_tab.brush_size == 1:
 		return cell
 	var out := Dictionary()
-	var cur_keys := cell.keys()
-	var base_dir := Vector2i(-1, -1)
-	for i in range(brush_tab.brush_size - 1):
-		cur_keys = _grow_cells(cur_keys, false, base_dir)
-		if base_dir == Vector2i(-1, -1):
-			base_dir = Vector2i(1, -1)
-		elif base_dir == Vector2i(1, -1):
-			base_dir = Vector2i(1, 1)
-		elif base_dir == Vector2i(1, 1):
-			base_dir = Vector2i(-1, 1)
-		else:
-			base_dir = Vector2i(-1, -1)
+	var cur_keys := []
+	var middle : Vector2i = cell.keys()[0] + Vector2i.ONE
+	for x in range(middle.x -  floor(brush_tab.brush_size / 2), middle.x + ceil(brush_tab.brush_size / 2)):
+		for y in range(middle.y -  floor(brush_tab.brush_size / 2), middle.y + ceil(brush_tab.brush_size / 2)):
+			cur_keys.append(Vector2i(x, y))
 	for k in cur_keys:
 		out[k] = cell.values()[0]
 	return out
@@ -239,6 +232,12 @@ func _update_atlas_coords(cells : Array[Vector2i]) -> void:
 
 
 func _erase_cells(cells : Dictionary):
+	# prevent current preview placement from being added to the undo list
+	for cell in cells.keys():
+		if cell in remembered_cells and remembered_cells[cell][0] > -1:
+			under_edit.set_cell(cell, remembered_cells[cell][0], remembered_cells[cell][1])
+		else:
+			under_edit.erase_cell(cell)
 	_place_cells_preview(cells, -1)
 
 
@@ -309,7 +308,7 @@ func get_draw_rect(tile_pos : Vector2i) -> Rect2i:
 			else:
 				return Rect2i(tile_pos, Vector2i.ONE)
 		DragMode.BRUSH, _:
-			return Rect2i(tile_pos, Vector2i.ONE)
+			return Rect2i()
 
 
 func get_draw_area(tile_pos : Vector2i) -> Array:

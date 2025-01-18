@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://addons/ez_tiles_draw/brush_draw.gd" id="1_qrfye"]
 [ext_resource type="PackedScene" uid="uid://chi7cp6qp6vki" path="res://addons/ez_tiles_draw/range_slider_with_line_edit.tscn" id="2_g17n4"]
 [ext_resource type="Texture2D" uid="uid://c7u17hgk6jvet" path="res://addons/ez_tiles_draw/TerrainConnect.svg" id="3_lefkq"]
-[ext_resource type="Texture2D" uid="uid://c0t85l7oiep61" path="res://addons/ez_tiles/examples/16x16/tinyworlds-tileset-floating-dirt-isles.png" id="4_wxs8s"]
+[ext_resource type="Texture2D" uid="uid://7ab600twsy17" path="res://addons/ez_tiles/examples/15x15/gold_tiles.png" id="4_6agje"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gwowe"]
 content_margin_left = 10.0
@@ -29,68 +29,68 @@ bg_color = Color(0.12549, 0.145098, 0.172549, 1)
 [sub_resource type="ButtonGroup" id="ButtonGroup_4xcfu"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_s2tcy"]
-atlas = ExtResource("4_wxs8s")
-region = Rect2(0, 0, 16, 16)
+atlas = ExtResource("4_6agje")
+region = Rect2(0, 0, 15, 15)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qslf2"]
-atlas = ExtResource("4_wxs8s")
-region = Rect2(16, 0, 16, 16)
+atlas = ExtResource("4_6agje")
+region = Rect2(15, 0, 15, 15)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gcnvt"]
-atlas = ExtResource("4_wxs8s")
-region = Rect2(16, 16, 16, 16)
+atlas = ExtResource("4_6agje")
+region = Rect2(15, 15, 15, 15)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ihxjj"]
-atlas = ExtResource("4_wxs8s")
-region = Rect2(16, 32, 16, 16)
+atlas = ExtResource("4_6agje")
+region = Rect2(15, 30, 15, 15)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fcos3"]
-atlas = ExtResource("4_wxs8s")
-region = Rect2(0, 48, 16, 16)
+atlas = ExtResource("4_6agje")
+region = Rect2(0, 45, 15, 15)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7xcoe"]
-atlas = ExtResource("4_wxs8s")
-region = Rect2(16, 48, 16, 16)
+atlas = ExtResource("4_6agje")
+region = Rect2(15, 45, 15, 15)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_guy6h"]
-atlas = ExtResource("4_wxs8s")
-region = Rect2(32, 48, 16, 16)
+atlas = ExtResource("4_6agje")
+region = Rect2(30, 45, 15, 15)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_lqkei"]
-atlas = ExtResource("4_wxs8s")
-region = Rect2(48, 0, 16, 16)
+atlas = ExtResource("4_6agje")
+region = Rect2(45, 0, 15, 15)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0r24e"]
-atlas = ExtResource("4_wxs8s")
-region = Rect2(64, 0, 16, 16)
+atlas = ExtResource("4_6agje")
+region = Rect2(60, 0, 15, 15)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dj1ye"]
-atlas = ExtResource("4_wxs8s")
-region = Rect2(80, 0, 16, 16)
+atlas = ExtResource("4_6agje")
+region = Rect2(75, 0, 15, 15)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qvl5q"]
-atlas = ExtResource("4_wxs8s")
-region = Rect2(48, 16, 16, 16)
+atlas = ExtResource("4_6agje")
+region = Rect2(45, 15, 15, 15)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0rmle"]
-atlas = ExtResource("4_wxs8s")
-region = Rect2(64, 16, 16, 16)
+atlas = ExtResource("4_6agje")
+region = Rect2(60, 15, 15, 15)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nau77"]
-atlas = ExtResource("4_wxs8s")
-region = Rect2(80, 16, 16, 16)
+atlas = ExtResource("4_6agje")
+region = Rect2(75, 15, 15, 15)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7sag0"]
-atlas = ExtResource("4_wxs8s")
-region = Rect2(48, 32, 16, 16)
+atlas = ExtResource("4_6agje")
+region = Rect2(45, 30, 15, 15)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5jote"]
-atlas = ExtResource("4_wxs8s")
-region = Rect2(64, 32, 16, 16)
+atlas = ExtResource("4_6agje")
+region = Rect2(60, 30, 15, 15)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_kxntg"]
-atlas = ExtResource("4_wxs8s")
-region = Rect2(80, 32, 16, 16)
+atlas = ExtResource("4_6agje")
+region = Rect2(75, 30, 15, 15)
 
 [node name="BrushDraw" type="PanelContainer"]
 anchors_preset = 15
