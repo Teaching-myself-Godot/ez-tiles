@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://un7sibaoyeeo"
-path="res://.godot/imported/Connect2.svg-5689cd3a87f4b869816ea126d9bcbc55.ctex"
+uid="uid://dhhtq6kkxpaus"
+path="res://.godot/imported/Stamp.svg-574d91bc6b38594e1c4b844a85cd50f9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/ez_tiles_draw/Connect2.svg"
-dest_files=["res://.godot/imported/Connect2.svg-5689cd3a87f4b869816ea126d9bcbc55.ctex"]
+source_file="res://addons/ez_tiles_draw/icons/Stamp.svg"
+dest_files=["res://.godot/imported/Stamp.svg-574d91bc6b38594e1c4b844a85cd50f9.ctex"]
 
 [params]
 

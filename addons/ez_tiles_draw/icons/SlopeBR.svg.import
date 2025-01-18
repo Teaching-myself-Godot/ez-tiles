@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://behgjlyeldpdv"
-path="res://.godot/imported/SlopeTL.svg-0761166d87f52cf8343c39ce7ee88c06.ctex"
+uid="uid://7crpolmxjj2r"
+path="res://.godot/imported/SlopeBR.svg-17df84f3099732b1f4ee77f754146a30.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/ez_tiles_draw/SlopeTL.svg"
-dest_files=["res://.godot/imported/SlopeTL.svg-0761166d87f52cf8343c39ce7ee88c06.ctex"]
+source_file="res://addons/ez_tiles_draw/icons/SlopeBR.svg"
+dest_files=["res://.godot/imported/SlopeBR.svg-17df84f3099732b1f4ee77f754146a30.ctex"]
 
 [params]
 

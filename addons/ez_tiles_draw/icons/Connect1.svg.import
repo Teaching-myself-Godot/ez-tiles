@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c7u17hgk6jvet"
-path="res://.godot/imported/TerrainConnect.svg-40787a7f721f9f5f1e0c7e4f089e5da4.ctex"
+uid="uid://pyivvoarllad"
+path="res://.godot/imported/Connect1.svg-9f303752a1359b47f84588b734895afc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/ez_tiles_draw/TerrainConnect.svg"
-dest_files=["res://.godot/imported/TerrainConnect.svg-40787a7f721f9f5f1e0c7e4f089e5da4.ctex"]
+source_file="res://addons/ez_tiles_draw/icons/Connect1.svg"
+dest_files=["res://.godot/imported/Connect1.svg-9f303752a1359b47f84588b734895afc.ctex"]
 
 [params]
 

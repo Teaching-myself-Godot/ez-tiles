@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://pyivvoarllad"
-path="res://.godot/imported/Connect1.svg-800612b86834c4f6c2d8f1c97f88e706.ctex"
+uid="uid://cri2mdk3hr6s1"
+path="res://.godot/imported/HillT.svg-e6fcb261060d4fde7ac8fbee7cb65a03.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/ez_tiles_draw/Connect1.svg"
-dest_files=["res://.godot/imported/Connect1.svg-800612b86834c4f6c2d8f1c97f88e706.ctex"]
+source_file="res://addons/ez_tiles_draw/icons/HillT.svg"
+dest_files=["res://.godot/imported/HillT.svg-e6fcb261060d4fde7ac8fbee7cb65a03.ctex"]
 
 [params]
 

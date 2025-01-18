@@ -1,15 +1,15 @@
 [gd_scene load_steps=16 format=3 uid="uid://bitqwiwmn3s0r"]
 
 [ext_resource type="Script" path="res://addons/ez_tiles_draw/area_draw.gd" id="1_ee3lv"]
-[ext_resource type="Texture2D" uid="uid://dooqg3fapf15x" path="res://addons/ez_tiles_draw/Rectangle.svg" id="2_0c16j"]
-[ext_resource type="Texture2D" uid="uid://xetkyyw6y8ff" path="res://addons/ez_tiles_draw/RectangleSoft.svg" id="2_lfgj6"]
-[ext_resource type="Texture2D" uid="uid://behgjlyeldpdv" path="res://addons/ez_tiles_draw/SlopeTL.svg" id="3_j68q8"]
-[ext_resource type="Texture2D" uid="uid://dbjof7q6tq4d6" path="res://addons/ez_tiles_draw/SlopeTR.svg" id="4_703fo"]
-[ext_resource type="Texture2D" uid="uid://7crpolmxjj2r" path="res://addons/ez_tiles_draw/SlopeBR.svg" id="5_f5qx1"]
-[ext_resource type="Texture2D" uid="uid://clpg11r4kdy8v" path="res://addons/ez_tiles_draw/SlopeBL.svg" id="6_r38ls"]
-[ext_resource type="Texture2D" uid="uid://c7u17hgk6jvet" path="res://addons/ez_tiles_draw/TerrainConnect.svg" id="8_05x1s"]
-[ext_resource type="Texture2D" uid="uid://cri2mdk3hr6s1" path="res://addons/ez_tiles_draw/HillT.svg" id="8_trf31"]
-[ext_resource type="Texture2D" uid="uid://dudbsnchdio2u" path="res://addons/ez_tiles/examples/15x15/sand.png" id="10_3dest"]
+[ext_resource type="Texture2D" uid="uid://dooqg3fapf15x" path="res://addons/ez_tiles_draw/icons/Rectangle.svg" id="2_0c16j"]
+[ext_resource type="Texture2D" uid="uid://xetkyyw6y8ff" path="res://addons/ez_tiles_draw/icons/RectangleSoft.svg" id="2_lfgj6"]
+[ext_resource type="Texture2D" uid="uid://behgjlyeldpdv" path="res://addons/ez_tiles_draw/icons/SlopeTL.svg" id="3_j68q8"]
+[ext_resource type="Texture2D" uid="uid://dbjof7q6tq4d6" path="res://addons/ez_tiles_draw/icons/SlopeTR.svg" id="4_703fo"]
+[ext_resource type="Texture2D" uid="uid://7crpolmxjj2r" path="res://addons/ez_tiles_draw/icons/SlopeBR.svg" id="5_f5qx1"]
+[ext_resource type="Texture2D" uid="uid://clpg11r4kdy8v" path="res://addons/ez_tiles_draw/icons/SlopeBL.svg" id="6_r38ls"]
+[ext_resource type="Texture2D" uid="uid://c7u17hgk6jvet" path="res://addons/ez_tiles_draw/icons/TerrainConnect.svg" id="8_05x1s"]
+[ext_resource type="Texture2D" uid="uid://cri2mdk3hr6s1" path="res://addons/ez_tiles_draw/icons/HillT.svg" id="8_trf31"]
+[ext_resource type="Texture2D" uid="uid://dyf2x07bqc1kw" path="res://addons/ez_tiles/examples/15x15/big_brick.png" id="10_yh835"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_51lt4"]
 content_margin_left = 10.0
@@ -30,7 +30,7 @@ bg_color = Color(0.12549, 0.145098, 0.172549, 1)
 [sub_resource type="ButtonGroup" id="ButtonGroup_3cdnu"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_mcu38"]
-atlas = ExtResource("10_3dest")
+atlas = ExtResource("10_yh835")
 region = Rect2(0, 0, 15, 15)
 
 [node name="AreaDraw" type="PanelContainer"]

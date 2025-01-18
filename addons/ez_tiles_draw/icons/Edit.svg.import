@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d10gshlv0aq2d"
-path="res://.godot/imported/Edit.svg-f818e57174c907fa978ad9d900402b7c.ctex"
+path="res://.godot/imported/Edit.svg-c1b98cac3df105b6e1a31eed72c3d873.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/ez_tiles_draw/Edit.svg"
-dest_files=["res://.godot/imported/Edit.svg-f818e57174c907fa978ad9d900402b7c.ctex"]
+source_file="res://addons/ez_tiles_draw/icons/Edit.svg"
+dest_files=["res://.godot/imported/Edit.svg-c1b98cac3df105b6e1a31eed72c3d873.ctex"]
 
 [params]
 

@@ -1,11 +1,11 @@
 [gd_scene load_steps=10 format=3 uid="uid://bylxp7tq3yo5s"]
 
 [ext_resource type="Script" path="res://addons/ez_tiles_draw/ez_tiles_draw_dock.gd" id="1_wtbry"]
-[ext_resource type="Texture2D" uid="uid://pyivvoarllad" path="res://addons/ez_tiles_draw/Connect1.svg" id="2_dplls"]
+[ext_resource type="Texture2D" uid="uid://pyivvoarllad" path="res://addons/ez_tiles_draw/icons/Connect1.svg" id="2_dplls"]
 [ext_resource type="PackedScene" uid="uid://bitqwiwmn3s0r" path="res://addons/ez_tiles_draw/area_draw.tscn" id="2_k0y3s"]
-[ext_resource type="Texture2D" uid="uid://dooqg3fapf15x" path="res://addons/ez_tiles_draw/Rectangle.svg" id="2_urupm"]
-[ext_resource type="Texture2D" uid="uid://d10gshlv0aq2d" path="res://addons/ez_tiles_draw/Edit.svg" id="3_qgjav"]
-[ext_resource type="Texture2D" uid="uid://dhhtq6kkxpaus" path="res://addons/ez_tiles_draw/Stamp.svg" id="4_uxbhq"]
+[ext_resource type="Texture2D" uid="uid://dooqg3fapf15x" path="res://addons/ez_tiles_draw/icons/Rectangle.svg" id="2_urupm"]
+[ext_resource type="Texture2D" uid="uid://d10gshlv0aq2d" path="res://addons/ez_tiles_draw/icons/Edit.svg" id="3_qgjav"]
+[ext_resource type="Texture2D" uid="uid://dhhtq6kkxpaus" path="res://addons/ez_tiles_draw/icons/Stamp.svg" id="4_uxbhq"]
 [ext_resource type="PackedScene" uid="uid://is8n20fchd2q" path="res://addons/ez_tiles_draw/brush_draw.tscn" id="7_sh02n"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_m6mfs"]
