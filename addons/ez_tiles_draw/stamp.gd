@@ -8,22 +8,20 @@ var style_box_hover : StyleBoxFlat
 var style_box_selected : StyleBoxFlat
 var grid_container : GridContainer
 var is_selected := false
-var selection_size := Vector2i(8, 5)
-var StampTileScene : PackedScene
+var stamp_size := Vector2i.ONE
+var tile_textures : Array[TextureRect] = []
+var tile_map_layer_under_edit : TileMapLayer
 
 signal selected()
 
 func _enter_tree() -> void:
-	StampTileScene = preload("res://addons/ez_tiles_draw/stamp_tile.tscn")
 	style_box_normal = preload("res://addons/ez_tiles_draw/stamp.stylebox")
 	style_box_hover = preload("res://addons/ez_tiles_draw/stamp_hover.stylebox")
 	style_box_selected = preload("res://addons/ez_tiles_draw/stamp_selected.stylebox")
 	grid_container = find_child("GridContainer")
-	grid_container.columns = selection_size.x
-	for x in range(selection_size.x):
-		for y in range(selection_size.y):
-			var stamp_tile := StampTileScene.instantiate()
-			grid_container.add_child(stamp_tile)
+	grid_container.columns = stamp_size.x
+	for tt in tile_textures:
+		grid_container.add_child(tt)
 
 
 func deselect():

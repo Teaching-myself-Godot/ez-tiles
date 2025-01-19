@@ -17,9 +17,9 @@ func _enter_tree() -> void:
 func _on_stamp_selected(selected_stamp : Stamp):
 	snapshot_button.button_pressed = false
 	snapshot_button.focus_mode = Control.FOCUS_NONE
-	for stamp : Stamp in find_children("Stamp*"):
-		if stamp != selected_stamp:
-			stamp.deselect()
+	for child in h_flow_container.get_children():
+		if child != selected_stamp and child is Stamp:
+			child.deselect()
 	snapshot_toggled.emit(false)
 
 
@@ -34,11 +34,18 @@ func start_snapshot():
 		stamp.deselect()
 
 
-
 func stop_snapshotting():
 	snapshot_button.button_pressed = false
 
 
-
 func _on_snap_shot_select_button_toggled(toggled_on: bool) -> void:
 	snapshot_toggled.emit(toggled_on)
+
+
+func show_stamps_for_tile_map_layer(tml : TileMapLayer) -> void:
+	for child in h_flow_container.get_children():
+		if child is Stamp:
+			if child.tile_map_layer_under_edit == tml:
+				child.show()
+			else:
+				child.hide()

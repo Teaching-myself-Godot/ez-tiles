@@ -7,7 +7,9 @@ enum DragMode {BRUSH, AREA, STAMP, SNAPSHOT}
 
 const EZ_TILE_CUSTOM_META := "_is_ez_tiles_generated"
 
-var TerrainPickerEntry
+var StampScene : PackedScene
+var StampTileScene : PackedScene
+var TerrainPickerEntryScene : PackedScene
 var under_edit : TileMapLayer = null
 var hint_label : Label
 var main_container : Control
@@ -27,7 +29,7 @@ var undo_redo : EditorUndoRedoManager
 
 var area_draw_tab : AreaDraw
 var brush_tab : BrushDraw
-var stamp_tab : Control
+var stamp_tab : StampTab
 
 var area_draw_toggle_button : Button
 var brush_draw_toggle_button : Button
@@ -60,7 +62,9 @@ const EZ_NEIGHBOUR_MAP := {
 
 
 func _enter_tree() -> void:
-	TerrainPickerEntry = preload("res://addons/ez_tiles_draw/terrain_picker_entry.tscn")
+	StampScene = preload("res://addons/ez_tiles_draw/stamp.tscn")
+	StampTileScene = preload("res://addons/ez_tiles_draw/stamp_tile.tscn")
+	TerrainPickerEntryScene = preload("res://addons/ez_tiles_draw/terrain_picker_entry.tscn")
 	hint_label = find_child("HintLabel")
 	main_container = find_child("MainVBoxContainer")
 	default_editor_check_button = find_child("DefaultEditorCheckButton")
@@ -91,7 +95,7 @@ func activate(node : TileMapLayer):
 
 	if under_edit.tile_set.get_terrain_sets_count() > 0:
 		for terrain_id in range(under_edit.tile_set.get_terrains_count(0)):
-			var entry : TerrainPickerEntry = TerrainPickerEntry.instantiate()
+			var entry : TerrainPickerEntry = TerrainPickerEntryScene.instantiate()
 			entry.terrain_name = under_edit.tile_set.get_terrain_name(0, terrain_id)
 			entry.texture_resource = _get_first_texture_for_terrain(terrain_id)
 			entry.terrain_id = terrain_id
@@ -107,6 +111,8 @@ func activate(node : TileMapLayer):
 		default_editor_check_button.button_pressed = true
 	else:
 		default_editor_check_button.button_pressed = false
+
+	stamp_tab.show_stamps_for_tile_map_layer(under_edit)
 
 
 func _get_first_source_id_for_terrain(terrain_id : int) -> int:
@@ -160,6 +166,28 @@ func _remember_cell(tile_pos : Vector2i) -> void:
 		remembered_cells[tile_pos] = [under_edit.get_cell_source_id(tile_pos), under_edit.get_cell_atlas_coords(tile_pos)]
 	else:
 		remembered_cells[tile_pos] = [-1, Vector2i.ZERO]
+
+
+func _take_snapshot(drag_end : Vector2i) -> void:
+	var stamp : Stamp = StampScene.instantiate()
+	var from_x := drag_start.x if drag_start.x < drag_end.x else drag_end.x
+	var to_x := drag_start.x if drag_start.x > drag_end.x else drag_end.x
+	var from_y := drag_start.y if drag_start.y < drag_end.y else drag_end.y
+	var to_y := drag_start.y if drag_start.y > drag_end.y else drag_end.y
+	stamp.stamp_size = Vector2i(to_x - from_x + 1, to_y - from_y + 1)
+	for y in range(from_y, to_y + 1):
+		for x in range(from_x, to_x + 1):
+			var tile_pos := Vector2i(x, y)
+			var stamp_tile : TextureRect = StampTileScene.instantiate()
+			if under_edit.get_cell_source_id(tile_pos) > -1:
+				stamp_tile.texture = AtlasTexture.new()
+				stamp_tile.texture.atlas = under_edit.tile_set.get_source(under_edit.get_cell_source_id(tile_pos)).texture
+				stamp_tile.texture.region = Rect2i(
+					under_edit.get_cell_atlas_coords(tile_pos) * under_edit.tile_set.tile_size,
+					under_edit.tile_set.tile_size)
+			stamp.tile_textures.append(stamp_tile)
+	stamp.tile_map_layer_under_edit = under_edit
+	stamp_tab.add_stamp(stamp)
 
 
 func _grow_cells(area_cells : Array, diagonal := false,  base_dir := Vector2i.ZERO) -> Array:
@@ -412,7 +440,7 @@ func handle_mouse_up(button : MouseButton, tile_pos: Vector2i):
 			if drag_mode == DragMode.AREA:
 				_commit_cell_placement(_get_draw_shape_for_area(drag_start, tile_pos).keys())
 			if drag_mode == DragMode.SNAPSHOT:
-				print("TODO: snapshot!")
+				_take_snapshot(tile_pos)
 				_on_stamp_snapshot_toggled(false)
 		MouseButton.MOUSE_BUTTON_RIGHT:
 			rmb_is_down = false
@@ -441,7 +469,6 @@ func handle_mouse_down(button : MouseButton, tile_pos: Vector2i):
 				_erase_cells(_get_sized_brush({tile_pos: brush_tab.tile_coords}))
 				_commit_cell_placement(_get_sized_brush({tile_pos: brush_tab.tile_coords}).keys())
 			elif drag_mode == DragMode.SNAPSHOT:
-				print("TODO: cancel snapshot")
 				_on_stamp_snapshot_toggled(false)
 
 
