@@ -7,3 +7,4 @@ custom_minimum_size = Vector2(16, 16)
 size_flags_horizontal = 8
 size_flags_vertical = 8
 texture = SubResource("AtlasTexture_q2mxv")
+expand_mode = 3

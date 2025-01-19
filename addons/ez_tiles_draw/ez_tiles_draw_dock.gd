@@ -175,10 +175,15 @@ func _take_snapshot(drag_end : Vector2i) -> void:
 	var from_y := drag_start.y if drag_start.y < drag_end.y else drag_end.y
 	var to_y := drag_start.y if drag_start.y > drag_end.y else drag_end.y
 	stamp.stamp_size = Vector2i(to_x - from_x + 1, to_y - from_y + 1)
+	var stamp_tile_size := Vector2(under_edit.tile_set.tile_size)
+	while (stamp.stamp_size.x * stamp_tile_size.x) > 512:
+		stamp_tile_size *= 0.5
+
 	for y in range(from_y, to_y + 1):
 		for x in range(from_x, to_x + 1):
 			var tile_pos := Vector2i(x, y)
 			var stamp_tile : TextureRect = StampTileScene.instantiate()
+			stamp_tile.custom_minimum_size = Vector2i(stamp_tile_size)
 			if under_edit.get_cell_source_id(tile_pos) > -1:
 				stamp_tile.texture = AtlasTexture.new()
 				stamp_tile.texture.atlas = under_edit.tile_set.get_source(under_edit.get_cell_source_id(tile_pos)).texture
@@ -362,14 +367,7 @@ func get_draw_rect(tile_pos : Vector2i) -> Rect2i:
 func get_draw_area(tile_pos : Vector2i) -> Array:
 	match(drag_mode):
 		DragMode.SNAPSHOT:
-			if lmb_is_down:
-				var from_x := drag_start.x if drag_start.x < tile_pos.x else tile_pos.x
-				var to_x := drag_start.x if drag_start.x > tile_pos.x else tile_pos.x
-				var from_y := drag_start.y if drag_start.y < tile_pos.y else tile_pos.y
-				var to_y := drag_start.y if drag_start.y > tile_pos.y else tile_pos.y
-				return AreaDraw.get_cells_rectangle(Vector2i(from_x, from_y), Vector2i(to_x, to_y)).keys()
-			else:
-				return []
+			return []
 		DragMode.AREA:
 			if rmb_is_down or lmb_is_down:
 				return _get_draw_shape_for_area(drag_start, tile_pos).keys()
