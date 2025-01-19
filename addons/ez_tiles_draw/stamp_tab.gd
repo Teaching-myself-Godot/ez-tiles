@@ -28,6 +28,12 @@ func add_stamp(stamp : Stamp):
 	h_flow_container.add_child(stamp)
 
 
+func get_selected_stamp() -> Stamp:
+	for child in h_flow_container.get_children():
+		if is_instance_valid(child) and child is Stamp and child.is_selected and child.visible:
+			return child
+	return null
+
 func start_snapshot():
 	snapshot_button.button_pressed = true
 	for child in h_flow_container.get_children():

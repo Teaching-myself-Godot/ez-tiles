@@ -186,11 +186,14 @@ func _take_snapshot(drag_end : Vector2i) -> void:
 			var stamp_tile : TextureRect = StampTileScene.instantiate()
 			stamp_tile.custom_minimum_size = Vector2i(stamp_tile_size)
 			if under_edit.get_cell_source_id(tile_pos) > -1:
+				stamp.stamp_cell_data[Vector2i(x - from_x, y - from_y)] = [under_edit.get_cell_source_id(tile_pos), under_edit.get_cell_atlas_coords(tile_pos)]
 				stamp_tile.texture = AtlasTexture.new()
 				stamp_tile.texture.atlas = under_edit.tile_set.get_source(under_edit.get_cell_source_id(tile_pos)).texture
 				stamp_tile.texture.region = Rect2i(
 					under_edit.get_cell_atlas_coords(tile_pos) * under_edit.tile_set.tile_size,
 					under_edit.tile_set.tile_size)
+			else:
+				stamp.stamp_cell_data[Vector2i(x - from_x, y - from_y)] = [-1, Vector2i.ZERO]
 			stamp.tile_textures.append(stamp_tile)
 	stamp.tile_map_layer_under_edit = under_edit
 	stamp_tab.add_stamp(stamp)
@@ -227,6 +230,22 @@ func _get_sized_brush(cell : Dictionary) -> Dictionary:
 	for k in cur_keys:
 		out[k] = cell.values()[0]
 	return out
+
+
+func _get_stamp_placement_area(stamp : Stamp, tile_pos : Vector2i) -> Array[Vector2i]:
+	var out : Array[Vector2i] = []
+	for stamp_tile_pos in stamp.stamp_cell_data.keys():
+		if stamp.stamp_cell_data[stamp_tile_pos][0] > -1:
+			out.append(tile_pos + stamp_tile_pos)
+	return out
+
+
+func _place_stamp_preview(stamp : Stamp, tile_pos : Vector2i) -> void:
+	for stamp_tile_pos in stamp.stamp_cell_data.keys():
+		_remember_cell(tile_pos + stamp_tile_pos)
+		if stamp.stamp_cell_data[stamp_tile_pos][0] > -1:
+			under_edit.set_cell(tile_pos + stamp_tile_pos, stamp.stamp_cell_data[stamp_tile_pos][0],
+					stamp.stamp_cell_data[stamp_tile_pos][1])
 
 
 func _place_cells_preview(cells_in_current_draw_area : Dictionary, terrain_id : int) -> void:
@@ -361,8 +380,15 @@ func get_draw_rect(tile_pos : Vector2i) -> Rect2i:
 				return Rect2i(Vector2i(from_x, from_y),  Vector2i(to_x, to_y) - Vector2i(from_x, from_y) + Vector2i.ONE)
 			else:
 				return Rect2i(tile_pos, Vector2i.ONE)
+		DragMode.STAMP:
+			var stamp := stamp_tab.get_selected_stamp()
+			if is_instance_valid(stamp):
+				return Rect2i(tile_pos, stamp.stamp_size)
+			else:
+				Rect2i()
 		DragMode.BRUSH, _:
 			return Rect2i()
+	return Rect2i()
 
 
 func get_draw_area(tile_pos : Vector2i) -> Array:
@@ -429,7 +455,11 @@ func handle_mouse_move(tile_pos : Vector2i) -> void:
 				_place_cells_preview(_get_draw_shape_for_area(drag_start, tile_pos), current_terrain_id)
 			elif rmb_is_down:
 				_erase_cells(_get_draw_shape_for_area(drag_start, tile_pos))
-
+		elif drag_mode == DragMode.STAMP:
+			_place_back_remembered_cells()
+			var stamp := stamp_tab.get_selected_stamp()
+			if is_instance_valid(stamp):
+				_place_stamp_preview(stamp, tile_pos)
 
 
 func handle_mouse_up(button : MouseButton, tile_pos: Vector2i):
@@ -441,10 +471,15 @@ func handle_mouse_up(button : MouseButton, tile_pos: Vector2i):
 			if drag_mode == DragMode.SNAPSHOT:
 				_take_snapshot(tile_pos)
 				_on_stamp_snapshot_toggled(false)
+			if drag_mode == DragMode.STAMP:
+				var stamp := stamp_tab.get_selected_stamp()
+				if is_instance_valid(stamp):
+					_commit_cell_placement(_get_stamp_placement_area(stamp, tile_pos))
 		MouseButton.MOUSE_BUTTON_RIGHT:
 			rmb_is_down = false
 			if drag_mode == DragMode.AREA:
 				_commit_cell_placement(_get_draw_shape_for_area(drag_start, tile_pos).keys())
+
 
 
 
@@ -469,6 +504,11 @@ func handle_mouse_down(button : MouseButton, tile_pos: Vector2i):
 				_commit_cell_placement(_get_sized_brush({tile_pos: brush_tab.tile_coords}).keys())
 			elif drag_mode == DragMode.SNAPSHOT:
 				_on_stamp_snapshot_toggled(false)
+			elif drag_mode == DragMode.STAMP:
+				var stamp := stamp_tab.get_selected_stamp()
+				if is_instance_valid(stamp):
+					_place_back_remembered_cells()
+					stamp.deselect()
 
 
 func handle_mouse_entered():

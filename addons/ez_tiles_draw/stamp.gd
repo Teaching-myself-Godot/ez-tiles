@@ -11,8 +11,10 @@ var is_selected := false
 var stamp_size := Vector2i.ONE
 var tile_textures : Array[TextureRect] = []
 var tile_map_layer_under_edit : TileMapLayer
+var stamp_cell_data := {}
 
 signal selected()
+
 
 func _enter_tree() -> void:
 	style_box_normal = preload("res://addons/ez_tiles_draw/stamp.stylebox")
