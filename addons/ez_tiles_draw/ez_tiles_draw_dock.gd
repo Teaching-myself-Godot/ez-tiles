@@ -150,7 +150,8 @@ func _on_terrain_selected(id : int) -> void:
 			_get_first_texture_for_terrain(id), under_edit.tile_set.tile_size)
 	brush_tab.update_tile_buttons(
 		_get_first_texture_for_terrain(id), under_edit.tile_set.tile_size)
-
+	if stamp_tab.visible:
+		brush_tab.show()
 
 func _place_back_remembered_cells() -> void:
 	for prev_pos in remembered_cells.keys():

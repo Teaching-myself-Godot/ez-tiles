@@ -18,7 +18,7 @@ func _on_stamp_selected(selected_stamp : Stamp):
 	snapshot_button.button_pressed = false
 	snapshot_button.focus_mode = Control.FOCUS_NONE
 	for child in h_flow_container.get_children():
-		if child != selected_stamp and child is Stamp:
+		if is_instance_valid(child) and child != selected_stamp and child is Stamp:
 			child.deselect()
 	snapshot_toggled.emit(false)
 
@@ -30,8 +30,9 @@ func add_stamp(stamp : Stamp):
 
 func start_snapshot():
 	snapshot_button.button_pressed = true
-	for stamp : Stamp in find_children("Stamp*"):
-		stamp.deselect()
+	for child in h_flow_container.get_children():
+		if is_instance_valid(child) and child is Stamp:
+			child.deselect()
 
 
 func stop_snapshotting():

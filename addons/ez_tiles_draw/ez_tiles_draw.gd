@@ -20,7 +20,7 @@ func _enter_tree() -> void:
 
 
 func _handles(object: Object) -> bool:
-	return object is TileMapLayer
+	return is_instance_valid(object) and object is TileMapLayer
 
 
 func _dump_interface(n : Node, max_d : int = 2, d : int = 0) -> void:
