@@ -1,0 +1,385 @@
+[gd_scene load_steps=28 format=3 uid="uid://is8n20fchd2q"]
+
+[ext_resource type="Script" path="res://addons/ez_tiles/ez_tiles_draw/brush_draw.gd" id="1_qrfye"]
+[ext_resource type="PackedScene" uid="uid://chi7cp6qp6vki" path="res://addons/ez_tiles/ez_tiles_draw/range_slider_with_line_edit.tscn" id="2_g17n4"]
+[ext_resource type="Texture2D" uid="uid://bps21xe8h1m2p" path="res://addons/ez_tiles/ez_tiles_draw/icons/Square.svg" id="3_eksbm"]
+[ext_resource type="Texture2D" uid="uid://c7u17hgk6jvet" path="res://addons/ez_tiles/ez_tiles_draw/icons/TerrainConnect.svg" id="3_lefkq"]
+[ext_resource type="Texture2D" uid="uid://bb3xfpcrmc8gc" path="res://addons/ez_tiles/ez_tiles_draw/icons/Circle.svg" id="4_04hac"]
+[ext_resource type="Texture2D" uid="uid://dyf2x07bqc1kw" path="res://addons/ez_tiles/examples/15x15/big_brick.png" id="6_burkf"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gwowe"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.211765, 0.239216, 0.290196, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qgks4"]
+content_margin_left = 10.0
+content_margin_top = 2.0
+content_margin_right = 10.0
+content_margin_bottom = 2.0
+bg_color = Color(0.12549, 0.145098, 0.172549, 1)
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_461xu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r4hko"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.12549, 0.145098, 0.172549, 1)
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_4xcfu"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s2tcy"]
+atlas = ExtResource("6_burkf")
+region = Rect2(0, 0, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qslf2"]
+atlas = ExtResource("6_burkf")
+region = Rect2(15, 0, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gcnvt"]
+atlas = ExtResource("6_burkf")
+region = Rect2(15, 15, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ihxjj"]
+atlas = ExtResource("6_burkf")
+region = Rect2(15, 30, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fcos3"]
+atlas = ExtResource("6_burkf")
+region = Rect2(0, 45, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7xcoe"]
+atlas = ExtResource("6_burkf")
+region = Rect2(15, 45, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_guy6h"]
+atlas = ExtResource("6_burkf")
+region = Rect2(30, 45, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lqkei"]
+atlas = ExtResource("6_burkf")
+region = Rect2(45, 0, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0r24e"]
+atlas = ExtResource("6_burkf")
+region = Rect2(60, 0, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dj1ye"]
+atlas = ExtResource("6_burkf")
+region = Rect2(75, 0, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qvl5q"]
+atlas = ExtResource("6_burkf")
+region = Rect2(45, 15, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0rmle"]
+atlas = ExtResource("6_burkf")
+region = Rect2(60, 15, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nau77"]
+atlas = ExtResource("6_burkf")
+region = Rect2(75, 15, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7sag0"]
+atlas = ExtResource("6_burkf")
+region = Rect2(45, 30, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5jote"]
+atlas = ExtResource("6_burkf")
+region = Rect2(60, 30, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kxntg"]
+atlas = ExtResource("6_burkf")
+region = Rect2(75, 30, 15, 15)
+
+[node name="BrushDraw" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gwowe")
+script = ExtResource("1_qrfye")
+metadata/_tab_index = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qgks4")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "Brush Size"
+
+[node name="RangeSliderWithLineEdit" parent="VBoxContainer/PanelContainer/HBoxContainer" instance=ExtResource("2_g17n4")]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "Shape"
+
+[node name="BrushShapeSquareButton" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_461xu")
+icon = ExtResource("3_eksbm")
+icon_alignment = 1
+
+[node name="BrushShapeCircleButton" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_461xu")
+icon = ExtResource("4_04hac")
+icon_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/ScrollContainer"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_r4hko")
+
+[node name="HFlowContainer" type="HFlowContainer" parent="VBoxContainer/ScrollContainer/PanelContainer2"]
+layout_mode = 2
+theme_override_constants/h_separation = 5
+
+[node name="ConnectTerrainsButton" type="Button" parent="VBoxContainer/ScrollContainer/PanelContainer2/HFlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+toggle_mode = true
+button_group = SubResource("ButtonGroup_4xcfu")
+icon = ExtResource("3_lefkq")
+
+[node name="TileButton1" type="Button" parent="VBoxContainer/ScrollContainer/PanelContainer2/HFlowContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.556863, 0.556863, 0.556863, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_4xcfu")
+icon = SubResource("AtlasTexture_s2tcy")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TileButton2" type="Button" parent="VBoxContainer/ScrollContainer/PanelContainer2/HFlowContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.556953, 0.556953, 0.556953, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+toggle_mode = true
+button_group = SubResource("ButtonGroup_4xcfu")
+icon = SubResource("AtlasTexture_qslf2")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TileButton3" type="Button" parent="VBoxContainer/ScrollContainer/PanelContainer2/HFlowContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.556953, 0.556953, 0.556953, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+toggle_mode = true
+button_group = SubResource("ButtonGroup_4xcfu")
+icon = SubResource("AtlasTexture_gcnvt")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TileButton4" type="Button" parent="VBoxContainer/ScrollContainer/PanelContainer2/HFlowContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.556953, 0.556953, 0.556953, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+toggle_mode = true
+button_group = SubResource("ButtonGroup_4xcfu")
+icon = SubResource("AtlasTexture_ihxjj")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TileButton5" type="Button" parent="VBoxContainer/ScrollContainer/PanelContainer2/HFlowContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.556953, 0.556953, 0.556953, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+toggle_mode = true
+button_group = SubResource("ButtonGroup_4xcfu")
+icon = SubResource("AtlasTexture_fcos3")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TileButton6" type="Button" parent="VBoxContainer/ScrollContainer/PanelContainer2/HFlowContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.556953, 0.556953, 0.556953, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+toggle_mode = true
+button_group = SubResource("ButtonGroup_4xcfu")
+icon = SubResource("AtlasTexture_7xcoe")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TileButton7" type="Button" parent="VBoxContainer/ScrollContainer/PanelContainer2/HFlowContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.556953, 0.556953, 0.556953, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+toggle_mode = true
+button_group = SubResource("ButtonGroup_4xcfu")
+icon = SubResource("AtlasTexture_guy6h")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TileButton8" type="Button" parent="VBoxContainer/ScrollContainer/PanelContainer2/HFlowContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.556953, 0.556953, 0.556953, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+toggle_mode = true
+button_group = SubResource("ButtonGroup_4xcfu")
+icon = SubResource("AtlasTexture_lqkei")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TileButton9" type="Button" parent="VBoxContainer/ScrollContainer/PanelContainer2/HFlowContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.556953, 0.556953, 0.556953, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+toggle_mode = true
+button_group = SubResource("ButtonGroup_4xcfu")
+icon = SubResource("AtlasTexture_0r24e")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TileButton10" type="Button" parent="VBoxContainer/ScrollContainer/PanelContainer2/HFlowContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.556953, 0.556953, 0.556953, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+toggle_mode = true
+button_group = SubResource("ButtonGroup_4xcfu")
+icon = SubResource("AtlasTexture_dj1ye")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TileButton11" type="Button" parent="VBoxContainer/ScrollContainer/PanelContainer2/HFlowContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.556953, 0.556953, 0.556953, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+toggle_mode = true
+button_group = SubResource("ButtonGroup_4xcfu")
+icon = SubResource("AtlasTexture_qvl5q")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TileButton12" type="Button" parent="VBoxContainer/ScrollContainer/PanelContainer2/HFlowContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.556953, 0.556953, 0.556953, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+toggle_mode = true
+button_group = SubResource("ButtonGroup_4xcfu")
+icon = SubResource("AtlasTexture_0rmle")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TileButton13" type="Button" parent="VBoxContainer/ScrollContainer/PanelContainer2/HFlowContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.556953, 0.556953, 0.556953, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+toggle_mode = true
+button_group = SubResource("ButtonGroup_4xcfu")
+icon = SubResource("AtlasTexture_nau77")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TileButton14" type="Button" parent="VBoxContainer/ScrollContainer/PanelContainer2/HFlowContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.556953, 0.556953, 0.556953, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+toggle_mode = true
+button_group = SubResource("ButtonGroup_4xcfu")
+icon = SubResource("AtlasTexture_7sag0")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TileButton15" type="Button" parent="VBoxContainer/ScrollContainer/PanelContainer2/HFlowContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.556953, 0.556953, 0.556953, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+toggle_mode = true
+button_group = SubResource("ButtonGroup_4xcfu")
+icon = SubResource("AtlasTexture_5jote")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TileButton16" type="Button" parent="VBoxContainer/ScrollContainer/PanelContainer2/HFlowContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.556953, 0.556953, 0.556953, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+toggle_mode = true
+button_group = SubResource("ButtonGroup_4xcfu")
+icon = SubResource("AtlasTexture_kxntg")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[connection signal="value_changed" from="VBoxContainer/PanelContainer/HBoxContainer/RangeSliderWithLineEdit" to="." method="_on_range_slider_with_line_edit_value_changed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/BrushShapeSquareButton" to="." method="_on_brush_shape_square_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/BrushShapeCircleButton" to="." method="_on_brush_shape_circle_button_pressed"]

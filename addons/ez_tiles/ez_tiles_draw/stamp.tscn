@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3 uid="uid://cxwounoiwp4xo"]
+
+[ext_resource type="StyleBox" uid="uid://cebcvill7i7w6" path="res://addons/ez_tiles/ez_tiles_draw/stamp.stylebox" id="1_jeeam"]
+[ext_resource type="Script" path="res://addons/ez_tiles/ez_tiles_draw/stamp.gd" id="2_4618f"]
+[ext_resource type="Texture2D" uid="uid://cxcgf65bf2tjg" path="res://addons/ez_tiles/ez_tiles_draw/icons/Remove.svg" id="3_a7o81"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4kexi"]
+bg_color = Color(0, 0, 0, 0.223529)
+
+[node name="Stamp" type="PanelContainer"]
+size_flags_horizontal = 0
+size_flags_vertical = 0
+mouse_default_cursor_shape = 2
+theme_override_styles/panel = ExtResource("1_jeeam")
+script = ExtResource("2_4618f")
+
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
+columns = 8
+
+[node name="RemoveButton" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_colors/icon_normal_color = Color(0.63, 0.63, 0.63, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_4kexi")
+icon = ExtResource("3_a7o81")
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
+[connection signal="pressed" from="RemoveButton" to="." method="_on_remove_button_pressed"]

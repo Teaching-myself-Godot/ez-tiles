@@ -1,0 +1,40 @@
+[gd_scene load_steps=4 format=3 uid="uid://catlvg1l82g5v"]
+
+[ext_resource type="Script" path="res://addons/ez_tiles/ez_tiles_draw/stamp_tab.gd" id="1_c1kw7"]
+[ext_resource type="Texture2D" uid="uid://copno6ivhw1mu" path="res://addons/ez_tiles/ez_tiles_draw/icons/SnapShot.svg" id="1_jqf6j"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q6lwj"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+
+[node name="StampTab" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_q6lwj")
+script = ExtResource("1_c1kw7")
+metadata/_tab_index = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="HFlowContainer" type="HFlowContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/h_separation = 5
+theme_override_constants/v_separation = 5
+
+[node name="SnapShotSelectButton" type="Button" parent="ScrollContainer/HFlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+toggle_mode = true
+icon = ExtResource("1_jqf6j")
+icon_alignment = 1
+
+[connection signal="toggled" from="ScrollContainer/HFlowContainer/SnapShotSelectButton" to="." method="_on_snap_shot_select_button_toggled"]
