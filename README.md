@@ -2,7 +2,10 @@
 
 ## Roadmap to 1.0.0
 
-- Combine the 2 plugins into one
+- Record a quick start and submit to yt
+- Record a detailed explainer and submit to yt
+- Add explainers to this readme
+- Make a copy of this readme in the addons dir
 
 ### Importer
 - Show collision preset as polygon hint
