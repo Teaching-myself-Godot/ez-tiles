@@ -233,20 +233,34 @@ func _get_sized_brush(cell : Dictionary) -> Dictionary:
 	return out
 
 
-func _get_stamp_placement_area(stamp : Stamp, tile_pos : Vector2i) -> Array[Vector2i]:
+func _get_stamp_placement_area(stamp : Stamp, tile_pos : Vector2i, include_empty_cells := false) -> Array[Vector2i]:
 	var out : Array[Vector2i] = []
 	for stamp_tile_pos in stamp.stamp_cell_data.keys():
-		if stamp.stamp_cell_data[stamp_tile_pos][0] > -1:
+		if stamp.stamp_cell_data[stamp_tile_pos][0] > -1 or include_empty_cells:
 			out.append(tile_pos + stamp_tile_pos)
+
 	return out
 
 
-func _place_stamp_preview(stamp : Stamp, tile_pos : Vector2i) -> void:
+func _place_stamp_preview(stamp : Stamp, cursor_tile_pos : Vector2i) -> void:
+	var overwrite_with_empty_cells := Input.is_key_pressed(KEY_SHIFT)
+	var stamp_plc_area := _get_stamp_placement_area(stamp, cursor_tile_pos, overwrite_with_empty_cells)
+	var all_cells = _grow_cells(stamp_plc_area, neighbour_mode == NeighbourMode.PEERING_BIT)
+	for tile_pos in all_cells:
+		_remember_cell(tile_pos)
+
 	for stamp_tile_pos in stamp.stamp_cell_data.keys():
-		_remember_cell(tile_pos + stamp_tile_pos)
 		if stamp.stamp_cell_data[stamp_tile_pos][0] > -1:
-			under_edit.set_cell(tile_pos + stamp_tile_pos, stamp.stamp_cell_data[stamp_tile_pos][0],
+			under_edit.set_cell(cursor_tile_pos + stamp_tile_pos, stamp.stamp_cell_data[stamp_tile_pos][0],
 					stamp.stamp_cell_data[stamp_tile_pos][1])
+		elif overwrite_with_empty_cells:
+				under_edit.erase_cell(cursor_tile_pos + stamp_tile_pos)
+		if neighbour_mode != NeighbourMode.PEERING_BIT and neighbour_mode != NeighbourMode.OVERWRITE:
+			_update_atlas_coords(_get_neighbors(cursor_tile_pos + stamp_tile_pos))
+
+	if neighbour_mode == NeighbourMode.PEERING_BIT:
+		for tile_pos in stamp_plc_area:
+			under_edit.set_cells_terrain_connect([tile_pos], 0, under_edit.get_cell_source_id(tile_pos), true)
 
 
 func _place_cells_preview(cells_in_current_draw_area : Dictionary, terrain_id : int) -> void:
@@ -267,7 +281,8 @@ func _place_cells_preview(cells_in_current_draw_area : Dictionary, terrain_id : 
 			_update_atlas_coords(_get_neighbors(tile_pos))
 
 	if neighbour_mode == NeighbourMode.PEERING_BIT:
-		under_edit.set_cells_terrain_connect(cells_in_current_draw_area.keys(), 0, terrain_id, true)
+		for tile_pos in cells_in_current_draw_area.keys():
+			under_edit.set_cells_terrain_connect([tile_pos], 0, under_edit.get_cell_source_id(tile_pos), true)
 
 
 func _commit_cell_placement(cells_in_current_draw_area : Array) -> void:
