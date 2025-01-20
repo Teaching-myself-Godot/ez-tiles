@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://dctqdorscdgfe"]
+
+[ext_resource type="PackedScene" uid="uid://hd682fyyvov1" path="res://addons/ez_tiles/collision_polygon_templates.tscn" id="1_fs6ku"]
+[ext_resource type="Script" path="res://addons/ez_tiles/collision_type_button.gd" id="1_peam8"]
+
+[node name="CollisionTypeButton" type="OptionButton"]
+size_flags_horizontal = 0
+tooltip_text = "Collision mode"
+selected = 0
+fit_to_longest_item = false
+allow_reselect = true
+item_count = 1
+popup/item_0/text = "No Collision"
+script = ExtResource("1_peam8")
+
+[node name="CollisionPolygonTemplates" parent="." instance=ExtResource("1_fs6ku")]
+visible = false

@@ -30,8 +30,10 @@ var save_template_file_dialog : EditorFileDialog
 var save_tile_set_file_dialog : EditorFileDialog
 var hint_color := Color(0, 0, 0, 0.702)
 
+
 func _enter_tree() -> void:
 	num_regex.compile("^\\d+\\.?\\d*$")
+	
 	images_container = find_child("ImagesContainer")
 	x_size_line_edit = find_child("XSizeLineEdit")
 	y_size_line_edit = find_child("YSizeLineEdit")
@@ -54,6 +56,7 @@ func _enter_tree() -> void:
 	save_tile_set_file_dialog.file_mode = EditorFileDialog.FILE_MODE_SAVE_FILE
 	save_tile_set_file_dialog.file_selected.connect(_on_save_tile_set_file_selected)
 	EditorInterface.get_base_control().add_child(save_tile_set_file_dialog)
+
 
 func _on_file_menu_load_files(files : PackedStringArray) -> void:
 	load_files(files)
@@ -347,3 +350,8 @@ func create_all_sides_neighbour_tile(atlas_source : TileSetAtlasSource, terrain_
 	new_tile.set_terrain_peering_bit(TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, terrain_id)
 	new_tile.set_terrain_peering_bit(TileSet.CELL_NEIGHBOR_LEFT_SIDE, terrain_id)
 	new_tile.set_terrain_peering_bit(TileSet.CELL_NEIGHBOR_TOP_SIDE, terrain_id)
+
+
+func _exit_tree() -> void:
+	save_template_file_dialog.free()
+	save_tile_set_file_dialog.free()

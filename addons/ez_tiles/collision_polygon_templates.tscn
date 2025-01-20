@@ -1,0 +1,22 @@
+[gd_scene load_steps=7 format=3 uid="uid://hd682fyyvov1"]
+
+[ext_resource type="PackedScene" uid="uid://bdtlwd7f6ojk0" path="res://addons/ez_tiles/collision_polygon_templates/rectangles.tscn" id="1_rxwbl"]
+[ext_resource type="PackedScene" uid="uid://lfnyjmnayoqe" path="res://addons/ez_tiles/collision_polygon_templates/slopes.tscn" id="2_inw2r"]
+[ext_resource type="PackedScene" uid="uid://ckfu3f4u350bg" path="res://addons/ez_tiles/collision_polygon_templates/slopes_bottom.tscn" id="3_coaj2"]
+[ext_resource type="PackedScene" uid="uid://3gmoem8hi2hi" path="res://addons/ez_tiles/collision_polygon_templates/slopes_top.tscn" id="4_cjwxo"]
+[ext_resource type="PackedScene" uid="uid://cm4063l3dfehn" path="res://addons/ez_tiles/collision_polygon_templates/rounded_corners.tscn" id="5_l5p12"]
+[ext_resource type="PackedScene" uid="uid://cxnhqxx237lix" path="res://addons/ez_tiles/collision_polygon_templates/inverse_rounded_corners.tscn" id="6_pldvo"]
+
+[node name="CollisionPolygonTemplates" type="Node2D"]
+
+[node name="Rectangles" parent="." instance=ExtResource("1_rxwbl")]
+
+[node name="Sloped (All Corners)" parent="." instance=ExtResource("2_inw2r")]
+
+[node name="Sloped (Bottom Corners)" parent="." instance=ExtResource("3_coaj2")]
+
+[node name="Sloped (Top Corners)" parent="." instance=ExtResource("4_cjwxo")]
+
+[node name="Rounded Corners" parent="." instance=ExtResource("5_l5p12")]
+
+[node name="Rounded Corners (Inverse)" parent="." instance=ExtResource("6_pldvo")]

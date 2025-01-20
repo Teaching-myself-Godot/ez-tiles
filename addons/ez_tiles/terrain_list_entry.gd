@@ -33,6 +33,7 @@ func _enter_tree() -> void:
 		warning_icon.tooltip_text = warning_message
 		warning_icon.show()
 
+
 func _on_edit_button_pressed() -> void:
 	edit_button.hide()
 	save_button.show()
