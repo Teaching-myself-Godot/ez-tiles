@@ -6,6 +6,7 @@
 - Record a detailed explainer and submit to yt
 - Add explainers to this readme
 - Make a copy of this readme in the addons dir
+- publish this repo
 
 ### Importer
 - Show collision preset as polygon hint
