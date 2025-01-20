@@ -153,6 +153,7 @@ func _on_terrain_selected(id : int) -> void:
 	if stamp_tab.visible:
 		brush_tab.show()
 
+
 func _place_back_remembered_cells() -> void:
 	for prev_pos in remembered_cells.keys():
 		if remembered_cells[prev_pos][0] > -1:
@@ -405,13 +406,13 @@ func get_draw_area(tile_pos : Vector2i) -> Array:
 		_:
 			return []
 
-func _get_draw_shape_for_area(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
+func _get_draw_shape_for_area(p1 : Vector2i, p2 : Vector2i, for_shape : AreaDraw.Shape = area_draw_tab.shape) -> Dictionary:
 	var from_x := p1.x if p1.x < p2.x else p2.x
 	var to_x := p1.x if p1.x > p2.x else p2.x
 	var from_y := p1.y if p1.y < p2.y else p2.y
 	var to_y := p1.y if p1.y > p2.y else p2.y
 
-	match(area_draw_tab.shape):
+	match(for_shape):
 		AreaDraw.Shape.HARD_RECTANGLE:
 			return AreaDraw.get_cells_rectangle(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
 		AreaDraw.Shape.RECTANGLE:
@@ -454,7 +455,7 @@ func handle_mouse_move(tile_pos : Vector2i) -> void:
 			if lmb_is_down:
 				_place_cells_preview(_get_draw_shape_for_area(drag_start, tile_pos), current_terrain_id)
 			elif rmb_is_down:
-				_erase_cells(_get_draw_shape_for_area(drag_start, tile_pos))
+				_erase_cells(_get_draw_shape_for_area(drag_start, tile_pos, AreaDraw.Shape.RECTANGLE))
 		elif drag_mode == DragMode.STAMP:
 			_place_back_remembered_cells()
 			var stamp := stamp_tab.get_selected_stamp()
@@ -478,7 +479,7 @@ func handle_mouse_up(button : MouseButton, tile_pos: Vector2i):
 		MouseButton.MOUSE_BUTTON_RIGHT:
 			rmb_is_down = false
 			if drag_mode == DragMode.AREA:
-				_commit_cell_placement(_get_draw_shape_for_area(drag_start, tile_pos).keys())
+				_commit_cell_placement(_get_draw_shape_for_area(drag_start, tile_pos, AreaDraw.Shape.RECTANGLE).keys())
 
 
 
