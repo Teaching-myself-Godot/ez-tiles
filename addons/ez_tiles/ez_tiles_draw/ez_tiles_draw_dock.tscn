@@ -1,0 +1,158 @@
+[gd_scene load_steps=12 format=3 uid="uid://bylxp7tq3yo5s"]
+
+[ext_resource type="Script" path="res://addons/ez_tiles/ez_tiles_draw/ez_tiles_draw_dock.gd" id="1_wtbry"]
+[ext_resource type="Texture2D" uid="uid://pyivvoarllad" path="res://addons/ez_tiles/ez_tiles_draw/icons/Connect1.svg" id="2_dplls"]
+[ext_resource type="PackedScene" uid="uid://bitqwiwmn3s0r" path="res://addons/ez_tiles/ez_tiles_draw/area_draw.tscn" id="2_k0y3s"]
+[ext_resource type="Texture2D" uid="uid://dooqg3fapf15x" path="res://addons/ez_tiles/ez_tiles_draw/icons/Rectangle.svg" id="2_urupm"]
+[ext_resource type="Texture2D" uid="uid://d10gshlv0aq2d" path="res://addons/ez_tiles/ez_tiles_draw/icons/Edit.svg" id="3_qgjav"]
+[ext_resource type="Texture2D" uid="uid://dhhtq6kkxpaus" path="res://addons/ez_tiles/ez_tiles_draw/icons/Stamp.svg" id="4_uxbhq"]
+[ext_resource type="Texture2D" uid="uid://cj2hivk8xemhb" path="res://addons/ez_tiles/ez_tiles_draw/icons/SnapShotSmall.svg" id="6_lleak"]
+[ext_resource type="PackedScene" uid="uid://is8n20fchd2q" path="res://addons/ez_tiles/ez_tiles_draw/brush_draw.tscn" id="7_sh02n"]
+[ext_resource type="PackedScene" uid="uid://catlvg1l82g5v" path="res://addons/ez_tiles/ez_tiles_draw/stamp_tab.tscn" id="8_6lfv8"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_m6mfs"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fl86h"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.12549, 0.145098, 0.172549, 1)
+
+[node name="EzTilesDrawDock" type="HBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wtbry")
+
+[node name="MainVBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainVBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainVBoxContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Determines how to connect neighbouring tiles.
+- Overwrite/Ignore (draw exactly like the preview in the bottom pane)
+- Inclusive (consider all terrains my neighbour)
+- Exclusive (consider only my terrain type as neighbour)
+- Godot default (use terrain peering bit)"
+mouse_filter = 0
+text = "Connect mode* "
+
+[node name="NeighbourModeOptionButton" type="OptionButton" parent="MainVBoxContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Determines in which cases a neighbouring tile is considered a neighbour. When a tile is considered a neighbour, this tile will act as if it is 'glued' to it."
+selected = 0
+item_count = 4
+popup/item_0/text = "Overwrite"
+popup/item_1/text = "Use Terrain Peering Bit"
+popup/item_1/id = 3
+popup/item_2/text = "Inclusive"
+popup/item_2/id = 1
+popup/item_3/text = "Exclusive"
+popup/item_3/id = 2
+
+[node name="ConnectingToggle" type="Button" parent="MainVBoxContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Toggle connected drawing"
+toggle_mode = true
+icon = ExtResource("2_dplls")
+
+[node name="BrushDrawButton" type="Button" parent="MainVBoxContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Brush/Pencil draw"
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_m6mfs")
+icon = ExtResource("3_qgjav")
+
+[node name="AreaDrawButton" type="Button" parent="MainVBoxContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Area draw"
+toggle_mode = true
+button_group = SubResource("ButtonGroup_m6mfs")
+icon = ExtResource("2_urupm")
+
+[node name="StampDrawButton" type="Button" parent="MainVBoxContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Stamp, Copy/Paste draw"
+toggle_mode = true
+button_group = SubResource("ButtonGroup_m6mfs")
+icon = ExtResource("4_uxbhq")
+
+[node name="SelectSnapShotButton" type="Button" parent="MainVBoxContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Stamp, Copy/Paste draw"
+toggle_mode = true
+icon = ExtResource("6_lleak")
+
+[node name="DefaultEditorCheckButton" type="CheckButton" parent="MainVBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+tooltip_text = "When you select a TileMapLayer in your scene, Godot will normally open the builtin TileMap or TileSet bottom pane.
+When this toggle is on, EZ Tiles Draw will automatically open for the current TileMapLayer."
+text = "Default Editor"
+
+[node name="MainHBoxContainer" type="HBoxContainer" parent="MainVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TerrainPickerScrollContainer" type="ScrollContainer" parent="MainVBoxContainer/MainHBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_fl86h")
+horizontal_scroll_mode = 0
+
+[node name="TerrainListVboxContainer" type="VBoxContainer" parent="MainVBoxContainer/MainHBoxContainer/TerrainPickerScrollContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="TabContainer" type="TabContainer" parent="MainVBoxContainer/MainHBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+current_tab = 0
+
+[node name="Brush Draw" parent="MainVBoxContainer/MainHBoxContainer/TabContainer" instance=ExtResource("7_sh02n")]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="Area Draw" parent="MainVBoxContainer/MainHBoxContainer/TabContainer" instance=ExtResource("2_k0y3s")]
+visible = false
+clip_contents = true
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="Stamp" parent="MainVBoxContainer/MainHBoxContainer/TabContainer" instance=ExtResource("8_6lfv8")]
+visible = false
+layout_mode = 2
+
+[node name="HintLabel" type="Label" parent="."]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Select a TileMapLayer generated by EZ Tiles to use EZ Tiles Draw"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="item_selected" from="MainVBoxContainer/HBoxContainer/NeighbourModeOptionButton" to="." method="_on_neighbour_mode_option_button_item_selected"]
+[connection signal="toggled" from="MainVBoxContainer/HBoxContainer/ConnectingToggle" to="." method="_on_connecting_toggle_toggled"]
+[connection signal="pressed" from="MainVBoxContainer/HBoxContainer/BrushDrawButton" to="." method="_on_brush_draw_button_pressed"]
+[connection signal="pressed" from="MainVBoxContainer/HBoxContainer/AreaDrawButton" to="." method="_on_area_draw_button_pressed"]
+[connection signal="pressed" from="MainVBoxContainer/HBoxContainer/StampDrawButton" to="." method="_on_stamp_draw_button_pressed"]
+[connection signal="toggled" from="MainVBoxContainer/HBoxContainer/SelectSnapShotButton" to="." method="_on_stamp_snapshot_toggled"]
+[connection signal="toggled" from="MainVBoxContainer/HBoxContainer/DefaultEditorCheckButton" to="." method="_on_default_editor_check_button_toggled"]
+[connection signal="tab_changed" from="MainVBoxContainer/MainHBoxContainer/TabContainer" to="." method="_on_tab_container_tab_changed"]
+[connection signal="connect_mode_toggled" from="MainVBoxContainer/MainHBoxContainer/TabContainer/Brush Draw" to="." method="_on_connecting_toggle_toggled"]
+[connection signal="connect_mode_toggled" from="MainVBoxContainer/MainHBoxContainer/TabContainer/Area Draw" to="." method="_on_connecting_toggle_toggled"]
+[connection signal="snapshot_toggled" from="MainVBoxContainer/MainHBoxContainer/TabContainer/Stamp" to="." method="_on_stamp_snapshot_toggled"]
