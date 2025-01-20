@@ -281,8 +281,7 @@ func _place_cells_preview(cells_in_current_draw_area : Dictionary, terrain_id : 
 			_update_atlas_coords(_get_neighbors(tile_pos))
 
 	if neighbour_mode == NeighbourMode.PEERING_BIT:
-		for tile_pos in cells_in_current_draw_area.keys():
-			under_edit.set_cells_terrain_connect([tile_pos], 0, under_edit.get_cell_source_id(tile_pos), true)
+		under_edit.set_cells_terrain_connect(cells_in_current_draw_area.keys(), 0, terrain_id, true)
 
 
 func _commit_cell_placement(cells_in_current_draw_area : Array) -> void:
