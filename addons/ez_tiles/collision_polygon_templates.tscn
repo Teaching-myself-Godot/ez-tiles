@@ -11,11 +11,11 @@
 
 [node name="Rectangles" parent="." instance=ExtResource("1_rxwbl")]
 
-[node name="Sloped (All Corners)" parent="." instance=ExtResource("2_inw2r")]
+[node name="Sloped (Top Corners)" parent="." instance=ExtResource("4_cjwxo")]
 
 [node name="Sloped (Bottom Corners)" parent="." instance=ExtResource("3_coaj2")]
 
-[node name="Sloped (Top Corners)" parent="." instance=ExtResource("4_cjwxo")]
+[node name="Sloped (All Corners)" parent="." instance=ExtResource("2_inw2r")]
 
 [node name="Rounded Corners" parent="." instance=ExtResource("5_l5p12")]
 

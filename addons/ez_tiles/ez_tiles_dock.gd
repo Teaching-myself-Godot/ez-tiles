@@ -6,9 +6,9 @@ extends HBoxContainer
 signal request_tile_map_layer(tile_set : TileSet)
 
 enum CollisionType {
+	NONE,
 	RECT,
 	TOP_SLOPES,
-	NONE,
 	ALL_SLOPES,
 	BOTTOM_SLOPES
 }
@@ -25,6 +25,7 @@ var preview_texture_rect : TextureRect
 var guide_texture_rect : TextureRect
 var reset_zoom_button : Button
 var resource_map : Dictionary = {}
+var collision_preview_map : Dictionary = {}
 var zoom := 1.0
 var save_template_file_dialog : EditorFileDialog
 var save_tile_set_file_dialog : EditorFileDialog
@@ -33,7 +34,6 @@ var hint_color := Color(0, 0, 0, 0.702)
 
 func _enter_tree() -> void:
 	num_regex.compile("^\\d+\\.?\\d*$")
-	
 	images_container = find_child("ImagesContainer")
 	x_size_line_edit = find_child("XSizeLineEdit")
 	y_size_line_edit = find_child("YSizeLineEdit")
@@ -115,6 +115,8 @@ func _on_images_container_terrain_list_entry_removed(removed_resource_id: RID) -
 	resource_map.erase(removed_resource_id)
 	if preview_texture_rect.texture and preview_texture_rect.texture.get_rid() == removed_resource_id:
 		preview_texture_rect.texture = null
+	if collision_preview_map.has(removed_resource_id):
+		collision_preview_map.erase(removed_resource_id)
 
 	if resource_map.size() == 0:
 		x_size_line_edit.text = ""
@@ -355,3 +357,16 @@ func create_all_sides_neighbour_tile(atlas_source : TileSetAtlasSource, terrain_
 func _exit_tree() -> void:
 	save_template_file_dialog.free()
 	save_tile_set_file_dialog.free()
+
+
+func _on_images_container_collision_template_selected(template: Node) -> void:
+	for child : Node in preview_texture_rect.get_children():
+		child.queue_free()
+
+	if not is_instance_valid(template):
+		return
+	var preview_template := template.duplicate()
+	preview_texture_rect.add_child(preview_template)
+	preview_template.scale = Vector2(int(x_size_line_edit.text), int(y_size_line_edit.text)) * zoom
+	preview_template.modulate = Color.HOT_PINK
+

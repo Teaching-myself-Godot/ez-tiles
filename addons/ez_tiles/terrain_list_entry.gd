@@ -4,6 +4,7 @@ class_name TerrainListEntry
 
 signal removed()
 signal selected()
+signal collision_template_selected(template : Node)
 
 var terrain_name_input : LineEdit
 var terrain_name_button : Button
@@ -71,7 +72,7 @@ func gather_data() -> Dictionary:
 	return {
 		"texture_resource": texture_resource,
 		"terrain_name": terrain_name,
-		"layer_type": collision_type_button.get_selected_id()
+		"collision_template": collision_type_button.template
 	}
 
 
@@ -84,3 +85,5 @@ func _on_icon_texture_rect_gui_input(event: InputEvent) -> void:
 		terrain_name_button.grab_focus()
 
 
+func _on_collision_type_button_collision_template_selected() -> void:
+	collision_template_selected.emit(collision_type_button.template)

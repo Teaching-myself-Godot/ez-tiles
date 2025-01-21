@@ -5,15 +5,17 @@ class_name  ImagesContainer
 signal drop_files(files : PackedStringArray)
 signal terrain_list_entry_removed(resource_id : RID)
 signal terrain_list_entry_selected(resource_id : RID)
+signal collision_template_selected(template : Node)
+
 
 var image_list : VBoxContainer
 var hint_label : Label
-var TerrainListEntry
+var TerrainListEntryScene : PackedScene
 var terrain_name_regex := RegEx.new()
 
 
 func _enter_tree() -> void:
-	TerrainListEntry = preload("res://addons/ez_tiles/terrain_list_entry.tscn")
+	TerrainListEntryScene = preload("res://addons/ez_tiles/terrain_list_entry.tscn")
 	image_list = find_child("ImageList")
 	hint_label = find_child("HintLabel")
 	terrain_name_regex.compile("^.*\\/([^\\.]+)\\..*$")
@@ -38,7 +40,7 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 
 func add_file(img_resource : CompressedTexture2D, invalid_message : String = ""):
 	hint_label.hide()
-	var new_entry : TerrainListEntry = TerrainListEntry.instantiate()
+	var new_entry : TerrainListEntry = TerrainListEntryScene.instantiate()
 	var regex_result := terrain_name_regex.search(img_resource.resource_path).strings
 	if regex_result.size() < 2:
 		new_entry.terrain_name = img_resource.resource_path
@@ -50,6 +52,8 @@ func add_file(img_resource : CompressedTexture2D, invalid_message : String = "")
 	image_list.show()
 	new_entry.removed.connect(func(): terrain_list_entry_removed.emit(img_resource.get_rid()))
 	new_entry.selected.connect(func(): terrain_list_entry_selected.emit(img_resource.get_rid()))
+	new_entry.collision_template_selected.connect(
+			func(template : Node): collision_template_selected.emit(template))
 
 
 func gather_data() -> Array:
