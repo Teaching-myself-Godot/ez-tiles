@@ -65,10 +65,10 @@ icon = ExtResource("4_6vr40")
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Collision mode"
-selected = 0
+selected = 6
 fit_to_longest_item = false
 allow_reselect = true
-item_count = 5
+item_count = 7
 popup/item_0/text = "Rectangles"
 popup/item_1/text = "Sloped All Corners"
 popup/item_1/id = 3
@@ -76,8 +76,12 @@ popup/item_2/text = "Sloped Top Corners"
 popup/item_2/id = 1
 popup/item_3/text = "Sloped Bottom Corners"
 popup/item_3/id = 4
-popup/item_4/text = "No Collision"
-popup/item_4/id = 2
+popup/item_4/text = "Rounded Corners"
+popup/item_4/id = 5
+popup/item_5/text = "Rounded Corners (Inverse)"
+popup/item_5/id = 6
+popup/item_6/text = "No Collision"
+popup/item_6/id = 2
 
 [node name="RemoveButton" type="Button" parent="."]
 layout_mode = 2
@@ -89,4 +93,5 @@ icon = ExtResource("1_e3wgq")
 [connection signal="text_submitted" from="TerrainNameInput" to="." method="_on_terrain_name_input_text_submitted"]
 [connection signal="pressed" from="EditButton" to="." method="_on_edit_button_pressed"]
 [connection signal="pressed" from="SaveButton" to="." method="save_new_terrain_name"]
+[connection signal="item_selected" from="CollisionTypeButton" to="." method="_on_collision_type_button_item_selected"]
 [connection signal="pressed" from="RemoveButton" to="." method="_on_remove_button_pressed"]

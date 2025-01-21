@@ -4,6 +4,7 @@ class_name TerrainListEntry
 
 signal removed()
 signal selected()
+signal collision_type_selected(type_id : EZTilesDock.CollisionType)
 
 var terrain_name_input : LineEdit
 var terrain_name_button : Button
@@ -83,3 +84,5 @@ func _on_icon_texture_rect_gui_input(event: InputEvent) -> void:
 		terrain_name_button.grab_focus()
 
 
+func _on_collision_type_button_item_selected(index: int) -> void:
+	collision_type_selected.emit(collision_type_button.get_selected_id())

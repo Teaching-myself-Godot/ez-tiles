@@ -10,9 +10,12 @@ enum CollisionType {
 	TOP_SLOPES,
 	NONE,
 	ALL_SLOPES,
-	BOTTOM_SLOPES
+	BOTTOM_SLOPES,
+	ROUNDED,
+	INVERSE_ROUNDED
 }
 
+var collision_previews := {}
 var num_regex := RegEx.new()
 var images_container : ImagesContainer
 var x_size_line_edit : LineEdit
@@ -25,6 +28,7 @@ var preview_texture_rect : TextureRect
 var guide_texture_rect : TextureRect
 var reset_zoom_button : Button
 var resource_map : Dictionary = {}
+var collision_type_map : Dictionary = {}
 var zoom := 1.0
 var save_template_file_dialog : EditorFileDialog
 var save_tile_set_file_dialog : EditorFileDialog
@@ -54,6 +58,13 @@ func _enter_tree() -> void:
 	save_tile_set_file_dialog.file_mode = EditorFileDialog.FILE_MODE_SAVE_FILE
 	save_tile_set_file_dialog.file_selected.connect(_on_save_tile_set_file_selected)
 	EditorInterface.get_base_control().add_child(save_tile_set_file_dialog)
+	collision_previews[CollisionType.RECT] = preview_texture_rect.find_child("Rectangles")
+	collision_previews[CollisionType.ALL_SLOPES] = preview_texture_rect.find_child("Sloped (All Corners)")
+	collision_previews[CollisionType.BOTTOM_SLOPES] = preview_texture_rect.find_child("Sloped (Bottom Corners)")
+	collision_previews[CollisionType.TOP_SLOPES] = preview_texture_rect.find_child("Sloped (Top Corners)")
+	collision_previews[CollisionType.ROUNDED] = preview_texture_rect.find_child("Rounded Corners")
+	collision_previews[CollisionType.INVERSE_ROUNDED] = preview_texture_rect.find_child("Rounded Corners (Inverse)")
+
 
 func _on_file_menu_load_files(files : PackedStringArray) -> void:
 	load_files(files)
@@ -105,11 +116,28 @@ func load_files(files : PackedStringArray):
 				handle_tilesize_update()
 
 			resource_map[im.get_rid()] = im
+			collision_type_map[im.get_rid()] = CollisionType.NONE
 			preview_texture_rect.texture = im
+			_show_collision_preview(im.get_rid())
 
 
-func _on_images_container_terrain_list_entry_removed(removed_resource_id: RID) -> void:
+func _show_collision_preview(resource_id : RID) -> void:
+	for c : Node in collision_previews.values():
+		c.hide()
+	if collision_type_map.has(resource_id) and collision_previews.has(collision_type_map[resource_id]):
+		collision_previews[collision_type_map[resource_id]].show()
+
+
+func _on_images_container_terrain_list_collision_type_selected(
+			resource_id: RID, type_id: EZTilesDock.CollisionType) -> void:
+	collision_type_map[resource_id] = type_id
+	_on_images_container_terrain_list_entry_selected(resource_id)
+	#_show_collision_preview(resource_id)
+
+
+func _on_images_container_terrain_list_entry_removed(removed_resource_id : RID) -> void:
 	resource_map.erase(removed_resource_id)
+	collision_type_map.erase(removed_resource_id)
 	if preview_texture_rect.texture and preview_texture_rect.texture.get_rid() == removed_resource_id:
 		preview_texture_rect.texture = null
 
@@ -121,6 +149,8 @@ func _on_images_container_terrain_list_entry_removed(removed_resource_id: RID) -
 		generate_tileset_button.disabled = true
 		generate_tilemaplayer_button.disabled = true
 		handle_tilesize_update()
+		for c : Node2D in collision_previews.values():
+			c.hide()
 
 
 func _on_xy_size_line_edit_text_changed(_new_text: String) -> void:
@@ -140,7 +170,8 @@ func _redraw_overlay_texture() -> void:
 				new_template_overlay.set_pixel(x, y, hint_color)
 	overlay_texture_rect.texture = ImageTexture.create_from_image(new_template_overlay)
 	guide_texture_rect.modulate = hint_color
-
+	for c : Node2D in collision_previews.values():
+		c.modulate = hint_color
 
 func handle_tilesize_update() -> void:
 	if  num_regex.search(x_size_line_edit.text) and num_regex.search(y_size_line_edit.text):
@@ -165,10 +196,13 @@ func resize_texture_rects(new_zoom : float):
 	overlay_texture_rect.custom_minimum_size = new_size
 	guide_texture_rect.custom_minimum_size = new_size
 	reset_zoom_button.text = str(zoom * 100) + "%"
+	for c : Node2D in collision_previews.values():
+		c.scale = Vector2(float(x_size_line_edit.text),		float(y_size_line_edit.text)) * zoom
 
 
 func _on_images_container_terrain_list_entry_selected(resource_id: RID) -> void:
 	preview_texture_rect.texture = resource_map[resource_id]
+	_show_collision_preview(resource_id)
 
 
 func _on_preview_panel_container_gui_input(event: InputEvent) -> void:
@@ -253,66 +287,51 @@ func generate_tileset() -> TileSet:
 		var atlas_source := TileSetAtlasSource.new()
 		atlas_source.texture_region_size = tile_set.tile_size
 		atlas_source.texture = raw_intel[terrain_id]["texture_resource"]
-		var poly_points := [
-			-tile_set.tile_size * 0.5,
-			Vector2(tile_set.tile_size.x, -tile_set.tile_size.y) * 0.5,
-			tile_set.tile_size * 0.5,
-			Vector2(-tile_set.tile_size.x, tile_set.tile_size.y) * 0.5
-		] if raw_intel[terrain_id]["layer_type"] != CollisionType.NONE else []
-
-		var poly_point_TL := [
-			Vector2(tile_set.tile_size.x, -tile_set.tile_size.y) * 0.5,
-			tile_set.tile_size * 0.5,
-			Vector2(-tile_set.tile_size.x, tile_set.tile_size.y) * 0.5
-		] if raw_intel[terrain_id]["layer_type"] in [CollisionType.TOP_SLOPES, CollisionType.ALL_SLOPES] else poly_points
-
-		var poly_point_TR := [
-			-tile_set.tile_size * 0.5,
-			Vector2(-tile_set.tile_size.x, tile_set.tile_size.y) * 0.5,
-			tile_set.tile_size * 0.5,
-		] if raw_intel[terrain_id]["layer_type"] in [CollisionType.TOP_SLOPES, CollisionType.ALL_SLOPES] else poly_points
-
-		var poly_point_BL := [
-			-tile_set.tile_size * 0.5,
-			Vector2(tile_set.tile_size.x, -tile_set.tile_size.y) * 0.5,
-			tile_set.tile_size * 0.5
-		] if raw_intel[terrain_id]["layer_type"] in [CollisionType.BOTTOM_SLOPES, CollisionType.ALL_SLOPES] else poly_points
-
-		var poly_point_BR := [
-			-tile_set.tile_size * 0.5,
-			Vector2(tile_set.tile_size.x, -tile_set.tile_size.y) * 0.5,
-			Vector2(-tile_set.tile_size.x, tile_set.tile_size.y) * 0.5
-		] if raw_intel[terrain_id]["layer_type"] in [CollisionType.BOTTOM_SLOPES, CollisionType.ALL_SLOPES] else poly_points
-
 		tile_set.add_source(atlas_source)
 
 		# row
-		create_tile(atlas_source, terrain_id, Vector2i(0,0), poly_points)
-		create_single_neighbour_tile(atlas_source, terrain_id, Vector2i(1,0), raw_intel.size(), TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, poly_points)
-		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(3,0), raw_intel.size(), [TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE], poly_point_TL)
-		create_triple_neighbour_tile(atlas_source, terrain_id, Vector2i(4,0), raw_intel.size(), [TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE, TileSet.CELL_NEIGHBOR_LEFT_SIDE], poly_points)
-		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(5,0), raw_intel.size(), [TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_LEFT_SIDE], poly_point_TR)
+		create_tile(atlas_source, terrain_id, Vector2i(0,0), _get_collision_polygon_for_tile("MC", atlas_source.texture.get_rid(), tile_set.tile_size))
+		create_single_neighbour_tile(atlas_source, terrain_id, Vector2i(1,0), raw_intel.size(), TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, _get_collision_polygon_for_tile("VT", atlas_source.texture.get_rid(), tile_set.tile_size))
+		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(3,0), raw_intel.size(), [TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE], _get_collision_polygon_for_tile("TL", atlas_source.texture.get_rid(), tile_set.tile_size))
+		create_triple_neighbour_tile(atlas_source, terrain_id, Vector2i(4,0), raw_intel.size(), [TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE, TileSet.CELL_NEIGHBOR_LEFT_SIDE], _get_collision_polygon_for_tile("TM", atlas_source.texture.get_rid(), tile_set.tile_size))
+		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(5,0), raw_intel.size(), [TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_LEFT_SIDE], _get_collision_polygon_for_tile("TR", atlas_source.texture.get_rid(), tile_set.tile_size))
 
 		# row
-		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(1,1), raw_intel.size(), [TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_TOP_SIDE], poly_points)
-		create_triple_neighbour_tile(atlas_source, terrain_id, Vector2i(3,1), raw_intel.size(), [TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE, TileSet.CELL_NEIGHBOR_TOP_SIDE], poly_points)
-		create_all_sides_neighbour_tile(atlas_source, terrain_id, Vector2i(4,1), raw_intel.size(), poly_points)
-		create_triple_neighbour_tile(atlas_source, terrain_id, Vector2i(5,1), raw_intel.size(), [TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_LEFT_SIDE, TileSet.CELL_NEIGHBOR_TOP_SIDE], poly_points)
+		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(1,1), raw_intel.size(), [TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_TOP_SIDE], _get_collision_polygon_for_tile("VM", atlas_source.texture.get_rid(), tile_set.tile_size))
+		create_triple_neighbour_tile(atlas_source, terrain_id, Vector2i(3,1), raw_intel.size(), [TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE, TileSet.CELL_NEIGHBOR_TOP_SIDE], _get_collision_polygon_for_tile("LM", atlas_source.texture.get_rid(), tile_set.tile_size))
+		create_all_sides_neighbour_tile(atlas_source, terrain_id, Vector2i(4,1), raw_intel.size(), _get_collision_polygon_for_tile("CM", atlas_source.texture.get_rid(), tile_set.tile_size))
+		create_triple_neighbour_tile(atlas_source, terrain_id, Vector2i(5,1), raw_intel.size(), [TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_LEFT_SIDE, TileSet.CELL_NEIGHBOR_TOP_SIDE], _get_collision_polygon_for_tile("RM", atlas_source.texture.get_rid(), tile_set.tile_size))
 
 		# row
-		create_single_neighbour_tile(atlas_source, terrain_id, Vector2i(1,2), raw_intel.size(), TileSet.CELL_NEIGHBOR_TOP_SIDE, poly_points)
-		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(3,2), raw_intel.size(), [TileSet.CELL_NEIGHBOR_TOP_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE], poly_point_BL)
-		create_triple_neighbour_tile(atlas_source, terrain_id, Vector2i(4,2), raw_intel.size(), [TileSet.CELL_NEIGHBOR_TOP_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE, TileSet.CELL_NEIGHBOR_LEFT_SIDE], poly_points)
-		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(5,2), raw_intel.size(), [TileSet.CELL_NEIGHBOR_TOP_SIDE, TileSet.CELL_NEIGHBOR_LEFT_SIDE], poly_point_BR)
+		create_single_neighbour_tile(atlas_source, terrain_id, Vector2i(1,2), raw_intel.size(), TileSet.CELL_NEIGHBOR_TOP_SIDE, _get_collision_polygon_for_tile("VB", atlas_source.texture.get_rid(), tile_set.tile_size))
+		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(3,2), raw_intel.size(), [TileSet.CELL_NEIGHBOR_TOP_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE], _get_collision_polygon_for_tile("BL", atlas_source.texture.get_rid(), tile_set.tile_size))
+		create_triple_neighbour_tile(atlas_source, terrain_id, Vector2i(4,2), raw_intel.size(), [TileSet.CELL_NEIGHBOR_TOP_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE, TileSet.CELL_NEIGHBOR_LEFT_SIDE], _get_collision_polygon_for_tile("BC", atlas_source.texture.get_rid(), tile_set.tile_size))
+		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(5,2), raw_intel.size(), [TileSet.CELL_NEIGHBOR_TOP_SIDE, TileSet.CELL_NEIGHBOR_LEFT_SIDE], _get_collision_polygon_for_tile("BR", atlas_source.texture.get_rid(), tile_set.tile_size))
 
 		# row
-		create_single_neighbour_tile(atlas_source, terrain_id, Vector2i(0,3), raw_intel.size(), TileSet.CELL_NEIGHBOR_RIGHT_SIDE, poly_points)
-		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(1,3), raw_intel.size(), [TileSet.CELL_NEIGHBOR_LEFT_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE], poly_points)
-		create_single_neighbour_tile(atlas_source, terrain_id, Vector2i(2,3), raw_intel.size(), TileSet.CELL_NEIGHBOR_LEFT_SIDE, poly_points)
+		create_single_neighbour_tile(atlas_source, terrain_id, Vector2i(0,3), raw_intel.size(), TileSet.CELL_NEIGHBOR_RIGHT_SIDE, _get_collision_polygon_for_tile("HL", atlas_source.texture.get_rid(), tile_set.tile_size))
+		create_dual_neighbour_tile(atlas_source, terrain_id, Vector2i(1,3), raw_intel.size(), [TileSet.CELL_NEIGHBOR_LEFT_SIDE, TileSet.CELL_NEIGHBOR_RIGHT_SIDE], _get_collision_polygon_for_tile("HM", atlas_source.texture.get_rid(), tile_set.tile_size))
+		create_single_neighbour_tile(atlas_source, terrain_id, Vector2i(2,3), raw_intel.size(), TileSet.CELL_NEIGHBOR_LEFT_SIDE, _get_collision_polygon_for_tile("HR", atlas_source.texture.get_rid(), tile_set.tile_size))
 	return tile_set
 
 
-func create_tile(atlas_source : TileSetAtlasSource, terrain_id : int, at_pos : Vector2i, collision_polygon_points : Array) -> TileData:
+func _get_collision_polygon_for_tile(node_name : String, resource_id : RID, tile_size : Vector2) -> PackedVector2Array:
+	#print(resource_id, collision_type_map.has(resource_id))
+	if not collision_type_map.has(resource_id):
+		return PackedVector2Array([])
+
+	if not collision_previews.has(collision_type_map[resource_id]):
+		return PackedVector2Array([])
+	var polygon_node : Polygon2D = collision_previews[collision_type_map[resource_id]].find_child(node_name)
+	if is_instance_valid(polygon_node):
+		var poly_points : Array[Vector2] = []
+		for point : Vector2 in polygon_node.polygon:
+			poly_points.append((point - Vector2(0.5, 0.5)) * tile_size)
+		return PackedVector2Array(poly_points)
+	return PackedVector2Array([])
+
+
+func create_tile(atlas_source : TileSetAtlasSource, terrain_id : int, at_pos : Vector2i, collision_polygon_points : PackedVector2Array) -> TileData:
 	atlas_source.create_tile(at_pos)
 	var new_tile := atlas_source.get_tile_data(at_pos, 0)
 	new_tile.terrain_set = 0
@@ -323,27 +342,28 @@ func create_tile(atlas_source : TileSetAtlasSource, terrain_id : int, at_pos : V
 	return new_tile
 
 
-func create_single_neighbour_tile(atlas_source : TileSetAtlasSource, terrain_id : int, at_pos : Vector2i, num_terrains : int, neighbour : int, collision_polygon_points : Array) -> void:
+func create_single_neighbour_tile(atlas_source : TileSetAtlasSource, terrain_id : int, at_pos : Vector2i, num_terrains : int, neighbour : int, collision_polygon_points : PackedVector2Array) -> void:
 	var new_tile := create_tile(atlas_source, terrain_id, at_pos, collision_polygon_points)
 	new_tile.set_terrain_peering_bit(neighbour, terrain_id)
 
 
-func create_dual_neighbour_tile(atlas_source : TileSetAtlasSource, terrain_id : int, at_pos : Vector2i, num_terrains : int, neighbours : Array[int], collision_polygon_points : Array) -> void:
+func create_dual_neighbour_tile(atlas_source : TileSetAtlasSource, terrain_id : int, at_pos : Vector2i, num_terrains : int, neighbours : Array[int], collision_polygon_points : PackedVector2Array) -> void:
 	var new_tile := create_tile(atlas_source, terrain_id, at_pos, collision_polygon_points)
 	new_tile.set_terrain_peering_bit(neighbours[0], terrain_id)
 	new_tile.set_terrain_peering_bit(neighbours[1], terrain_id)
 
 
-func create_triple_neighbour_tile(atlas_source : TileSetAtlasSource, terrain_id : int, at_pos : Vector2i, num_terrains : int, neighbours : Array[int], collision_polygon_points : Array) -> void:
+func create_triple_neighbour_tile(atlas_source : TileSetAtlasSource, terrain_id : int, at_pos : Vector2i, num_terrains : int, neighbours : Array[int], collision_polygon_points : PackedVector2Array) -> void:
 	var new_tile := create_tile(atlas_source, terrain_id, at_pos, collision_polygon_points)
 	new_tile.set_terrain_peering_bit(neighbours[0], terrain_id)
 	new_tile.set_terrain_peering_bit(neighbours[1], terrain_id)
 	new_tile.set_terrain_peering_bit(neighbours[2], terrain_id)
 
 
-func create_all_sides_neighbour_tile(atlas_source : TileSetAtlasSource, terrain_id : int, at_pos : Vector2i, num_terrains : int, collision_polygon_points : Array):
+func create_all_sides_neighbour_tile(atlas_source : TileSetAtlasSource, terrain_id : int, at_pos : Vector2i, num_terrains : int, collision_polygon_points : PackedVector2Array):
 	var new_tile := create_tile(atlas_source, terrain_id, at_pos, collision_polygon_points)
 	new_tile.set_terrain_peering_bit(TileSet.CELL_NEIGHBOR_RIGHT_SIDE, terrain_id)
 	new_tile.set_terrain_peering_bit(TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, terrain_id)
 	new_tile.set_terrain_peering_bit(TileSet.CELL_NEIGHBOR_LEFT_SIDE, terrain_id)
 	new_tile.set_terrain_peering_bit(TileSet.CELL_NEIGHBOR_TOP_SIDE, terrain_id)
+
