@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://ci7u5r1qc0aob"]
+[gd_scene load_steps=23 format=3 uid="uid://ci7u5r1qc0aob"]
 
 [ext_resource type="Script" path="res://addons/ez_tiles/ez_tiles_dock.gd" id="1_xlstp"]
 [ext_resource type="Script" path="res://addons/ez_tiles/load_files_button.gd" id="2_8dh4w"]
@@ -15,6 +15,8 @@
 [ext_resource type="PackedScene" uid="uid://lfnyjmnayoqe" path="res://addons/ez_tiles/collision_polygon_templates/slopes.tscn" id="12_x4rcv"]
 [ext_resource type="PackedScene" uid="uid://ckfu3f4u350bg" path="res://addons/ez_tiles/collision_polygon_templates/slopes_bottom.tscn" id="13_3furq"]
 [ext_resource type="PackedScene" uid="uid://3gmoem8hi2hi" path="res://addons/ez_tiles/collision_polygon_templates/slopes_top.tscn" id="14_djl3r"]
+[ext_resource type="PackedScene" uid="uid://ywxhlehtt18d" path="res://addons/ez_tiles/collision_polygon_templates/cactus.tscn" id="15_ll5rq"]
+[ext_resource type="PackedScene" uid="uid://bp35luh5na8o7" path="res://addons/ez_tiles/collision_polygon_templates/tree.tscn" id="16_02naq"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2svd6"]
 font_color = Color(0.619608, 0.619608, 0.619608, 1)
@@ -170,6 +172,12 @@ modulate = Color(0.970763, 0, 0.452533, 0.42)
 [node name="Sloped (Top Corners)" parent="VBoxContainer2/PreviewScrollContainer/PreviewPanelContainer/PreviewTextureRect" instance=ExtResource("14_djl3r")]
 visible = false
 modulate = Color(0.970763, 0, 0.452533, 0.42)
+
+[node name="Cactus" parent="VBoxContainer2/PreviewScrollContainer/PreviewPanelContainer/PreviewTextureRect" instance=ExtResource("15_ll5rq")]
+visible = false
+
+[node name="Tree" parent="VBoxContainer2/PreviewScrollContainer/PreviewPanelContainer/PreviewTextureRect" instance=ExtResource("16_02naq")]
+visible = false
 
 [node name="OverlayTextureRect" type="TextureRect" parent="VBoxContainer2/PreviewScrollContainer/PreviewPanelContainer"]
 texture_filter = 1

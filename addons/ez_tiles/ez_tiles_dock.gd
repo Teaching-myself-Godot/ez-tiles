@@ -12,7 +12,9 @@ enum CollisionType {
 	ALL_SLOPES,
 	BOTTOM_SLOPES,
 	ROUNDED,
-	INVERSE_ROUNDED
+	INVERSE_ROUNDED,
+	TREE,
+	CACTUS
 }
 
 var collision_previews := {}
@@ -64,6 +66,8 @@ func _enter_tree() -> void:
 	collision_previews[CollisionType.TOP_SLOPES] = preview_texture_rect.find_child("Sloped (Top Corners)")
 	collision_previews[CollisionType.ROUNDED] = preview_texture_rect.find_child("Rounded Corners")
 	collision_previews[CollisionType.INVERSE_ROUNDED] = preview_texture_rect.find_child("Rounded Corners (Inverse)")
+	collision_previews[CollisionType.TREE] = preview_texture_rect.find_child("Tree")
+	collision_previews[CollisionType.CACTUS] = preview_texture_rect.find_child("Cactus")
 
 
 func _on_file_menu_load_files(files : PackedStringArray) -> void:
@@ -132,7 +136,6 @@ func _on_images_container_terrain_list_collision_type_selected(
 			resource_id: RID, type_id: EZTilesDock.CollisionType) -> void:
 	collision_type_map[resource_id] = type_id
 	_on_images_container_terrain_list_entry_selected(resource_id)
-	#_show_collision_preview(resource_id)
 
 
 func _on_images_container_terrain_list_entry_removed(removed_resource_id : RID) -> void:
