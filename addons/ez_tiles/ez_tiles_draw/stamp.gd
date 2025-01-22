@@ -24,6 +24,7 @@ func _enter_tree() -> void:
 	grid_container.columns = stamp_size.x
 	for tt in tile_textures:
 		grid_container.add_child(tt)
+	select()
 
 
 func deselect():
@@ -40,13 +41,15 @@ func _on_mouse_exited() -> void:
 	if not is_selected:
 		add_theme_stylebox_override("panel", style_box_normal)
 
+func select():
+	selected.emit()
+	is_selected = true
+	add_theme_stylebox_override("panel", style_box_selected)
+
 
 func _on_gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			selected.emit()
-			is_selected = true
-			add_theme_stylebox_override("panel", style_box_selected)
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		select()
 
 
 func _on_remove_button_pressed() -> void:

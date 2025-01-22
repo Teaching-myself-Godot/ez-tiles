@@ -109,8 +109,8 @@ func _forward_canvas_draw_over_viewport(overlay):
 	if not viewport_2d.get_visible_rect().has_point(g_mouse_pos):
 		return
 
-	var fill :=  Color(1.0, 0.0, 0.0, 0.2) if draw_dock.rmb_is_down else Color(Color.WHITE, 0.2)
-	var stroke := Color.RED if draw_dock.rmb_is_down else Color.WHITE
+	var fill :=  Color(1.0, 0.0, 0.0, 0.2) if draw_dock.rmb_is_down or draw_dock.using_eraser else Color(Color.WHITE, 0.2)
+	var stroke := Color.RED if draw_dock.rmb_is_down or draw_dock.using_eraser else Color.WHITE
 	var draw_rect := draw_dock.get_draw_rect(_tile_pos_from_mouse_pos())
 	var tl_corner := _tile_pos_to_overlay_pos(draw_rect.position)
 	var tr_corner := _tile_pos_to_overlay_pos(draw_rect.position + draw_rect.size * Vector2i.RIGHT)
@@ -118,8 +118,16 @@ func _forward_canvas_draw_over_viewport(overlay):
 	var bl_corner := _tile_pos_to_overlay_pos(draw_rect.position + draw_rect.size * Vector2i.DOWN)
 	overlay.draw_polyline(PackedVector2Array([tl_corner, tr_corner, br_corner, bl_corner, tl_corner]), stroke, 0.5, true)
 
-	if draw_dock.rmb_is_down:
+	if draw_dock.rmb_is_down or draw_dock.using_eraser:
 		overlay.draw_polygon(PackedVector2Array([tl_corner, tr_corner, br_corner, bl_corner, tl_corner]), [fill])
+		if draw_dock.drag_mode == EZTilesDrawDock.DragMode.BRUSH:
+			var draw_area := draw_dock.get_draw_area(_tile_pos_from_mouse_pos())
+			for tile in draw_area:
+				var tl := _tile_pos_to_overlay_pos(tile)
+				var tr := _tile_pos_to_overlay_pos(tile + Vector2i.RIGHT)
+				var br := _tile_pos_to_overlay_pos(tile + Vector2i.ONE)
+				var bl := _tile_pos_to_overlay_pos(tile + Vector2i.DOWN)
+				overlay.draw_polygon(PackedVector2Array([tl, tr, br, bl]), [fill])
 	else:
 		var draw_area := draw_dock.get_draw_area(_tile_pos_from_mouse_pos())
 		for tile in draw_area:

@@ -12,4 +12,4 @@
 - Add navigation layer preset (invert space taken by polygon hint)
 
 ### Draw
-- Add eraser to all draw modes
+- all done?

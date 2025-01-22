@@ -25,6 +25,7 @@ var rmb_is_down := false
 var current_terrain_id := 0
 var neighbour_mode := NeighbourMode.OVERWRITE
 var suppress_preview := false
+var using_eraser := false
 var undo_redo : EditorUndoRedoManager
 
 var area_draw_tab : AreaDraw
@@ -35,6 +36,7 @@ var area_draw_toggle_button : Button
 var brush_draw_toggle_button : Button
 var stamp_draw_toggle_button : Button
 var select_snap_shot_button : Button
+var eraser_button : Button
 
 var connect_toggle_button : Button
 var connect_icon_connected : Texture2D
@@ -76,6 +78,7 @@ func _enter_tree() -> void:
 	brush_draw_toggle_button = find_child("BrushDrawButton")
 	stamp_draw_toggle_button = find_child("StampDrawButton")
 	select_snap_shot_button = find_child("SelectSnapShotButton")
+	eraser_button = find_child("EraserButton")
 	connect_toggle_button = find_child("ConnectingToggle")
 	connect_icon_disconnected = preload("res://addons/ez_tiles/ez_tiles_draw/icons/Connect1.svg")
 	connect_icon_connected = preload("res://addons/ez_tiles/ez_tiles_draw/icons/Connect2.svg")
@@ -458,18 +461,23 @@ func handle_mouse_move(tile_pos : Vector2i) -> void:
 	if is_instance_valid(under_edit):
 		if drag_mode == DragMode.BRUSH:
 			_place_back_remembered_cells()
-			_place_cells_preview(_get_sized_brush({tile_pos: brush_tab.tile_coords}), current_terrain_id)
-			if lmb_is_down:
-				_commit_cell_placement(_get_sized_brush({tile_pos: brush_tab.tile_coords}).keys())
-			elif rmb_is_down:
+			if using_eraser:
+				_place_cells_preview(_get_sized_brush({tile_pos: brush_tab.tile_coords}), -1)
+			else:
+				_place_cells_preview(_get_sized_brush({tile_pos: brush_tab.tile_coords}), current_terrain_id)
+			if rmb_is_down:
 				_erase_cells(_get_sized_brush({tile_pos: Vector2i.ZERO}))
 				_commit_cell_placement(_get_sized_brush({tile_pos: brush_tab.tile_coords}).keys())
+			elif lmb_is_down:
+				_commit_cell_placement(_get_sized_brush({tile_pos: brush_tab.tile_coords}).keys())
+
 		elif drag_mode == DragMode.AREA:
 			_place_back_remembered_cells()
-			if lmb_is_down:
-				_place_cells_preview(_get_draw_shape_for_area(drag_start, tile_pos), current_terrain_id)
-			elif rmb_is_down:
+			if rmb_is_down or (using_eraser and lmb_is_down):
 				_erase_cells(_get_draw_shape_for_area(drag_start, tile_pos, AreaDraw.Shape.RECTANGLE))
+			elif lmb_is_down:
+				_place_cells_preview(_get_draw_shape_for_area(drag_start, tile_pos), current_terrain_id)
+
 		elif drag_mode == DragMode.STAMP:
 			_place_back_remembered_cells()
 			var stamp := stamp_tab.get_selected_stamp()
@@ -478,39 +486,36 @@ func handle_mouse_move(tile_pos : Vector2i) -> void:
 
 
 func handle_mouse_up(button : MouseButton, tile_pos: Vector2i):
-	match(button):
-		MouseButton.MOUSE_BUTTON_LEFT:
-			lmb_is_down = false
-			if drag_mode == DragMode.AREA:
-				_commit_cell_placement(_get_draw_shape_for_area(drag_start, tile_pos).keys())
-			if drag_mode == DragMode.SNAPSHOT:
-				_take_snapshot(tile_pos)
-				_on_stamp_snapshot_toggled(false)
-			if drag_mode == DragMode.STAMP:
-				var stamp := stamp_tab.get_selected_stamp()
-				if is_instance_valid(stamp):
-					_commit_cell_placement(_get_stamp_placement_area(stamp, tile_pos))
-		MouseButton.MOUSE_BUTTON_RIGHT:
-			rmb_is_down = false
-			if drag_mode == DragMode.AREA:
-				_commit_cell_placement(_get_draw_shape_for_area(drag_start, tile_pos, AreaDraw.Shape.RECTANGLE).keys())
+	rmb_is_down = false if button == MouseButton.MOUSE_BUTTON_RIGHT else rmb_is_down
+	lmb_is_down = false if button == MouseButton.MOUSE_BUTTON_LEFT else lmb_is_down
+
+	if button == MouseButton.MOUSE_BUTTON_RIGHT or (using_eraser and button == MouseButton.MOUSE_BUTTON_LEFT):
+		if drag_mode == DragMode.AREA:
+			_commit_cell_placement(_get_draw_shape_for_area(drag_start, tile_pos, AreaDraw.Shape.RECTANGLE).keys())
+	elif button == MouseButton.MOUSE_BUTTON_LEFT:
+		if drag_mode == DragMode.AREA:
+			_commit_cell_placement(_get_draw_shape_for_area(drag_start, tile_pos).keys())
+		if drag_mode == DragMode.SNAPSHOT:
+			_take_snapshot(tile_pos)
+			_on_stamp_snapshot_toggled(false)
+		if drag_mode == DragMode.STAMP:
+			var stamp := stamp_tab.get_selected_stamp()
+			if is_instance_valid(stamp):
+				_commit_cell_placement(_get_stamp_placement_area(stamp, tile_pos))
 
 
 
 
 func handle_mouse_down(button : MouseButton, tile_pos: Vector2i):
 	drag_start = tile_pos
+	rmb_is_down = true if button == MouseButton.MOUSE_BUTTON_RIGHT else rmb_is_down
+	lmb_is_down = true if button == MouseButton.MOUSE_BUTTON_LEFT else lmb_is_down
 
-	match(button):
-		MouseButton.MOUSE_BUTTON_LEFT:
-			lmb_is_down = true
-			if drag_mode == DragMode.AREA and not suppress_preview:
+	if using_eraser and button == MouseButton.MOUSE_BUTTON_RIGHT:
+			eraser_button.button_pressed = false
+			if drag_mode == DragMode.BRUSH:
 				_place_back_remembered_cells()
-				_place_cells_preview(_get_draw_shape_for_area(drag_start, tile_pos), current_terrain_id)
-			elif drag_mode == DragMode.BRUSH:
-				_commit_cell_placement(_get_sized_brush({tile_pos: brush_tab.tile_coords}).keys())
-		MouseButton.MOUSE_BUTTON_RIGHT:
-			rmb_is_down = true
+	elif button == MouseButton.MOUSE_BUTTON_RIGHT:
 			if drag_mode == DragMode.AREA and not suppress_preview:
 				_place_back_remembered_cells()
 				_erase_cells(_get_draw_shape_for_area(drag_start, tile_pos))
@@ -524,6 +529,13 @@ func handle_mouse_down(button : MouseButton, tile_pos: Vector2i):
 				if is_instance_valid(stamp):
 					_place_back_remembered_cells()
 					stamp.deselect()
+	elif button == MouseButton.MOUSE_BUTTON_LEFT:
+			if drag_mode == DragMode.AREA and not suppress_preview:
+				_place_back_remembered_cells()
+				_place_cells_preview(_get_draw_shape_for_area(drag_start, tile_pos), current_terrain_id)
+			elif drag_mode == DragMode.BRUSH:
+				_commit_cell_placement(_get_sized_brush({tile_pos: brush_tab.tile_coords}).keys())
+
 
 
 func handle_mouse_entered():
@@ -577,10 +589,14 @@ func _on_tab_container_tab_changed(tab: DragMode) -> void:
 	match(drag_mode):
 		DragMode.AREA:
 			area_draw_toggle_button.button_pressed = true
+			eraser_button.disabled = false
 		DragMode.BRUSH:
 			brush_draw_toggle_button.button_pressed = true
+			eraser_button.disabled = false
 		DragMode.STAMP:
 			stamp_draw_toggle_button.button_pressed = true
+			eraser_button.button_pressed = false
+			eraser_button.disabled = true
 
 
 func _on_neighbour_mode_option_button_item_selected(index: NeighbourMode) -> void:
@@ -615,3 +631,6 @@ func _on_connecting_toggle_toggled(toggled_on: bool) -> void:
 		brush_tab.find_child("TileButton1").button_pressed = true
 		area_draw_tab.find_child("TileButton1").button_pressed = true
 
+
+func _on_eraser_button_toggled(toggled_on: bool) -> void:
+	using_eraser = toggled_on
