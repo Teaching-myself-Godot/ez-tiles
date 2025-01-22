@@ -64,11 +64,13 @@ icon = ExtResource("4_6vr40")
 [node name="CollisionTypeButton" type="OptionButton" parent="."]
 layout_mode = 2
 size_flags_horizontal = 0
-tooltip_text = "Collision mode"
+tooltip_text = "Pick a template for collision polygon, or pick:
+- No Collision
+- Navigable, i.e.: no Collision with Navigation; where navigation polygons are generated as full rectangles for pathfinding."
 selected = 8
 fit_to_longest_item = false
 allow_reselect = true
-item_count = 9
+item_count = 10
 popup/item_0/text = "Rectangles"
 popup/item_1/text = "Sloped All Corners"
 popup/item_1/id = 3
@@ -86,6 +88,8 @@ popup/item_7/text = "Cactus"
 popup/item_7/id = 8
 popup/item_8/text = "No Collision"
 popup/item_8/id = 2
+popup/item_9/text = "Navigable"
+popup/item_9/id = 9
 
 [node name="RemoveButton" type="Button" parent="."]
 layout_mode = 2
