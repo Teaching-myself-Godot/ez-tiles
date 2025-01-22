@@ -5,6 +5,7 @@ class_name  ImagesContainer
 signal drop_files(files : PackedStringArray)
 signal terrain_list_entry_removed(resource_id : RID)
 signal terrain_list_entry_selected(resource_id : RID)
+signal terrain_list_collision_type_selected(resource_id : RID, type_id : EZTilesDock.CollisionType)
 
 var image_list : VBoxContainer
 var hint_label : Label
@@ -50,7 +51,9 @@ func add_file(img_resource : CompressedTexture2D, invalid_message : String = "")
 	image_list.show()
 	new_entry.removed.connect(func(): terrain_list_entry_removed.emit(img_resource.get_rid()))
 	new_entry.selected.connect(func(): terrain_list_entry_selected.emit(img_resource.get_rid()))
-
+	new_entry.collision_type_selected.connect(
+			func(type_id : EZTilesDock.CollisionType): terrain_list_collision_type_selected.emit(img_resource.get_rid(), type_id)
+	)
 
 func gather_data() -> Array:
 	var data := []
