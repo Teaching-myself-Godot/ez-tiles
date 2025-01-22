@@ -1,23 +1,17 @@
-[gd_scene format=3 uid="uid://cm4063l3dfehn"]
+[gd_scene format=3 uid="uid://bp35luh5na8o7"]
 
-[node name="Rounded Corners" type="Node2D"]
+[node name="Tree" type="Node2D"]
 metadata/_edit_vertical_guides_ = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
 metadata/_edit_horizontal_guides_ = [1.0, 2.0, 3.0, 4.0]
 
 [node name="MC" type="Polygon2D" parent="."]
-polygon = PackedVector2Array(0.140209, 0.880727, 0.0546875, 0.75, 0, 0.515625, 0.0326076, 0.30961, 0.125, 0.15625, 0.3125, 0.03125, 0.5, 0, 0.671875, 0.03125, 0.835938, 0.125, 0.960938, 0.28125, 1, 0.507813, 0.945313, 0.710938, 0.84375, 0.859375, 0.695313, 0.96875, 0.507813, 1, 0.30575, 0.971775)
-metadata/_edit_vertical_guides_ = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
-metadata/_edit_horizontal_guides_ = [1.0, 1.0, 2.0, 3.0, 4.0]
-
-[node name="VB" type="Polygon2D" parent="."]
-position = Vector2(1, 2)
-polygon = PackedVector2Array(0.140209, 0.880727, 0.0546875, 0.75, 0, 0.515625, 0, 0, 1, 0, 1, 0.507813, 0.945313, 0.710938, 0.84375, 0.859375, 0.695313, 0.96875, 0.507813, 1, 0.30575, 0.971775)
+polygon = PackedVector2Array(0, 1, 0, 0, 1, 0, 1, 1, 1, 1)
 metadata/_edit_vertical_guides_ = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
 metadata/_edit_horizontal_guides_ = [1.0, 1.0, 2.0, 3.0, 4.0]
 
 [node name="VT" type="Polygon2D" parent="."]
 position = Vector2(1, 0)
-polygon = PackedVector2Array(0, 1, 0, 0.515625, 0.015625, 0.328125, 0.125, 0.15625, 0.3125, 0.03125, 0.5, 0, 0.671875, 0.03125, 0.835938, 0.125, 0.960938, 0.28125, 1, 0.507813, 1, 1)
+polygon = PackedVector2Array(0, 1, 0.492188, 0, 1, 1, 1, 1)
 metadata/_edit_vertical_guides_ = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
 metadata/_edit_horizontal_guides_ = [1.0, 1.0, 2.0, 3.0, 4.0]
 
@@ -27,33 +21,40 @@ polygon = PackedVector2Array(0, 1, 0, 0, 1, 0, 1, 1, 1, 1)
 metadata/_edit_vertical_guides_ = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
 metadata/_edit_horizontal_guides_ = [1.0, 1.0, 2.0, 3.0, 4.0]
 
+[node name="VB" type="Polygon2D" parent="."]
+position = Vector2(1, 2)
+polygon = PackedVector2Array(0.1875, 0.820313, 0, 0, 1, 0, 0.8125, 0.570313)
+metadata/_edit_vertical_guides_ = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
+metadata/_edit_horizontal_guides_ = [1.0, 1.0, 2.0, 3.0, 4.0]
+
 [node name="HL" type="Polygon2D" parent="."]
 position = Vector2(0, 3)
-polygon = PackedVector2Array(0, 1, 0, 0, 1, 0, 1, 1, 1, 1)
+polygon = PackedVector2Array(0.478268, 0.299531, 0, 0, 1, 0, 1, 0, 0.992188, 0.398438)
 metadata/_edit_vertical_guides_ = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
 metadata/_edit_horizontal_guides_ = [1.0, 1.0, 2.0, 3.0, 4.0]
 
 [node name="HM" type="Polygon2D" parent="."]
 position = Vector2(1, 3)
-polygon = PackedVector2Array(0, 1, 0, 0, 1, 0, 1, 1, 1, 1)
+polygon = PackedVector2Array(0.0078125, 0.421875, 0, 0, 1, 0, 1, 0.421875)
 metadata/_edit_vertical_guides_ = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
 metadata/_edit_horizontal_guides_ = [1.0, 1.0, 2.0, 3.0, 4.0]
 
 [node name="HR" type="Polygon2D" parent="."]
 position = Vector2(2, 3)
-polygon = PackedVector2Array(0, 1, 0, 0, 1, 0, 1, 1, 1, 1)
+scale = Vector2(1, 1.1)
+polygon = PackedVector2Array(0, 0.411932, 0, 0, 1, 0, 0.78125, 0.191761)
 metadata/_edit_vertical_guides_ = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
 metadata/_edit_horizontal_guides_ = [1.0, 1.0, 2.0, 3.0, 4.0]
 
-[node name="TL" type="Polygon2D" parent="."]
-position = Vector2(3, 0)
-polygon = PackedVector2Array(0, 1, 0.03125, 0.734375, 0.15625, 0.476563, 0.3125, 0.273438, 0.515625, 0.125, 0.773438, 0.03125, 1, 0, 1, 1, 1, 1)
+[node name="BR" type="Polygon2D" parent="."]
+position = Vector2(5, 2)
+polygon = PackedVector2Array(0, 1, 1, 1, 1, 0, 0, 0)
 metadata/_edit_vertical_guides_ = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
 metadata/_edit_horizontal_guides_ = [1.0, 1.0, 2.0, 3.0, 4.0]
 
-[node name="TR" type="Polygon2D" parent="."]
-position = Vector2(5, 0)
-polygon = PackedVector2Array(0, 1, 0, 0, 0.273438, 0.0390625, 0.5, 0.125, 0.71875, 0.289063, 0.859375, 0.484375, 0.953125, 0.695313, 1, 1, 1, 1)
+[node name="BL" type="Polygon2D" parent="."]
+position = Vector2(3, 2)
+polygon = PackedVector2Array(1, 0, 0, 0, 0, 1, 1, 1, 1, 1)
 metadata/_edit_vertical_guides_ = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
 metadata/_edit_horizontal_guides_ = [1.0, 1.0, 2.0, 3.0, 4.0]
 
@@ -81,9 +82,9 @@ polygon = PackedVector2Array(0, 1, 0, 0, 1, 0, 1, 1, 1, 1)
 metadata/_edit_vertical_guides_ = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
 metadata/_edit_horizontal_guides_ = [1.0, 1.0, 2.0, 3.0, 4.0]
 
-[node name="BR" type="Polygon2D" parent="."]
-position = Vector2(5, 2)
-polygon = PackedVector2Array(0, 1, 0, 0, 1, 0, 0.960938, 0.257813, 0.867188, 0.492188, 0.726563, 0.703125, 0.523438, 0.867188, 0.28125, 0.960938)
+[node name="TL" type="Polygon2D" parent="."]
+position = Vector2(3, 0)
+polygon = PackedVector2Array(0, 1, 1, 1, 1, 0, 0.960938, 0.257813, 0.867188, 0.492188, 0.726563, 0.703125, 0.523438, 0.867188, 0.28125, 0.960938)
 metadata/_edit_vertical_guides_ = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
 metadata/_edit_horizontal_guides_ = [1.0, 1.0, 2.0, 3.0, 4.0]
 
@@ -93,8 +94,8 @@ polygon = PackedVector2Array(0, 1, 0, 0, 1, 0, 1, 1, 1, 1)
 metadata/_edit_vertical_guides_ = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
 metadata/_edit_horizontal_guides_ = [1.0, 1.0, 2.0, 3.0, 4.0]
 
-[node name="BL" type="Polygon2D" parent="."]
-position = Vector2(3, 2)
-polygon = PackedVector2Array(0.28125, 0.71875, 0.140625, 0.507813, 0.046875, 0.304688, 0, 0, 1, 0, 1, 1, 1, 1, 0.703125, 0.953125, 0.492188, 0.859375)
+[node name="TR" type="Polygon2D" parent="."]
+position = Vector2(5, 0)
+polygon = PackedVector2Array(0.28125, 0.71875, 0.140625, 0.507813, 0.046875, 0.304688, 0, 0, 0, 1, 1, 1, 1, 1, 0.703125, 0.953125, 0.492188, 0.859375)
 metadata/_edit_vertical_guides_ = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
 metadata/_edit_horizontal_guides_ = [1.0, 1.0, 2.0, 3.0, 4.0]

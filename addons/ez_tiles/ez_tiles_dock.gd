@@ -35,6 +35,7 @@ var zoom := 1.0
 var save_template_file_dialog : EditorFileDialog
 var save_tile_set_file_dialog : EditorFileDialog
 var hint_color := Color(0, 0, 0, 0.702)
+var collision_layer_color := Color(1.0, 0.0, 0.0, 0.4)
 
 func _enter_tree() -> void:
 	num_regex.compile("^\\d+\\.?\\d*$")
@@ -174,7 +175,7 @@ func _redraw_overlay_texture() -> void:
 	overlay_texture_rect.texture = ImageTexture.create_from_image(new_template_overlay)
 	guide_texture_rect.modulate = hint_color
 	for c : Node2D in collision_previews.values():
-		c.modulate = hint_color
+		c.modulate = collision_layer_color
 
 func handle_tilesize_update() -> void:
 	if  num_regex.search(x_size_line_edit.text) and num_regex.search(y_size_line_edit.text):
@@ -253,6 +254,12 @@ func _on_save_template_file_selected(path : String) -> void:
 func _on_color_picker_button_color_changed(color: Color) -> void:
 	hint_color = color
 	_redraw_overlay_texture()
+
+
+func _on_collision_layer_color_picker_button_color_changed(color: Color) -> void:
+	collision_layer_color = color
+	for c : Node2D in collision_previews.values():
+		c.modulate = collision_layer_color
 
 
 func _on_generate_tile_set_button_pressed() -> void:
@@ -369,4 +376,3 @@ func create_all_sides_neighbour_tile(atlas_source : TileSetAtlasSource, terrain_
 	new_tile.set_terrain_peering_bit(TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, terrain_id)
 	new_tile.set_terrain_peering_bit(TileSet.CELL_NEIGHBOR_LEFT_SIDE, terrain_id)
 	new_tile.set_terrain_peering_bit(TileSet.CELL_NEIGHBOR_TOP_SIDE, terrain_id)
-
