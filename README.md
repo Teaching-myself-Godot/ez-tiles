@@ -9,7 +9,7 @@
 - publish this repo
 
 ### Importer
-- Add navigation layer preset (invert space taken by polygon hint)
+- all done?
 
 ### Draw
 - all done?
