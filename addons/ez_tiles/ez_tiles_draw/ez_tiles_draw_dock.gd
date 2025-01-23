@@ -213,10 +213,43 @@ func _grow_cells(area_cells : Array, diagonal := false,  base_dir := Vector2i.ZE
 				expanded_region[neighour] = true
 	return expanded_region.keys()
 
+func _straighten_line_direction(from : Vector2i, to : Vector2i) -> Vector2:
+	var angle := fmod(rad_to_deg(Vector2(from).angle_to_point(Vector2(to))), 360)
+	if angle < 0:
+		angle += 360
+	match(snappedi(angle, 45)):
+		45:
+			return Vector2(0.7071, 0.7071)
+		90:
+			return Vector2.DOWN
+		135:
+			return Vector2(-0.7071, 0.7071)
+		180:
+			return Vector2.LEFT
+		225:
+			return Vector2(-0.7071, -0.7071)
+		270:
+			return Vector2.UP
+		315:
+			return Vector2(0.7071, -0.7071)
+		0, 360, _:
+			return Vector2.RIGHT
 
-func _get_sized_brush(cell : Dictionary) -> Dictionary:
+func _get_brush_sized_line(from : Vector2i, cell : Dictionary) -> Dictionary:
+	var to := cell.keys()[0] as Vector2i
+	var direction = _straighten_line_direction(from, to)
+	var cur := Vector2(from)
+	var out := {}
+	for _i in range(floor(from.distance_to(to))):
+		cur += direction
+		out.merge(_get_brush_for_cell({Vector2i(cur.floor()): cell.values()[0]}))
+	return out
+
+
+func _get_brush_for_cell(cell : Dictionary) -> Dictionary:
 	if brush_tab.brush_size == 1:
 		return cell
+
 	var out := Dictionary()
 	var cur_keys := []
 	if brush_tab.brush_shape == BrushDraw.BrushShape.SQUARE:
@@ -234,6 +267,13 @@ func _get_sized_brush(cell : Dictionary) -> Dictionary:
 	for k in cur_keys:
 		out[k] = cell.values()[0]
 	return out
+
+
+func _get_sized_brush(cell : Dictionary) -> Dictionary:
+	if Input.is_key_pressed(KEY_SHIFT):
+		return _get_brush_sized_line(drag_start, cell)
+
+	return _get_brush_for_cell(cell)
 
 
 func _get_stamp_placement_area(stamp : Stamp, tile_pos : Vector2i, include_empty_cells := false) -> Array[Vector2i]:
