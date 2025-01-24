@@ -15,9 +15,10 @@ enum Shape {
 	HILL_BOTTOM,
 	HILL_RIGHT,
 	HILL_LEFT,
-	ISLAND
+	ISLAND,
+	RECTANGLE_BASIC
 }
-var shape := Shape.HARD_RECTANGLE
+var shape := Shape.RECTANGLE_BASIC
 var preview_container : GridContainer
 
 const TL := Vector2i(3, 0)
@@ -32,6 +33,13 @@ const CM := Vector2i(4, 1)
 const XX := null
 
 const SHAPE_MAP := {
+	Shape.RECTANGLE_BASIC: [
+		[CM, CM, CM, CM, CM],
+		[CM, CM, CM, CM, CM],
+		[CM, CM, CM, CM, CM],
+		[CM, CM, CM, CM, CM],
+		[CM, CM, CM, CM, CM],
+	],
 	Shape.RECTANGLE: [
 		[TL, TM, TM, TM, TR],
 		[LM, CM, CM, CM, RM],
@@ -116,10 +124,12 @@ var cur_tile_size : Vector2i
 var connect_terrains_button : Button
 var tile_button : Button
 
+
 func _enter_tree() -> void:
 	preview_container = find_child("PreviewGridContainer")
 	connect_terrains_button = find_child("ConnectTerrainsButton")
 	tile_button = find_child("TileButton1")
+
 
 func _get_empty_tex(tile_size : Vector2i) -> Texture2D:
 	var plc_tex := GradientTexture2D.new()
@@ -132,7 +142,7 @@ func _get_empty_tex(tile_size : Vector2i) -> Texture2D:
 
 func update_grid_preview(terrain_texture : Texture2D = cur_terrain_texture, tile_size : Vector2i = cur_tile_size):
 	tile_button.icon.atlas = terrain_texture
-	tile_button.icon.region = Rect2i(Vector2i.ZERO, Vector2i.ONE * tile_size)
+	tile_button.icon.region = Rect2i(CM * tile_size, tile_size)
 	cur_terrain_texture = terrain_texture
 	cur_tile_size = tile_size 
 	var i := 0
@@ -149,6 +159,14 @@ func update_grid_preview(terrain_texture : Texture2D = cur_terrain_texture, tile
 			atlas_texture.atlas = terrain_texture
 			atlas_texture.region = Rect2i(SHAPE_MAP[shape][y][x] * tile_size, tile_size)
 			tex_rect.texture = atlas_texture
+
+
+static  func get_cells_rectangle_basic(p1 : Vector2i, p2 : Vector2i) -> Dictionary:
+	var cells := {}
+	for x in range(p1.x, p2.x + 1):
+		for y in range(p1.y, p2.y + 1):
+			cells[Vector2i(x, y)] = CM
+	return cells
 
 
 static func get_cells_rectangle(p1 : Vector2i, p2 : Vector2i, soft := false) -> Dictionary:
@@ -354,4 +372,9 @@ func _on_hill_right_button_pressed() -> void:
 
 func _on_island_button_pressed() -> void:
 	shape = Shape.ISLAND
+	update_grid_preview()
+
+
+func _on_rectangles_basic_button_pressed() -> void:
+	shape = Shape.RECTANGLE_BASIC
 	update_grid_preview()

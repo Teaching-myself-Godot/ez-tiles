@@ -107,9 +107,11 @@ func activate(node : TileMapLayer):
 		area_draw_tab.update_grid_preview(
 			_get_first_texture_for_terrain(current_terrain_id),
 			under_edit.tile_set.tile_size)
+
 		brush_tab.update_tile_buttons(
 			_get_first_texture_for_terrain(current_terrain_id),
 			under_edit.tile_set.tile_size)
+
 	if under_edit.has_meta(EZ_TILE_CUSTOM_META):
 		default_editor_check_button.button_pressed = true
 	else:
@@ -131,13 +133,21 @@ func _get_first_source_id_for_terrain(terrain_id : int) -> int:
 
 
 func _get_first_texture_for_terrain(terrain_id : int) -> Texture2D:
+	var source := _get_first_tileset_source_for_terrain(terrain_id)
+	if is_instance_valid(source):
+		return source.texture
+	return null
+
+
+func _get_first_tileset_source_for_terrain(terrain_id : int) -> TileSetAtlasSource:
 	for i in range(under_edit.tile_set.get_source_count()):
 		var source_id := under_edit.tile_set.get_source_id(i)
 		var source : TileSetAtlasSource  = under_edit.tile_set.get_source(source_id)
 		if source.get_tiles_count() > 0:
 			var tile_data = source.get_tile_data(source.get_tile_id(0), 0)
 			if tile_data.terrain == terrain_id:
-				return source.texture
+				return source
+	printerr("Terrain %d not found in tile set sources: " % terrain_id)
 	return null
 
 
@@ -470,6 +480,8 @@ func _get_draw_shape_for_area(p1 : Vector2i, p2 : Vector2i, for_shape : AreaDraw
 	var to_y := p1.y if p1.y > p2.y else p2.y
 
 	match(for_shape):
+		AreaDraw.Shape.RECTANGLE_BASIC:
+			return AreaDraw.get_cells_rectangle_basic(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
 		AreaDraw.Shape.HARD_RECTANGLE:
 			return AreaDraw.get_cells_rectangle(Vector2i(from_x, from_y), Vector2i(to_x, to_y))
 		AreaDraw.Shape.RECTANGLE:
