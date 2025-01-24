@@ -138,8 +138,6 @@ func _forward_canvas_draw_over_viewport(overlay):
 			overlay.draw_polygon(PackedVector2Array([tl, tr, br, bl]), [fill])
 
 
-
-
 func _input(_event) -> void:
 	update_overlays()
 

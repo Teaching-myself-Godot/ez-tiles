@@ -109,7 +109,7 @@ func activate(node : TileMapLayer):
 			under_edit.tile_set.tile_size)
 
 		brush_tab.update_tile_buttons(
-			_get_first_texture_for_terrain(current_terrain_id),
+			_get_first_tileset_source_for_terrain(current_terrain_id),
 			under_edit.tile_set.tile_size)
 
 	if under_edit.has_meta(EZ_TILE_CUSTOM_META):
@@ -125,9 +125,10 @@ func _get_first_source_id_for_terrain(terrain_id : int) -> int:
 		var source_id := under_edit.tile_set.get_source_id(i)
 		var source : TileSetAtlasSource  = under_edit.tile_set.get_source(source_id)
 		if source.get_tiles_count() > 0:
-			var tile_data = source.get_tile_data(source.get_tile_id(0), 0)
-			if tile_data.terrain == terrain_id:
-				return source_id
+			for j in source.get_tiles_count():
+				var tile_data = source.get_tile_data(source.get_tile_id(j), 0)
+				if tile_data.terrain == terrain_id:
+					return source_id
 	printerr("Terrain %d not found in tile set sources: " % terrain_id)
 	return terrain_id # assume equal in case of inconsistent data
 
@@ -144,9 +145,10 @@ func _get_first_tileset_source_for_terrain(terrain_id : int) -> TileSetAtlasSour
 		var source_id := under_edit.tile_set.get_source_id(i)
 		var source : TileSetAtlasSource  = under_edit.tile_set.get_source(source_id)
 		if source.get_tiles_count() > 0:
-			var tile_data = source.get_tile_data(source.get_tile_id(0), 0)
-			if tile_data.terrain == terrain_id:
-				return source
+			for j in source.get_tiles_count():
+				var tile_data = source.get_tile_data(source.get_tile_id(j), 0)
+				if tile_data.terrain == terrain_id:
+					return source
 	printerr("Terrain %d not found in tile set sources: " % terrain_id)
 	return null
 
@@ -162,7 +164,7 @@ func _on_terrain_selected(id : int) -> void:
 	area_draw_tab.update_grid_preview(
 			_get_first_texture_for_terrain(id), under_edit.tile_set.tile_size)
 	brush_tab.update_tile_buttons(
-		_get_first_texture_for_terrain(id), under_edit.tile_set.tile_size)
+		_get_first_tileset_source_for_terrain(id), under_edit.tile_set.tile_size)
 	if stamp_tab.visible:
 		brush_tab.show()
 
@@ -656,7 +658,7 @@ func _on_neighbour_mode_option_button_item_selected(index: NeighbourMode) -> voi
 	if neighbour_mode == NeighbourMode.OVERWRITE:
 		connect_toggle_button.icon = connect_icon_disconnected
 		connect_toggle_button.button_pressed = false
-		brush_tab.find_child("TileButton1").button_pressed = true
+		brush_tab.toggle_off_connected_brush()
 		area_draw_tab.find_child("TileButton1").button_pressed = true
 	else:
 		connect_toggle_button.icon = connect_icon_connected
@@ -680,7 +682,7 @@ func _on_connecting_toggle_toggled(toggled_on: bool) -> void:
 		connect_toggle_button.button_pressed = false
 		neighbour_mode = NeighbourMode.OVERWRITE
 		neighbor_mode_option_button.selected = NeighbourMode.OVERWRITE
-		brush_tab.find_child("TileButton1").button_pressed = true
+		brush_tab.toggle_off_connected_brush()
 		area_draw_tab.find_child("TileButton1").button_pressed = true
 
 

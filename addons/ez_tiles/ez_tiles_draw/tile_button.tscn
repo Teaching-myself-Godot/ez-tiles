@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://brj7avx23jyw2"]
+
+[ext_resource type="ButtonGroup" uid="uid://dtpx52d0n4ff1" path="res://addons/ez_tiles/ez_tiles_draw/brush_tile_button_group.tres" id="1_jn7g0"]
+[ext_resource type="Script" path="res://addons/ez_tiles/ez_tiles_draw/tile_button.gd" id="2_831ko"]
+
+[node name="TileButton" type="Button"]
+custom_minimum_size = Vector2(40, 40)
+theme_override_colors/icon_normal_color = Color(0.556863, 0.556863, 0.556863, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+toggle_mode = true
+button_group = ExtResource("1_jn7g0")
+flat = true
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("2_831ko")
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]

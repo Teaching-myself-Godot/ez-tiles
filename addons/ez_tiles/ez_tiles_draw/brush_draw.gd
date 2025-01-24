@@ -3,39 +3,22 @@ extends PanelContainer
 class_name BrushDraw
 
 var brush_size : int = 1
-const MC := Vector2i(0, 0)
-const VT := Vector2i(1, 0)
-const VM := Vector2i(1, 1)
-const VB := Vector2i(1, 2)
-const HL := Vector2i(0, 3)
-const HM := Vector2i(1, 3)
-const HR := Vector2i(2, 3)
-const TL := Vector2i(3, 0)
-const TR := Vector2i(5, 0)
-const TM := Vector2i(4, 0)
-const BL := Vector2i(3, 2)
-const BR := Vector2i(5, 2)
-const BM := Vector2i(4, 2)
-const LM := Vector2i(3, 1)
-const RM := Vector2i(5, 1)
-const CM := Vector2i(4, 1)
-const COORDS : Array[Vector2i] = [
-	MC, VT, VM, VB, HL, HM, HR, TL, TM, TR, LM, CM, RM, BL, BM, BR
-]
+var TileButtonScene : PackedScene
+
 enum BrushShape {CIRCLE, SQUARE}
 signal connect_mode_toggled(toggled : bool)
 
-var tile_coords := MC
+var tile_coords := Vector2i.ZERO
 var connect_terrains_button : Button
 var brush_shape := BrushShape.SQUARE
-
+var button_container : Control
+var first_tile_button : Button
 
 func _enter_tree() -> void:
-	var buttons := find_children("TileButton*")
-	for i in range(buttons.size()):
-		buttons[i].pressed.connect(func(): _on_tile_button_pressed(COORDS[i]))
+	TileButtonScene = preload("res://addons/ez_tiles/ez_tiles_draw/tile_button.tscn")
 	connect_terrains_button = find_child("ConnectTerrainsButton")
 	connect_terrains_button.pressed.connect(func(): connect_mode_toggled.emit(true))
+	button_container = find_child("TileButtonContainer")
 
 
 func _on_tile_button_pressed(coords : Vector2i):
@@ -47,12 +30,31 @@ func _on_range_slider_with_line_edit_value_changed(value: int) -> void:
 	brush_size = value
 
 
-func update_tile_buttons(terrain_texture : Texture2D, tile_size : Vector2i):
-	var buttons := find_children("TileButton*")
-	for i in range(buttons.size()):
-		buttons[i].icon.atlas = terrain_texture
-		buttons[i].icon.region = Rect2i(COORDS[i] * tile_size, tile_size)
+func update_tile_buttons(tileset_source : TileSetAtlasSource, tile_size : Vector2i):
+	first_tile_button = null
+	for c in button_container.get_children():
+		if c is TileButton:
+			c.queue_free()
 
+	var terrain_texture := tileset_source.texture
+	for idx in range(tileset_source.get_tiles_count()):
+		var pos := tileset_source.get_tile_id(idx)
+		var tile_button : TileButton = TileButtonScene.instantiate()
+		tile_button.clicked.connect(_on_tile_button_pressed)
+		tile_button.coords = pos
+		var texture := AtlasTexture.new()
+		tile_button.icon = texture
+		tile_button.icon.atlas = terrain_texture
+		tile_button.icon.region = Rect2i(pos * tile_size, tile_size)
+		button_container.add_child(tile_button)
+		if not is_instance_valid(first_tile_button):
+			first_tile_button = tile_button
+			first_tile_button.button_pressed = true
+
+
+func toggle_off_connected_brush() -> void:
+	if is_instance_valid(first_tile_button):
+		first_tile_button.button_pressed = true
 
 func _on_brush_shape_square_button_pressed() -> void:
 	brush_shape = BrushShape.SQUARE
