@@ -417,8 +417,11 @@ func _consider_a_neighbour(cell : Vector2i, for_source_id : int) -> bool:
 
 func _get_ez_atlas_coord(tile_pos : Vector2i, for_terrain_id : int) -> Vector2i:
 	if neighbour_mode == NeighbourMode.PEERING_BIT:
+		var source := _get_first_tileset_source_for_terrain(for_terrain_id)
+		for id in range(source.get_tiles_count()):
+			return source.get_tile_id(id)
+		printerr("could not find a tile in terrain: " + str(for_terrain_id))
 		return Vector2i.ZERO
-
 	# EZ Tiles considers the source_id to be equal to the terrain_id
 	# Therefore, in these modes the complexity of searching the correct texture is lost 
 	#   (thus, making things EZ. is a lot less flexible)
