@@ -79,6 +79,7 @@ text = "Tile Size* "
 label_settings = SubResource("LabelSettings_2svd6")
 
 [node name="XSizeLineEdit" type="LineEdit" parent="VBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/minimum_character_width = 1
@@ -88,6 +89,7 @@ clear_button_enabled = true
 select_all_on_focus = true
 
 [node name="YSizeLineEdit" type="LineEdit" parent="VBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/minimum_character_width = 1
