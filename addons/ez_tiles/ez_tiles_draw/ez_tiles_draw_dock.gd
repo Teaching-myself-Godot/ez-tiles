@@ -165,6 +165,9 @@ func _on_terrain_selected(id : int) -> void:
 			_get_first_texture_for_terrain(id), under_edit.tile_set.tile_size)
 	brush_tab.update_tile_buttons(
 		_get_first_tileset_source_for_terrain(id), under_edit.tile_set.tile_size)
+	if neighbour_mode != NeighbourMode.OVERWRITE:
+		brush_tab.connect_terrains_button.button_pressed = true
+
 	if stamp_tab.visible:
 		brush_tab.show()
 

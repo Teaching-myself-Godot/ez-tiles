@@ -141,6 +141,7 @@ func _get_empty_tex(tile_size : Vector2i) -> Texture2D:
 
 
 func update_grid_preview(terrain_texture : Texture2D = cur_terrain_texture, tile_size : Vector2i = cur_tile_size):
+	tile_button.icon = AtlasTexture.new()
 	tile_button.icon.atlas = terrain_texture
 	tile_button.icon.region = Rect2i(CM * tile_size, tile_size)
 	cur_terrain_texture = terrain_texture

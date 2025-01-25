@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://bitqwiwmn3s0r"]
+[gd_scene load_steps=18 format=3 uid="uid://bitqwiwmn3s0r"]
 
 [ext_resource type="Script" path="res://addons/ez_tiles/ez_tiles_draw/area_draw.gd" id="1_ee3lv"]
 [ext_resource type="Texture2D" uid="uid://dooqg3fapf15x" path="res://addons/ez_tiles/ez_tiles_draw/icons/Rectangle.svg" id="2_0c16j"]
@@ -13,7 +13,6 @@
 [ext_resource type="Texture2D" uid="uid://dpmrju1gvdr16" path="res://addons/ez_tiles/ez_tiles_draw/icons/HillL.svg" id="10_dsu38"]
 [ext_resource type="Texture2D" uid="uid://dv855gccwqgu" path="res://addons/ez_tiles/ez_tiles_draw/icons/HillR.svg" id="11_nyydi"]
 [ext_resource type="Texture2D" uid="uid://frudvs8p10ea" path="res://addons/ez_tiles/ez_tiles_draw/icons/Island.svg" id="12_qvlkp"]
-[ext_resource type="Texture2D" uid="uid://h6xbr61ix6j7" path="res://addons/ez_tiles/examples/16x16/zelda_like_grass_over_water.png" id="14_ykrij"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_51lt4"]
 content_margin_left = 10.0
@@ -32,10 +31,6 @@ bg_color = Color(0.12549, 0.145098, 0.172549, 1)
 [sub_resource type="ButtonGroup" id="ButtonGroup_82nql"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_3cdnu"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_mcu38"]
-atlas = ExtResource("14_ykrij")
-region = Rect2(64, 16, 16, 16)
 
 [node name="AreaDraw" type="PanelContainer"]
 clip_children = 2
@@ -374,7 +369,6 @@ theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_3cdnu")
-icon = SubResource("AtlasTexture_mcu38")
 flat = true
 icon_alignment = 1
 expand_icon = true
