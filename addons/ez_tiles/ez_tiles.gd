@@ -101,6 +101,9 @@ func _tile_pos_to_overlay_pos(tile_pos : Vector2i) -> Vector2:
 
 
 func _forward_canvas_draw_over_viewport(overlay):
+	if lmb_is_down_outside_2d_viewport:
+		return
+
 	var viewport_2d := EditorInterface.get_editor_viewport_2d()
 	var g_mouse_pos = (
 		EditorInterface.get_base_control().get_global_mouse_position()
@@ -138,11 +141,9 @@ func _forward_canvas_draw_over_viewport(overlay):
 			overlay.draw_polygon(PackedVector2Array([tl, tr, br, bl]), [fill])
 
 
+
 func _input(_event) -> void:
 	update_overlays()
-
-	if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-		lmb_is_down_outside_2d_viewport = false
 
 	if is_instance_valid(draw_dock.under_edit) and select_2D_viewport_button.button_pressed and _get_select_mode_button().button_pressed and draw_dock.visible:
 		var viewport_2d := EditorInterface.get_editor_viewport_2d()
@@ -152,6 +153,7 @@ func _input(_event) -> void:
 		)
 
 		if ((viewport_2d.get_visible_rect().has_point(g_mouse_pos)
+					and not lmb_is_down_outside_2d_viewport
 					and not (g_mouse_pos.x <= 164 and g_mouse_pos.y <= 40))
 					or draw_dock.lmb_is_down or draw_dock.rmb_is_down):
 
