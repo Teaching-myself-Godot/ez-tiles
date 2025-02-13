@@ -525,10 +525,7 @@ func handle_mouse_move(tile_pos : Vector2i) -> void:
 				_place_cells_preview(_get_sized_brush({tile_pos: brush_tab.tile_coords}), -1)
 			else:
 				_place_cells_preview(_get_sized_brush({tile_pos: brush_tab.tile_coords}), current_terrain_id)
-			if rmb_is_down:
-				_erase_cells(_get_sized_brush({tile_pos: Vector2i.ZERO}))
-				_commit_cell_placement(_get_sized_brush({tile_pos: brush_tab.tile_coords}).keys())
-			elif lmb_is_down:
+			if lmb_is_down:
 				_commit_cell_placement(_get_sized_brush({tile_pos: brush_tab.tile_coords}).keys())
 
 		elif drag_mode == DragMode.AREA:
@@ -580,8 +577,9 @@ func handle_mouse_down(button : MouseButton, tile_pos: Vector2i):
 				_place_back_remembered_cells()
 				_erase_cells(_get_draw_shape_for_area(drag_start, tile_pos))
 			elif drag_mode == DragMode.BRUSH:
-				_erase_cells(_get_sized_brush({tile_pos: brush_tab.tile_coords}))
-				_commit_cell_placement(_get_sized_brush({tile_pos: brush_tab.tile_coords}).keys())
+				_place_back_remembered_cells()
+				area_draw_toggle_button.button_pressed = true
+				area_draw_tab.show()
 			elif drag_mode == DragMode.SNAPSHOT:
 				_on_stamp_snapshot_toggled(false)
 			elif drag_mode == DragMode.STAMP:
