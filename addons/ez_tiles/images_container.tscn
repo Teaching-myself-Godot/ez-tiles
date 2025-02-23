@@ -14,16 +14,35 @@ font_color = Color(0.621524, 0.621524, 0.621524, 1)
 
 [node name="ImagesContainer" type="ScrollContainer"]
 custom_minimum_size = Vector2(400, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_daguq")
 horizontal_scroll_mode = 0
 script = ExtResource("1_nrl1h")
 
-[node name="HintLabel" type="Label" parent="."]
+[node name="HintLabel" type="VBoxContainer" parent="."]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+
+[node name="Label" type="Label" parent="HintLabel"]
+layout_mode = 2
+size_flags_vertical = 0
 text = "Drop image files here"
 label_settings = SubResource("LabelSettings_wwpia")
 horizontal_alignment = 1
+
+[node name="LinkButton" type="LinkButton" parent="HintLabel"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+size_flags_stretch_ratio = 0.0
+text = "Watch explainers"
+uri = "https://youtube.com/playlist?list=PL5lf_BvgORchB6W4Dn-EbqPPeXR2l30Wt&feature=shared"
 
 [node name="ImageList" type="VBoxContainer" parent="."]
 visible = false

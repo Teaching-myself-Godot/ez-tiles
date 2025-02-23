@@ -8,7 +8,7 @@ signal terrain_list_entry_selected(resource_id : RID)
 signal terrain_list_collision_type_selected(resource_id : RID, type_id : EZTilesDock.CollisionType)
 
 var image_list : VBoxContainer
-var hint_label : Label
+var hint_label : VBoxContainer
 var TerrainListEntry
 var terrain_name_regex := RegEx.new()
 
@@ -37,6 +37,13 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 		drop_files.emit(data["files"])
 
 
+func _on_terrain_list_entry_removed(rid : RID) -> void:
+	terrain_list_entry_removed.emit(rid)
+	if image_list.get_children().size() <= 1:
+		image_list.hide()
+		hint_label.show()
+
+
 func add_file(img_resource : CompressedTexture2D, invalid_message : String = ""):
 	hint_label.hide()
 	var new_entry : TerrainListEntry = TerrainListEntry.instantiate()
@@ -49,7 +56,7 @@ func add_file(img_resource : CompressedTexture2D, invalid_message : String = "")
 	new_entry.warning_message = invalid_message
 	image_list.add_child(new_entry)
 	image_list.show()
-	new_entry.removed.connect(func(): terrain_list_entry_removed.emit(img_resource.get_rid()))
+	new_entry.removed.connect(func(): _on_terrain_list_entry_removed(img_resource.get_rid()))
 	new_entry.selected.connect(func(): terrain_list_entry_selected.emit(img_resource.get_rid()))
 	new_entry.collision_type_selected.connect(
 			func(type_id : EZTilesDock.CollisionType): terrain_list_collision_type_selected.emit(img_resource.get_rid(), type_id)

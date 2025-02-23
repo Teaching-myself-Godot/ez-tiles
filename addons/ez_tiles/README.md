@@ -2,9 +2,15 @@
 
 This plugin attempts to make it easy to start drawing terrains with tilesheets via a basic Tileset importer and TileMapLayer nodes.
 
-For a complete showcase, please take a look at this youtube explainer:
+For a complete showcase, please take a look at these youtube explainers.
 
-[![link to explainer](https://i9.ytimg.com/vi_webp/cvx-chwh1Ds/mq3.webp?sqp=CIzA1bwG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGEsgWChlMA8=&rs=AOn4CLDKyd9u-TFyBgHo1s2m-vuhIAE00Q)](https://youtu.be/cvx-chwh1Ds)
+## Basic introduction to EZ Tiles
+
+[![link to explainer](https://raw.githubusercontent.com/Teaching-myself-Godot/ez-tiles/refs/tags/1.0.3/yt-thumnail-2.jpg)](https://youtu.be/cvx-chwh1Ds)
+
+## Top down RPG tiles with EZ Tiles
+
+[![link to RPG tiles example](https://raw.githubusercontent.com/Teaching-myself-Godot/ez-tiles/refs/tags/1.0.3/yt-thumnail-1.jpg)](https://youtu.be/gBNtqvF5T_Y)
 
 ## Importer Features
 
