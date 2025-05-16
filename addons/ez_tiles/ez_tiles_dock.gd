@@ -21,8 +21,8 @@ enum CollisionType {
 var collision_previews := {}
 var num_regex := RegEx.new()
 var images_container : ImagesContainer
-var x_size_line_edit : LineEdit
-var y_size_line_edit : LineEdit
+var x_size_input : EditorSpinSlider
+var y_size_input : EditorSpinSlider
 var generate_template_button : Button
 var generate_tileset_button : Button
 var generate_tilemaplayer_button : Button
@@ -41,8 +41,16 @@ var collision_layer_color := Color(1.0, 0.0, 0.0, 0.4)
 func _enter_tree() -> void:
 	num_regex.compile("^\\d+\\.?\\d*$")
 	images_container = find_child("ImagesContainer")
-	x_size_line_edit = find_child("XSizeLineEdit")
-	y_size_line_edit = find_child("YSizeLineEdit")
+	x_size_input = EditorSpinSlider.new()
+	y_size_input = EditorSpinSlider.new()
+	x_size_input.value = 16
+	y_size_input.value = 16
+	x_size_input.min_value = 2
+	x_size_input.max_value = 2048
+	y_size_input.min_value = 2
+	y_size_input.max_value = 2048
+	find_child("XSizeInputContainer").add_child(x_size_input)
+	find_child("YSizeInputContainer").add_child(y_size_input)
 	generate_template_button = find_child("GenerateTemplateButton")
 	generate_tileset_button = find_child("GenerateTileSetButton")
 	generate_tilemaplayer_button = find_child("GenerateTileMapLayerButton")
@@ -70,6 +78,9 @@ func _enter_tree() -> void:
 	collision_previews[CollisionType.INVERSE_ROUNDED] = preview_texture_rect.find_child("Rounded Corners (Inverse)")
 	collision_previews[CollisionType.TREE] = preview_texture_rect.find_child("Tree")
 	collision_previews[CollisionType.CACTUS] = preview_texture_rect.find_child("Cactus")
+	x_size_input.value_changed.connect(func(n): handle_tilesize_update())
+	y_size_input.value_changed.connect(func(n): handle_tilesize_update())
+	handle_tilesize_update()
 
 
 func _on_file_menu_load_files(files : PackedStringArray) -> void:
@@ -86,15 +97,15 @@ func _on_preview_panel_container_drop_files(files: PackedStringArray) -> void:
 
 func validate_size(actual : Vector2) -> String:
 	var tile_size = Vector2i(
-		int(x_size_line_edit.text),
-		int(y_size_line_edit.text)
+		x_size_input.value,
+		y_size_input.value
 	)
 	if not tile_size:
 		return ""
 
 	var expected = Vector2i(
-		int(x_size_line_edit.text) * 6, 
-		int(y_size_line_edit.text) * 4
+		x_size_input.value * 6, 
+		y_size_input.value * 4
 	)
 	if expected.x != actual.x or expected.y != actual.y:
 		return """
@@ -110,13 +121,16 @@ func load_files(files : PackedStringArray):
 		var im := ResourceLoader.load(file, "Image")
 		if im is CompressedTexture2D and not resource_map.has(im.get_rid()):
 			var detected_size = im.get_size()
-			images_container.add_file(im, validate_size(detected_size))
+			var validation := ""
+			if not resource_map.is_empty():
+				validation = validate_size(detected_size)
+			images_container.add_file(im, validation)
 			if resource_map.is_empty():
 				var tile_size := Vector2(float(detected_size.x) / 6.0, float(detected_size.y) / 4.0)
-				x_size_line_edit.text = str(tile_size.x)
-				y_size_line_edit.text = str(tile_size.y)
-				x_size_line_edit.editable = false
-				y_size_line_edit.editable = false
+				x_size_input.value = tile_size.x
+				y_size_input.value = tile_size.y
+				x_size_input.read_only = true
+				y_size_input.read_only = true
 				generate_tileset_button.disabled = false
 				generate_tilemaplayer_button.disabled = false
 				handle_tilesize_update()
@@ -147,10 +161,10 @@ func _on_images_container_terrain_list_entry_removed(removed_resource_id : RID) 
 		preview_texture_rect.texture = null
 
 	if resource_map.size() == 0:
-		x_size_line_edit.text = ""
-		y_size_line_edit.text = ""
-		x_size_line_edit.editable = true
-		y_size_line_edit.editable = true
+		x_size_input.value = 16
+		y_size_input.value = 16
+		x_size_input.read_only = false
+		y_size_input.read_only = false
 		generate_tileset_button.disabled = true
 		generate_tilemaplayer_button.disabled = true
 		handle_tilesize_update()
@@ -158,12 +172,8 @@ func _on_images_container_terrain_list_entry_removed(removed_resource_id : RID) 
 			c.hide()
 
 
-func _on_xy_size_line_edit_text_changed(_new_text: String) -> void:
-	handle_tilesize_update()
-
-
 func _redraw_overlay_texture() -> void:
-	var tile_size := Vector2i(int(x_size_line_edit.text), int(y_size_line_edit.text))
+	var tile_size := Vector2i(x_size_input.value, y_size_input.value)
 	var new_template_overlay := Image.create_empty(tile_size.x * 6, tile_size.y * 4, false, Image.FORMAT_RGBA8)
 	for y in range(new_template_overlay.get_height()):
 		for x in range(new_template_overlay.get_width()):
@@ -179,30 +189,23 @@ func _redraw_overlay_texture() -> void:
 		c.modulate = collision_layer_color
 
 func handle_tilesize_update() -> void:
-	if  num_regex.search(x_size_line_edit.text) and num_regex.search(y_size_line_edit.text):
-		generate_template_button.disabled = false
-		_redraw_overlay_texture()
-		resize_texture_rects(1)
-	else:
-		generate_template_button.disabled = true
-		preview_texture_rect.custom_minimum_size = Vector2.ZERO
-		overlay_texture_rect.custom_minimum_size = Vector2.ZERO
-		guide_texture_rect.custom_minimum_size = Vector2.ZERO
-		preview_texture_rect.texture = null
+	generate_template_button.disabled = false
+	_redraw_overlay_texture()
+	resize_texture_rects(1)
 
 
 func resize_texture_rects(new_zoom : float):
 	zoom = new_zoom
 	var new_size := Vector2(
-		float(x_size_line_edit.text) * 6 * zoom,
-		float(y_size_line_edit.text) * 4 * zoom
+		float(x_size_input.value) * 6 * zoom,
+		float(y_size_input.value) * 4 * zoom
 	)
 	preview_texture_rect.custom_minimum_size = new_size
 	overlay_texture_rect.custom_minimum_size = new_size
 	guide_texture_rect.custom_minimum_size = new_size
 	reset_zoom_button.text = str(zoom * 100) + "%"
 	for c : Node2D in collision_previews.values():
-		c.scale = Vector2(float(x_size_line_edit.text),		float(y_size_line_edit.text)) * zoom
+		c.scale = Vector2(float(x_size_input.value),		float(y_size_input.value)) * zoom
 
 
 func _on_images_container_terrain_list_entry_selected(resource_id: RID) -> void:
@@ -232,7 +235,7 @@ func _on_zoom_in_button_pressed() -> void:
 
 func _on_generate_template_button_pressed() -> void:
 	save_template_file_dialog.set_current_path(
-		"res://template_%dx%d.png" % [int(x_size_line_edit.text), int(y_size_line_edit.text)])
+		"res://template_%dx%d.png" % [x_size_input.value, y_size_input.value])
 	save_template_file_dialog.popup_file_dialog()
 
 
@@ -240,7 +243,7 @@ func _on_save_template_file_selected(path : String) -> void:
 	var export_image := Image.create_empty(overlay_texture_rect.texture.get_size().x, overlay_texture_rect.texture.get_size().y, false, Image.FORMAT_RGBA8)
 	var overlay_image :=  overlay_texture_rect.texture.get_image()
 	var guide_image := guide_texture_rect.texture.get_image()
-	var tile_size := Vector2(float(x_size_line_edit.text), float(y_size_line_edit.text))
+	var tile_size := Vector2(float(x_size_input.value), float(y_size_input.value))
 	
 	for x in range(overlay_image.get_size().x):
 		for y in range(overlay_image.get_size().y):
@@ -286,7 +289,7 @@ func generate_tileset() -> TileSet:
 	var nav_layer_added := false
 	tile_set.add_terrain_set()
 	tile_set.set_terrain_set_mode(0, TileSet.TERRAIN_MODE_MATCH_SIDES)
-	tile_set.tile_size = Vector2i(int(x_size_line_edit.text), int(y_size_line_edit.text))
+	tile_set.tile_size = Vector2i(x_size_input.value, y_size_input.value)
 
 	for terrain_id in range(raw_intel.size()):
 		tile_set.add_terrain(0, terrain_id)
@@ -402,3 +405,4 @@ func create_all_sides_neighbour_tile(atlas_source : TileSetAtlasSource, terrain_
 	new_tile.set_terrain_peering_bit(TileSet.CELL_NEIGHBOR_LEFT_SIDE, terrain_id)
 	new_tile.set_terrain_peering_bit(TileSet.CELL_NEIGHBOR_TOP_SIDE, terrain_id)
 	return new_tile
+

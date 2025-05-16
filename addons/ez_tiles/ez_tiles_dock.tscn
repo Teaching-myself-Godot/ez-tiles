@@ -78,25 +78,15 @@ mouse_filter = 0
 text = "Tile Size* "
 label_settings = SubResource("LabelSettings_2svd6")
 
-[node name="XSizeLineEdit" type="LineEdit" parent="VBoxContainer2/HBoxContainer"]
-custom_minimum_size = Vector2(64, 0)
+[node name="XSizeInputContainer" type="PanelContainer" parent="VBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(84, 0)
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_constants/minimum_character_width = 1
-placeholder_text = "x"
-alignment = 1
-clear_button_enabled = true
-select_all_on_focus = true
 
-[node name="YSizeLineEdit" type="LineEdit" parent="VBoxContainer2/HBoxContainer"]
-custom_minimum_size = Vector2(64, 0)
+[node name="YSizeInputContainer" type="PanelContainer" parent="VBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(84, 0)
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_constants/minimum_character_width = 1
-placeholder_text = "y"
-alignment = 1
-clear_button_enabled = true
-select_all_on_focus = true
 
 [node name="HintColorLabel" type="Label" parent="VBoxContainer2/HBoxContainer"]
 layout_mode = 2
@@ -211,8 +201,6 @@ expand_mode = 3
 [connection signal="terrain_list_collision_type_selected" from="VBoxContainer/ImagesContainer" to="." method="_on_images_container_terrain_list_collision_type_selected"]
 [connection signal="terrain_list_entry_removed" from="VBoxContainer/ImagesContainer" to="." method="_on_images_container_terrain_list_entry_removed"]
 [connection signal="terrain_list_entry_selected" from="VBoxContainer/ImagesContainer" to="." method="_on_images_container_terrain_list_entry_selected"]
-[connection signal="text_changed" from="VBoxContainer2/HBoxContainer/XSizeLineEdit" to="." method="_on_xy_size_line_edit_text_changed"]
-[connection signal="text_changed" from="VBoxContainer2/HBoxContainer/YSizeLineEdit" to="." method="_on_xy_size_line_edit_text_changed"]
 [connection signal="color_changed" from="VBoxContainer2/HBoxContainer/ColorPickerButton" to="." method="_on_color_picker_button_color_changed"]
 [connection signal="color_changed" from="VBoxContainer2/HBoxContainer/CollisionLayerColorPickerButton" to="." method="_on_collision_layer_color_picker_button_color_changed"]
 [connection signal="pressed" from="VBoxContainer2/HBoxContainer/GenerateTemplateButton" to="." method="_on_generate_template_button_pressed"]
