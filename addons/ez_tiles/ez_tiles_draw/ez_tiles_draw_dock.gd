@@ -123,6 +123,8 @@ func activate(node : TileMapLayer):
 func _get_first_source_id_for_terrain(terrain_id : int) -> int:
 	for i in range(under_edit.tile_set.get_source_count()):
 		var source_id := under_edit.tile_set.get_source_id(i)
+		if not under_edit.tile_set.get_source(source_id) is TileSetAtlasSource:
+			continue
 		var source : TileSetAtlasSource  = under_edit.tile_set.get_source(source_id)
 		if source.get_tiles_count() > 0:
 			for j in source.get_tiles_count():
@@ -143,6 +145,8 @@ func _get_first_texture_for_terrain(terrain_id : int) -> Texture2D:
 func _get_first_tileset_source_for_terrain(terrain_id : int) -> TileSetAtlasSource:
 	for i in range(under_edit.tile_set.get_source_count()):
 		var source_id := under_edit.tile_set.get_source_id(i)
+		if not under_edit.tile_set.get_source(source_id) is TileSetAtlasSource:
+			continue
 		var source : TileSetAtlasSource  = under_edit.tile_set.get_source(source_id)
 		if source.get_tiles_count() > 0:
 			for j in source.get_tiles_count():
