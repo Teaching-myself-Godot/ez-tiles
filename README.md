@@ -8,9 +8,6 @@ For a complete showcase, please take a look at these youtube explainers.
 
 [![link to explainer](./yt-thumnail-2.jpg)](https://youtu.be/cvx-chwh1Ds)
 
-## Top down RPG tiles with EZ Tiles
-[![link to RPG tiles example](./yt-thumnail-1.jpg)](https://youtu.be/gBNtqvF5T_Y)
-
 ## Importer Features
 
 - importing tilesheets in a preset format to automatically generate connected terrains (4 sides)
